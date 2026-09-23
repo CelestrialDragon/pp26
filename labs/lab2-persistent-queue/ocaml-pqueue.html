@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three Holes in a Queue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+:root{
+  --ground:#f5f4f0; --surface:#ffffff; --surface-2:#eae8e2; --sunken:#f0eeea;
+  --ink:#15171c; --ink-2:#3b4250; --ink-3:#5f6774; --rule:#d8d5cd; --rule-2:#c5c1b8;
+  --queue:#0a5f96; --queue-soft:#e2edf6; --queue-line:#94bcd9;
+  --stack:#7f4e06; --stack-soft:#f6ecd8; --stack-line:#d7b67c;
+  --start:#1b7a45; --exit:#9b2e92; --wall:#adaeaa;
+  --queue-tint:#88b5d4; --stack-tint:#cfa65d;
+  --task:#7a1f2e; --task-soft:#f4e7ea; --task-line:#d2a2ad;
+  --shadow:0 1px 2px rgba(30,26,20,.06), 0 8px 24px -12px rgba(30,26,20,.16);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#111318; --surface:#181b22; --surface-2:#232833; --sunken:#14171d;
+    --ink:#e8eaef; --ink-2:#b6bdc9; --ink-3:#8a929f; --rule:#2a2f39; --rule-2:#363c48;
+    --queue:#62b8ee; --queue-soft:#14283a; --queue-line:#2d5a79;
+    --stack:#e3ab55; --stack-soft:#2d2413; --stack-line:#6c572b;
+    --start:#52c283; --exit:#e07cd6; --wall:#4a505a;
+    --queue-tint:#376c90; --stack-tint:#7f6433;
+    --task:#e39aa7; --task-soft:#2f191e; --task-line:#6f3a46;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1217; --surface:#161a21; --surface-2:#1d222b; --sunken:#12161c;
+  --ink:#e6eaf0; --ink-2:#b2bac6; --ink-3:#828b99; --rule:#282e38; --rule-2:#333b47;
+  --queue:#5db6ec; --queue-soft:#132738; --queue-line:#2b5876;
+  --stack:#e2a951; --stack-soft:#2c2312; --stack-line:#6b552a;
+  --start:#4fc07f; --exit:#e07ad4; --wall:#464e5a;
+  --queue-tint:#356a8e; --stack-tint:#7d6231;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.62; font-weight:400;
+  text-rendering:optimizeLegibility;
+}
+.wrap{max-width:930px; margin:0 auto; padding:0 28px 96px}
+.col{max-width:660px; margin-left:auto; margin-right:auto}
+.figure-wide + .col{margin-top:34px}
+.compare + .col{margin-top:20px}
+
+/* ---- masthead ---- */
+header.masthead{border-bottom:1px solid var(--rule); background:var(--surface)}
+.masthead .wrap{padding-top:44px; padding-bottom:36px}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 18px;
+}
+h1{
+  font-family:"IBM Plex Serif",Georgia,serif; font-weight:600;
+  font-size:clamp(34px,5.2vw,52px); line-height:1.06; letter-spacing:-.02em;
+  margin:0 0 20px; text-wrap:balance;
+}
+.standfirst{font-size:19px; line-height:1.55; color:var(--ink-2); margin:0; max-width:640px}
+.standfirst strong{font-weight:600; color:var(--ink)}
+nav.toc{
+  display:flex; flex-wrap:wrap; gap:0 26px; margin-top:30px;
+  font-family:"IBM Plex Mono",monospace; font-size:12.5px; letter-spacing:.03em;
+}
+nav.toc a{color:var(--ink-3); text-decoration:none; padding:4px 0; border-bottom:1px solid transparent}
+nav.toc a:hover{color:var(--queue); border-bottom-color:var(--queue-line)}
+
+/* ---- sections ---- */
+section{padding-top:68px}
+h2{
+  font-family:"IBM Plex Serif",Georgia,serif; font-weight:600;
+  font-size:29px; line-height:1.2; letter-spacing:-.012em; margin:0 0 6px;
+  text-wrap:balance;
+}
+h3{
+  font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:16px;
+  letter-spacing:-.005em; margin:34px 0 8px;
+}
+.kicker{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--ink-3); margin:0 0 12px;
+  display:flex; align-items:center; gap:12px;
+}
+.kicker::after{content:""; flex:1; height:1px; background:var(--rule); max-width:180px}
+.kicker.todo{color:var(--queue)}
+.kicker.todo::after{background:var(--queue-line)}
+p{margin:0 0 17px}
+.lede{font-size:18.5px; color:var(--ink-2); margin-bottom:22px}
+
+a{color:var(--queue)}
+a.file{
+  font-family:"IBM Plex Mono",monospace; font-size:.9em; font-weight:500;
+  color:var(--ink); text-decoration:none;
+  border-bottom:1.5px solid var(--queue-line);
+  padding-bottom:1px; white-space:nowrap;
+}
+a.file:hover{color:var(--queue); border-bottom-color:var(--queue); background:var(--queue-soft)}
+a.file::before{content:"↗ "; font-size:.85em; color:var(--ink-3)}
+a:focus-visible, a.file:focus-visible{outline:2px solid var(--queue); outline-offset:3px; border-radius:2px}
+
+code{
+  font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.875em;
+  background:var(--surface-2); padding:.12em .34em; border-radius:3px; color:var(--ink);
+}
+
+/* ---- code blocks ---- */
+figure{margin:26px 0}
+.code{
+  background:var(--surface); border:1px solid var(--rule); border-radius:6px;
+  overflow-x:auto; box-shadow:var(--shadow);
+}
+.code-head{
+  display:flex; justify-content:space-between; align-items:baseline; gap:16px;
+  padding:9px 16px; border-bottom:1px solid var(--rule);
+  background:var(--sunken); border-radius:6px 6px 0 0;
+  font-family:"IBM Plex Mono",monospace; font-size:12px;
+  position:sticky; left:0;
+}
+.code-head .path{font-weight:500}
+.code-head .lines{color:var(--ink-3); letter-spacing:.03em; white-space:nowrap}
+.code pre{
+  margin:0; padding:16px; font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  font-size:13.5px; line-height:1.65; color:var(--ink);
+}
+.code .c{color:var(--ink-3)}
+.code .hl{
+  display:inline-block; width:100%;
+  background:var(--queue-soft); box-shadow:-6px 0 0 var(--queue-soft), inset 3px 0 0 var(--queue);
+  padding-left:3px; margin-left:-3px;
+}
+.code .hl-s{
+  display:inline-block; width:100%;
+  background:var(--stack-soft); box-shadow:-6px 0 0 var(--stack-soft), inset 3px 0 0 var(--stack);
+  padding-left:3px; margin-left:-3px;
+}
+figcaption{
+  font-size:14px; color:var(--ink-3); margin-top:10px; line-height:1.5; max-width:640px;
+}
+figcaption b{color:var(--ink-2); font-weight:600}
+
+/* ---- diagram ---- */
+.figure-wide{margin:30px 0 0}
+.diagram{
+  background:var(--surface); border:1px solid var(--rule); border-radius:8px;
+  padding:22px 18px 14px; box-shadow:var(--shadow); overflow-x:auto;
+}
+.diagram svg{display:block; width:100%; min-width:620px; height:auto}
+.d-box{fill:var(--surface-2); stroke:var(--rule-2); stroke-width:1}
+.d-box-q{fill:var(--queue-soft); stroke:var(--queue-line); stroke-width:1.5}
+.d-box-s{fill:var(--stack-soft); stroke:var(--stack-line); stroke-width:1.5}
+.d-cell{fill:none; stroke:var(--rule-2); stroke-width:1; stroke-dasharray:3 3}
+.d-val{font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:500; fill:var(--ink); text-anchor:middle}
+.d-name{font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600; fill:var(--ink-2)}
+.d-sub{font-family:"IBM Plex Sans",sans-serif; font-size:11.5px; fill:var(--ink-3)}
+.d-sub-q{fill:var(--queue)} .d-sub-s{fill:var(--stack)}
+.d-band{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.13em; fill:var(--ink-3)}
+.d-edge{stroke:var(--rule-2); stroke-width:1.5; fill:none}
+.d-edge-q{stroke:var(--queue-line); stroke-width:1.5; fill:none}
+.d-edge-s{stroke:var(--stack-line); stroke-width:1.5; fill:none}
+.d-thin{stroke:var(--rule-2); stroke-width:1; fill:none; stroke-dasharray:4 4}
+.d-thin-s{stroke:var(--stack-line); stroke-width:1; fill:none; stroke-dasharray:4 4}
+.d-arrow{fill:var(--rule-2)} .d-arrow-q{fill:var(--queue-line)} .d-arrow-s{fill:var(--stack-line)}
+.d-note{font-family:"IBM Plex Sans",sans-serif; font-size:11.5px; font-style:italic; fill:var(--ink-3)}
+.d-mono{font-family:"IBM Plex Mono",monospace; font-size:12px; fill:var(--ink-3)}
+
+/* ---- two-up compare ---- */
+.compare{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:26px 0}
+.panel{
+  border:1px solid var(--rule); border-radius:8px; background:var(--surface);
+  padding:18px 20px 20px; box-shadow:var(--shadow); min-width:0;
+}
+.panel.q{border-top:3px solid var(--queue)}
+.panel.s{border-top:3px solid var(--stack)}
+.panel h4{margin:0 0 2px; font-family:"IBM Plex Mono",monospace; font-size:13.5px; font-weight:600}
+.panel.q h4{color:var(--queue)} .panel.s h4{color:var(--stack)}
+.panel .role{font-size:12.5px; color:var(--ink-3); margin:0 0 14px; line-height:1.45}
+.panel p{font-size:15px; margin:0 0 12px}
+.panel p:last-child{margin-bottom:0}
+.panel pre{
+  margin:0 0 12px; font-family:"IBM Plex Mono",monospace; font-size:12.5px;
+  line-height:1.6; background:var(--surface); border:1px solid var(--rule);
+  border-radius:5px; padding:12px; overflow-x:auto; color:var(--ink);
+}
+.panel pre .c{color:var(--ink-3)}
+
+/* ---- interface / map table ---- */
+.iface{width:100%; border-collapse:collapse; margin:24px 0 8px;
+  font-family:"IBM Plex Mono",monospace; font-size:13px}
+.iface th{
+  text-align:left; font-weight:600; font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3); padding:0 14px 8px 0;
+  border-bottom:1px solid var(--rule-2); white-space:nowrap;
+}
+.iface th.q{color:var(--queue)}
+.iface td{padding:9px 14px 9px 0; border-bottom:1px solid var(--rule); vertical-align:baseline}
+.iface td:first-child{color:var(--ink-2); white-space:nowrap}
+.iface td.q{color:var(--queue); font-weight:500}
+.iface td.dim{color:var(--ink-3)}
+.iface td.prose{font-family:"IBM Plex Sans",sans-serif; font-size:14px; color:var(--ink-2)}
+.iface tr:last-child td{border-bottom:none}
+
+/* ---- trace table ---- */
+.results{width:100%; border-collapse:collapse; margin:22px 0 8px; font-size:14px;
+  font-variant-numeric:tabular-nums}
+.results caption{text-align:left; font-size:12.5px; color:var(--ink-3);
+  padding-bottom:10px; font-family:"IBM Plex Mono",monospace}
+.results th{
+  text-align:left; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:600; padding:0 18px 8px 0;
+  border-bottom:1px solid var(--rule-2);
+}
+.results th.q{color:var(--queue)}
+.results td{padding:9px 18px 9px 0; border-bottom:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace; font-size:13px}
+.results td.step{color:var(--ink-3); width:1%}
+.results td.q{color:var(--queue); font-weight:500}
+.results tr:last-child td{border-bottom:none}
+
+/* ---- callout ---- */
+.callout{
+  border-left:3px solid var(--stack); background:var(--stack-soft);
+  padding:16px 20px; border-radius:0 6px 6px 0; margin:26px 0;
+}
+.callout p{margin:0; font-size:15.5px; color:var(--ink-2)}
+.callout p + p{margin-top:10px}
+.callout strong{color:var(--ink); font-weight:600}
+.callout.q{border-left-color:var(--queue); background:var(--queue-soft)}
+
+/* ---- run block ---- */
+.shell{
+  background:var(--sunken); border:1px solid var(--rule); border-radius:6px;
+  padding:16px 18px; overflow-x:auto; box-shadow:var(--shadow);
+  font-family:"IBM Plex Mono",monospace; font-size:13px; line-height:1.9;
+}
+.shell .prompt{color:var(--ink-3); user-select:none}
+.shell .c{color:var(--ink-3)}
+.shell .ok{color:var(--start)}
+.shell div{white-space:pre}
+
+/* ---- checkpoints / pitfalls ---- */
+ul.marks{list-style:none; padding:0; margin:18px 0}
+ul.marks li{padding:12px 0 12px 30px; border-bottom:1px solid var(--rule);
+  position:relative; font-size:16px}
+ul.marks li:last-child{border-bottom:none}
+ul.marks li::before{content:"—"; position:absolute; left:0; top:12px; color:var(--queue);
+  font-family:"IBM Plex Mono",monospace}
+ul.marks.warn li::before{content:"×"; color:var(--stack); font-weight:600}
+ul.marks b{font-weight:600}
+
+footer{margin-top:80px; padding-top:26px; border-top:1px solid var(--rule);
+  font-size:13.5px; color:var(--ink-3); line-height:1.6}
+footer p{margin:0 0 8px; max-width:640px}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .compare{grid-template-columns:1fr}
+  .wrap{padding:0 20px 72px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+/* ---- lab rail (generated; edit the injector, not this) -----------------
+   Wide screens: the rail is an absolute left column spanning the page. Its
+   top block is decoration, sized to the masthead by script, so the menu
+   begins level with section 00; the menu itself is sticky, so the snippet
+   scrolls away and the navigation stays. Narrow screens: a compact block of
+   links, and the page keeps its own boxed contents list under the standfirst. */
+:root{--labrail:21rem; --masthead-h:340px}
+.labrail{background:var(--surface); border-right:1px solid var(--rule);
+  padding:22px 20px 28px; font-size:14.5px; line-height:1.5; z-index:20}
+@media (min-width:1180px){
+  body{position:relative; padding-left:var(--labrail)}
+  .labrail{position:absolute; left:0; top:0; bottom:0; width:var(--labrail);
+    padding:0}
+  .lr-art{height:var(--masthead-h); padding:26px 22px; display:flex;
+    flex-direction:column; justify-content:flex-end; overflow:hidden}
+  .lr-nav{position:sticky; top:0; max-height:100vh; overflow-y:auto;
+    padding:22px 20px 28px}
+  header.masthead nav.toc{display:none}   /* it lives in the rail up here */
+}
+.lr-art svg{width:100%; height:auto; display:block}
+.lr-art .cap{font:500 10.5px/1.4 "IBM Plex Sans",sans-serif; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3); border-top:1px solid var(--rule);
+  padding-top:10px; margin:14px 0 0}
+.lr-art{display:none}
+@media (min-width:1180px){.lr-art{display:flex}}
+
+.labrail .lr-brand{display:block; text-decoration:none; color:var(--ink);
+  margin-bottom:20px}
+.labrail .lr-brand .up{display:block; font:500 11px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-bottom:6px}
+.labrail .lr-brand b{font:600 16px/1.28 "IBM Plex Sans",sans-serif; letter-spacing:-.01em}
+.labrail h2{display:flex; align-items:center; gap:10px;
+  font:600 11.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink); margin:26px 0 10px; padding:0; border:0}
+.labrail h2::after{content:""; flex:1; height:1px; background:var(--rule-2)}
+.labrail .lr-nav>div:first-of-type h2{margin-top:18px}
+.labrail ul{list-style:none; margin:0; padding:0}
+.labrail a.lr{display:block; padding:6px 10px; border-radius:7px;
+  text-decoration:none; color:var(--ink-2); font-size:14.5px}
+.labrail a.lr:hover{background:var(--sunken); color:var(--ink)}
+.labrail a.lr[aria-current]{background:var(--queue-soft); color:var(--queue); font-weight:600}
+.labrail a.lr code{font:500 13.5px/1.5 "IBM Plex Mono",monospace; background:none;
+  padding:0; color:inherit}
+
+.labrail a.lr .t{display:block}
+.labrail a.lr .d{display:block; font:400 12px/1.35 "IBM Plex Sans",sans-serif;
+  color:var(--ink-3); margin-top:1px}
+.labrail a.lr[aria-current] .d{color:var(--queue); opacity:.85; font-weight:400}
+
+/* The assignment itself, first: one line per part, letter in mono, the parts
+   where code gets written in the lab's task colour; run-and-watch parts muted. */
+.labrail .lr-todo a{display:grid; grid-template-columns:2.4rem 1fr; gap:0 6px;
+  align-items:baseline; padding:5px 10px; border-radius:7px; text-decoration:none;
+  color:var(--ink-2)}
+.labrail .lr-todo a:hover{background:var(--sunken); color:var(--ink)}
+.labrail .lr-todo .k{font:500 12.5px/1.5 "IBM Plex Mono",monospace; color:var(--ink-3);
+  letter-spacing:.02em}
+.labrail .lr-todo .t{font-size:14.5px; font-weight:600}
+.labrail .lr-todo .d{grid-column:2; font:400 12px/1.35 "IBM Plex Sans",sans-serif;
+  color:var(--ink-3); margin-top:1px}
+.labrail .lr-todo .d code{font:500 11.5px/1.4 "IBM Plex Mono",monospace; background:none;
+  padding:0; color:inherit}
+.labrail .lr-todo a.do .k,.labrail .lr-todo a.do .t{color:var(--task)}
+.labrail .lr-todo a.do:hover{background:var(--task-soft)}
+.labrail .lr-readme{margin:6px 0 0; padding:0 10px; font-size:12.5px}
+.labrail .lr-readme a{color:var(--ink-3); text-decoration:none; border-bottom:1px solid var(--rule-2)}
+.labrail .lr-readme a:hover{color:var(--task); border-color:var(--task-line)}
+
+/* A helper note sits under the guide it serves: indented, on a hairline,
+   lighter weight — subordinate, not equal. */
+.labrail li.sub a.lr{margin-left:12px; padding-left:12px; border-left:2px solid var(--rule);
+  border-radius:0 7px 7px 0}
+.labrail li.sub a.lr .t{font-weight:400; font-size:13.5px}
+.labrail li.sub a.lr[aria-current]{border-left-color:var(--queue)}
+
+/* This page's own sections, in the page's own voice: mono, numbered, with the
+   assignment marker the boxed list used. The current one lights up on scroll. */
+.labrail .lr-toc a{display:block; padding:5.5px 10px; border-radius:7px;
+  text-decoration:none; font:400 14px/1.45 "IBM Plex Mono",monospace;
+  letter-spacing:.02em; color:var(--ink-3)}
+.labrail .lr-toc a:hover{background:var(--sunken); color:var(--queue)}
+.labrail .lr-toc a.on{background:var(--queue-soft); color:var(--queue); font-weight:500}
+.labrail .lr-toc a.assign{color:var(--task); font-weight:500}
+.labrail .lr-toc a.assign.on{background:var(--task-soft); color:var(--task)}
+
+.labrail .lr-foot{margin:24px 0 0; padding-top:15px; border-top:1px solid var(--rule);
+  font-size:13px}
+.labrail .lr-foot a{color:var(--ink-3); text-decoration:none}
+.labrail .lr-foot a:hover{color:var(--queue)}
+@media (max-width:1179px){
+  /* Narrow: the lab is long-form reading, so the navigation goes AFTER it
+     rather than ahead of it. The page already names itself in its masthead
+     and keeps its own boxed contents list, so nothing is lost from the top. */
+  body{display:flex; flex-direction:column}
+  .labrail{order:99; position:static; width:auto; border-right:0;
+    border-top:1px solid var(--rule); border-bottom:0; display:grid;
+    align-items:start; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:0 24px}
+  .labrail .lr-nav{display:contents}
+  .labrail .lr-brand{grid-column:1/-1}
+  .labrail .lr-sections{display:none}
+  .labrail h2{margin-top:16px}
+  .labrail .lr-foot{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<!-- pp26:labrail -->
+<aside class="labrail">
+  <div class="lr-art" aria-hidden="false">
+    <svg viewBox="0 0 285 209" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A 15 by 11 maze solved by breadth-first search, the shortest path drawn from start to exit"><g opacity=".55"><rect x="0" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="57" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="95" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="133" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="171" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="209" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="19" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="19" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="19" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="19" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="95" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="133" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="57" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="57" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="57" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="57" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="171" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="209" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="171" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="171" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="171" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="171" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="57" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="95" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="133" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="171" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="209" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/></g><circle cx="85.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="104.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="123.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="47.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="28.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="47.5" cy="104.5" r="2" fill="var(--queue-tint)"/><circle cx="28.5" cy="104.5" r="2" fill="var(--queue-tint)"/><circle cx="47.5" cy="142.5" r="2" fill="var(--queue-tint)"/><circle cx="28.5" cy="142.5" r="2" fill="var(--queue-tint)"/><circle cx="47.5" cy="180.5" r="2" fill="var(--queue-tint)"/><circle cx="28.5" cy="180.5" r="2" fill="var(--queue-tint)"/><circle cx="104.5" cy="85.5" r="2" fill="var(--queue-tint)"/><circle cx="104.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="123.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="142.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="161.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="180.5" r="2" fill="var(--queue-tint)"/><circle cx="180.5" cy="85.5" r="2" fill="var(--queue-tint)"/><circle cx="180.5" cy="47.5" r="2" fill="var(--queue-tint)"/><circle cx="180.5" cy="104.5" r="2" fill="var(--queue-tint)"/><circle cx="180.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="237.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="218.5" cy="47.5" r="2" fill="var(--queue-tint)"/><circle cx="256.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="218.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="237.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="256.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="199.5" cy="180.5" r="2" fill="var(--queue-tint)"/><polyline points="28.5,28.5 47.5,28.5 66.5,28.5 66.5,47.5 66.5,66.5 66.5,85.5 66.5,104.5 66.5,123.5 66.5,142.5 66.5,161.5 66.5,180.5 85.5,180.5 104.5,180.5 104.5,161.5 104.5,142.5 104.5,123.5 104.5,104.5 123.5,104.5 142.5,104.5 142.5,85.5 142.5,66.5 161.5,66.5 180.5,66.5 199.5,66.5 218.5,66.5 218.5,85.5 218.5,104.5 237.5,104.5 256.5,104.5 256.5,123.5 256.5,142.5 237.5,142.5 218.5,142.5 218.5,161.5 218.5,180.5 237.5,180.5 256.5,180.5" fill="none" stroke="var(--queue)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28.5" cy="28.5" r="4.2" fill="var(--start)"/><circle cx="256.5" cy="180.5" r="4.2" fill="var(--exit)"/></svg>
+    <p class="cap">breadth-first search &middot; 37 steps</p>
+  </div>
+  <div class="lr-nav">
+    <a class="lr-brand" href="https://homes.cs.aau.dk/~lego/pp26/s2.html">
+      <span class="up">PP26 &middot; Session 2</span><b>Lab 2 &mdash; Persistent Queue</b></a>
+      <div class="lr-what">
+        <h2>What to do</h2>
+        <ul class="lr-todo"><li><a class="do" href="queue-on-paper.pdf"><span class="k">paper</span><span class="t">On paper</span><span class="d">the two-list queue, by hand</span></a></li><li><a class="do" href="python-pqueue.html"><span class="k">A</span><span class="t">Python</span><span class="d"><code>python/pqueue.py</code> — four TODOs</span></a></li><li><a class="" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/README.md#part-b--the-payoff"><span class="k">B</span><span class="t">The payoff</span><span class="d">run it — nothing to write</span></a></li><li><a class="do" href="ocaml-pqueue.html"><span class="k">C</span><span class="t">OCaml</span><span class="d"><code>ocaml/lib/pqueue.ml</code> — three TODOs</span></a></li><li><a class="" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/README.md#part-d--breaking-the-bank"><span class="k">D</span><span class="t">Breaking the bank</span><span class="d">run it — nothing to write</span></a></li><li><a class="do" href="java-pqueue.html"><span class="k">E</span><span class="t">Java · homework</span><span class="d"><code>java/PQueue.java</code> — four TODOs</span></a></li></ul>
+        <p class="lr-readme"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/README.md">full instructions &mdash; README</a></p>
+      </div>
+      <div class="lr-sections">
+        <h2>On this page</h2>
+        <ul class="lr-toc"><li><a class="" href="#map">01 · the file</a></li><li><a class="" href="#rep">02 · the representation</a></li><li><a class="" href="#make">03 · todo 1 · make</a></li><li><a class="" href="#enqueue">04 · todo 2 · enqueue</a></li><li><a class="" href="#dequeue">05 · todo 3 · dequeue</a></li><li><a class="" href="#tests">06 · the tests</a></li><li><a class="" href="#run">07 · run it</a></li></ul>
+      </div>
+      <div>
+        <h2>Lab pages</h2>
+        <ul><li><a class="lr" href="index.html"><span class="t">One queue, three languages</span><span class="d">the lab — overview, general architecture, assignments</span></a></li><li><a class="lr" href="python-pqueue.html"><span class="t">Four holes in a queue</span><span class="d">Python · reading guide, part A</span></a></li><li class="sub"><a class="lr" href="python-architecture.html"><span class="t">Three layers, one search</span><span class="d">how the Python solver is built</span></a></li><li><a class="lr" href="ocaml-pqueue.html" aria-current='page'><span class="t">Three holes in a queue</span><span class="d">OCaml · reading guide, part C</span></a></li><li class="sub"><a class="lr" href="ocaml-architecture.html"><span class="t">What the types are for</span><span class="d">how the OCaml solver is built</span></a></li><li><a class="lr" href="java-pqueue.html"><span class="t">Four holes, all final</span><span class="d">Java · reading guide, part E · homework</span></a></li><li class="sub"><a class="lr" href="java-architecture.html"><span class="t">Immutability, spelled out</span><span class="d">how the Java solver is built</span></a></li></ul>
+      </div>
+      <div>
+        <h2>Code</h2>
+        <ul>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/tour.ml"><code>tour.ml</code></a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/python/pqueue.py"><code>python/pqueue.py</code></a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/ocaml/lib/pqueue.ml"><code>ocaml/lib/pqueue.ml</code></a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/java/PQueue.java"><code>java/PQueue.java</code></a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/homework.ml"><code>homework.ml</code></a></li>
+        </ul>
+      </div>
+      <p class="lr-foot"><a href="https://homes.cs.aau.dk/~lego/pp26/">&larr; Programming Paradigms</a></p>
+  </div>
+</aside>
+<!-- /pp26:labrail -->
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow"><a href="https://homes.cs.aau.dk/~lego/pp26/">PP26</a> &nbsp;·&nbsp; <a href="index.html">Lab 2</a> &nbsp;·&nbsp; part C · reading guide · OCaml</p>
+    <h1>Three Holes in a Queue</h1>
+    <p class="standfirst"><code>ocaml/lib/pqueue.ml</code> is 42 lines, and three of its functions are missing. The fourth hole from Python — <code>_rev</code> — is not here: <code>List.rev</code> already exists, and OCaml's own list <em>is</em> the cons-list. This note walks through <strong>what each hole is for</strong>, what the interface in <code>pqueue.mli</code> promises on its behalf, and how to recognise a correct result — without supplying the three definitions.</p>
+    <nav class="toc">
+      <a href="#map">01 · the file</a>
+      <a href="#rep">02 · the representation</a>
+      <a href="#make">03 · todo 1 · make</a>
+      <a href="#enqueue">04 · todo 2 · enqueue</a>
+      <a href="#dequeue">05 · todo 3 · dequeue</a>
+      <a href="#tests">06 · the tests</a>
+      <a href="#run">07 · run it</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ===================== 01 ===================== -->
+<section id="map">
+  <div class="col">
+    <p class="kicker">01 — the file</p>
+    <h2>What is given, and what is left to write</h2>
+    <p class="lede">Three bodies are missing, ordered so that each may use the one before it. The list reversal Python made you write is a library call here.</p>
+
+    <table class="iface">
+      <tr><th>line</th><th>name</th><th class="q">status</th><th>what it is</th></tr>
+      <tr><td>12</td><td><code>type 'a t</code></td><td class="dim">given</td><td class="prose">A record of two lists, <code>{ front; back }</code>. Abstract in the <code>.mli</code>, so nobody outside this file can see the fields.</td></tr>
+      <tr><td>14</td><td><code>empty</code></td><td class="dim">given</td><td class="prose">Both lists empty. One value, shared by every queue that ever runs dry.</td></tr>
+      <tr><td>16</td><td><code>is_empty</code></td><td class="dim">given</td><td class="prose">Checks <em>front</em> only — legal precisely because of the invariant.</td></tr>
+      <tr><td>21</td><td><code>make</code></td><td class="q">TODO 1</td><td class="prose">The smart constructor that restores the invariant. Internal: not in the <code>.mli</code>.</td></tr>
+      <tr><td>26</td><td><code>enqueue</code></td><td class="q">TODO 2</td><td class="prose">Add at the back. O(1). Note the argument order: element first, queue second.</td></tr>
+      <tr><td>31</td><td><code>dequeue</code></td><td class="q">TODO 3</td><td class="prose">Take from the front, returning the value <em>and</em> the new queue — as an <code>option</code>.</td></tr>
+      <tr><td>36</td><td><code>peek</code></td><td class="dim">given</td><td class="prose">A <code>match</code> on <code>q.front</code>. One pointer. Never searches.</td></tr>
+      <tr><td>38</td><td><code>to_list</code></td><td class="dim">given</td><td class="prose">The abstraction function, <code>q.front @ List.rev q.back</code>. The tests measure the implementation against it.</td></tr>
+      <tr><td>42</td><td><code>of_list</code></td><td class="dim">given</td><td class="prose">Enqueue every element of a list, via <code>List.fold_left</code> — a higher-order function met properly in session 5.</td></tr>
+    </table>
+
+    <div class="callout q">
+      <p><strong>Read <code>pqueue.mli</code> first.</strong> It is the lecture's point made syntax. <code>type 'a t</code> is abstract there, so outside this file a queue can only be built through <code>empty</code>, <code>enqueue</code> and <code>of_list</code> — the invariant needs keeping in one file only. And <code>dequeue : 'a t -> ('a * 'a t) option</code> says the whole story in one line: the value and the new version, or <code>None</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 02 ===================== -->
+<section id="rep">
+  <div class="col">
+    <p class="kicker">02 — the representation</p>
+    <h2>Two lists, and the language's own cons</h2>
+    <p class="lede">The same trick as in Python: two lists pointing in opposite directions, so that both ends of the queue are somebody's head. What changes is that the cons-list is built in — <code>[]</code> is empty, <code>x :: rest</code> is a node — and immutable by decree rather than by discipline.</p>
+
+    <figure>
+      <div class="code">
+        <div class="code-head"><span class="path">ocaml/lib/pqueue.ml</span><span class="lines">lines 3–6, 12</span></div>
+<pre>type 'a t = { front : 'a list; back : 'a list }
+
+contents q  =  q.front @ List.rev q.back
+
+invariant:     q.front = []  ⟹  q.back = []</pre>
+      </div>
+      <figcaption><b>The invariant is what makes <code>peek</code> a two-case match.</b> Forbid the state where the front is empty while elements sit in the back, and every reader gets simpler. <code>make</code> is the one place the invariant is restored; everything else just calls it.</figcaption>
+    </figure>
+
+    <p>What Python could only ask for — <em>do not touch the nodes</em> — is now not a request. An OCaml list has no operation that writes into a cell. The only mistake still available is the structural one: rebuilding a list that should have been shared. Nothing in the test suite catches that; the solver's <code>--inspect</code> and the benchmark in part D are where it would show.</p>
+  </div>
+</section>
+
+<!-- ===================== 03 ===================== -->
+<section id="make">
+  <div class="col">
+    <p class="kicker todo">03 — todo 1</p>
+    <h2><code>make front back</code> — the smart constructor</h2>
+    <p class="lede">The heart of the data structure, and a two-case match. Every other function builds queues by calling it, never by writing a record literal — that is the whole reason the invariant holds everywhere.</p>
+
+    <figure>
+      <div class="code">
+        <div class="code-head"><span class="path">ocaml/lib/pqueue.ml</span><span class="lines">lines 18–23</span></div>
+<pre><span class="c">(* TODO 1: smart constructor. Restore the invariant: if [front] is
+   empty, the reversed [back] must become the new front. Build every
+   queue below through [make] and the invariant holds everywhere. *)</span>
+<span class="hl">let make front back =</span>
+  ignore front; ignore back;
+  failwith "TODO 1: make"</pre>
+      </div>
+      <figcaption><b>The two <code>ignore</code> lines exist only to keep the stub compiling without unused-variable warnings.</b> Delete them together with the <code>failwith</code>.</figcaption>
+    </figure>
+
+    <p>Match on <code>front</code> alone:</p>
+    <ul class="marks">
+      <li><b>Front is non-empty.</b> Nothing to fix. Return <code>{ front; back }</code> as they stand — and they <em>are</em> the same lists that were passed in, because OCaml never copies a list unless asked to.</li>
+      <li><b>Front is empty.</b> The invariant demands the back be empty too, so move it: <code>List.rev back</code> becomes the new front and the new back is <code>[]</code>. If <code>back</code> was also empty this quietly produces <code>empty</code> — no special case needed.</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>The tempting wrong version.</strong> Reversing unconditionally — always putting <code>List.rev back @ front</code> in the front — passes every test in the runner and destroys the performance story: every <code>enqueue</code> becomes O(<em>n</em>). No test here inspects the representation, so this one is on you. Branch on the front.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 04 ===================== -->
+<section id="enqueue">
+  <div class="col">
+    <p class="kicker todo">04 — todo 2</p>
+    <h2><code>enqueue x q</code> — add at the back</h2>
+    <p class="lede">One cons and one call. A version longer than a line is probably doing work that belongs to <code>make</code>.</p>
+
+    <figure>
+      <div class="code">
+        <div class="code-head"><span class="path">ocaml/lib/pqueue.ml</span><span class="lines">lines 25–28</span></div>
+<pre><span class="c">(* TODO 2: cons [x] onto [back]; keep [front] as it is (shared!). *)</span>
+<span class="hl">let enqueue x q =</span>
+  ignore x; ignore q;
+  failwith "TODO 2: enqueue"</pre>
+      </div>
+    </figure>
+
+    <p>Put <code>x</code> at the head of <code>q.back</code> and hand both halves to <code>make</code>. Do not build the record yourself: enqueueing onto <code>empty</code> would leave an empty front with a one-element back, which is precisely the state the invariant forbids. <code>make</code> is what catches that.</p>
+
+    <div class="compare">
+      <div class="panel q">
+        <h4>shares</h4>
+        <p class="role">The new queue points <em>into</em> the old one. Both versions stay usable.</p>
+<pre>let q1 = Pqueue.of_list [1; 2; 3]
+let q2 = Pqueue.enqueue 4 q1
+
+<span class="c">(* q2's front IS q1's front —
+   the same list, not a copy *)</span>
+q2.front == q1.front   → true</pre>
+        <p>One new cons cell and one new record exist after the call. Three elements were reused untouched.</p>
+      </div>
+      <div class="panel s">
+        <h4>the argument order</h4>
+        <p class="role">Element first, queue second — the <code>.mli</code> fixes it.</p>
+<pre>val enqueue : 'a -> 'a t -> 'a t
+
+<span class="c">(* so this reads naturally: *)</span>
+q |> Pqueue.enqueue 4 |> Pqueue.enqueue 5</pre>
+        <p>The same convention as <code>List.cons</code>. Get it backwards and the compiler tells you before any test runs.</p>
+      </div>
+    </div>
+
+    <p>The O(1) claim survives the <code>make</code> call: it only reverses when the front is empty, and then the invariant says the back was empty too, so the list being reversed holds exactly the one element just consed. Constant work, always.</p>
+  </div>
+</section>
+
+<!-- ===================== 05 ===================== -->
+<section id="dequeue">
+  <div class="col">
+    <p class="kicker todo">05 — todo 3</p>
+    <h2><code>dequeue q</code> — take from the front</h2>
+    <p class="lede">The one operation that returns two things, because a persistent structure cannot surrender the value by mutating itself. The type says so: <code>('a * 'a t) option</code>.</p>
+
+    <figure>
+      <div class="code">
+        <div class="code-head"><span class="path">ocaml/lib/pqueue.ml</span><span class="lines">lines 30–33</span></div>
+<pre><span class="c">(* TODO 3: take the head of [front]; rebuild the rest through [make]. *)</span>
+<span class="hl">let dequeue q =</span>
+  ignore q;
+  failwith "TODO 3: dequeue"</pre>
+      </div>
+    </figure>
+
+    <p>Two cases, and the empty one costs no exception. Where Python raised <code>IndexError</code>, the type here has a <code>None</code> arm — <code>peek</code> above shows the exact shape. Otherwise the head of the front is the value, and the queue returned is built from the front's <em>tail</em> and the untouched back, passed through <code>make</code>. That call is where the front can run dry and trigger the flip.</p>
+
+    <p>Forget the empty case and the compiler says so: a non-exhaustive match is a warning that dune's default profile promotes to an error. It is the first of several things the checker now does that Python left to a test.</p>
+
+    <h3>Why the old queue still works afterwards</h3>
+    <p>Nothing in those two cases writes anywhere. The cell holding the old head is still there, still pointing at the same tail; the new front simply <em>is</em> that tail. That is why the fan-out test can dequeue the same version twice and get the same answer both times, then push the two results in different directions. One present, several futures.</p>
+  </div>
+</section>
+
+<!-- ===================== 06 ===================== -->
+<section id="tests">
+  <div class="col">
+    <p class="kicker">06 — the tests</p>
+    <h2>What each group asks</h2>
+    <p class="lede">The runner in <code>test/test_pqueue.ml</code> is hand-rolled: every check runs whatever the others do, and the tally at the end measures progress. A check that reaches a stub's <code>failwith</code> is reported as <code>todo</code>; any other failure is <code>WRONG</code>.</p>
+
+    <table class="iface">
+      <tr><th>group</th><th class="q">asks</th><th>if it fails</th></tr>
+      <tr><td><code>basics</code></td><td class="q">does it work at all?</td><td class="prose">Empty cases and the single-element round trip. Usually a <code>Some</code>/<code>None</code> mix-up, or a pair built the wrong way round.</td></tr>
+      <tr><td><code>FIFO contract</code></td><td class="q">is it a queue?</td><td class="prose">Order under interleaving, plus 1000 pseudo-random operations checked against a plain-list model. A mismatch means the abstraction function and the implementation disagree.</td></tr>
+      <tr><td><code>persistence</code></td><td class="q">is it persistent?</td><td class="prose">Old versions survive an <code>enqueue</code> and a <code>dequeue</code>; the same version dequeued twice yields the same value, and the two futures diverge. These are the tests the lecture is about.</td></tr>
+    </table>
+
+    <div class="callout q">
+      <p><strong>Finishing TODO 1 alone changes nothing on screen.</strong> <code>make</code> is internal — not in the <code>.mli</code>, not called by any test. The first visible movement comes with TODO 2, and the round trip needs TODO 3. Work top to bottom and expect the tally to sit still for a while.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 07 ===================== -->
+<section id="run">
+  <div class="col">
+    <p class="kicker">07 — run it</p>
+    <h2>The working loop</h2>
+
+    <div class="shell">
+      <div><span class="prompt">$ </span>cd ocaml</div>
+      <div><span class="prompt">$ </span>dune runtest                                          <span class="c"># after every TODO</span></div>
+      <div> </div>
+      <div><span class="c"># once everything is green — the queue drives a real search:</span></div>
+      <div><span class="prompt">$ </span>dune exec bin/solver.exe -- ../mazes/medium.txt --bfs</div>
+      <div><span class="prompt">$ </span>dune exec bin/solver.exe -- ../mazes/medium.txt --bfs --html=bfs.html   <span class="c"># time travel</span></div>
+      <div><span class="prompt">$ </span>dune exec bin/solver.exe -- ../mazes/medium.txt --bfs --inspect=40      <span class="c"># ask an old version</span></div>
+    </div>
+
+    <p style="margin-top:18px">On <code>mazes/medium.txt</code> the BFS run should report <strong>306 cells explored, path length 75</strong> — the same numbers as the Python and Java solvers. Same specification, same search, same answer.</p>
+
+    <h3>When progress stalls</h3>
+    <ul class="marks warn">
+      <li><b>Everything reports <code>todo</code>.</b> Expected — that is the starting state, and TODO 1 alone moves nothing because <code>make</code> is internal.</li>
+      <li><b><code>Error: this pattern-matching is not exhaustive</code>.</b> <code>dequeue</code> is missing its <code>[]</code> case.</li>
+      <li><b>A type error mentioning a tuple where <code>'a t</code> was expected.</b> A queue was written as <code>(front, back)</code>; it is a record, <code>{ front; back }</code> — and should come from <code>make</code> anyway.</li>
+      <li><b>Values are right but shifted by one.</b> <code>dequeue</code> rebuilt from <code>q.front</code> instead of from its tail.</li>
+      <li><b>“1000 random ops” goes <code>WRONG</code> at once.</b> <code>enqueue</code> consed onto the front instead of the back, or <code>make</code> reversed the wrong list.</li>
+      <li><b>Warnings about unused values.</b> The <code>ignore</code> lines are still there. Delete them with the stub.</li>
+    </ul>
+
+    <p style="margin-top:26px">Next: <a class="file" href="ocaml-architecture.html">ocaml-architecture.html</a> — what the types are for: how the solver is composed around this module, and what the compiler checks on the way.</p>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p><a href="https://homes.cs.aau.dk/~lego/pp26/">PP26</a> · <a href="index.html">Lab 2</a> · Part C reading guide for <code>ocaml/lib/pqueue.ml</code>. The three bodies are deliberately not printed here; the reference implementation is held by the instructor, for comparison afterwards.</p>
+  <p>Source: <code>ocaml/lib/pqueue.ml</code> (42 lines) · interface: <code>ocaml/lib/pqueue.mli</code> · tests: <code>ocaml/test/test_pqueue.ml</code> · overview: <code>README.md</code></p>
+</footer>
+
+</main>
+<script>/* pp26:labrail-spy — size the rail's top block to the masthead,
+   and mark the section the reader is in */
+(function(){var m=document.querySelector("header.masthead");
+if(m)document.documentElement.style.setProperty("--masthead-h",m.offsetHeight+"px");
+var L=[].slice.call(document.querySelectorAll(".lr-toc a"));if(!L.length)return;
+var S=L.map(function(a){return document.getElementById(a.hash.slice(1))});
+function up(){var c=-1;for(var i=0;i<S.length;i++){if(S[i]&&S[i].getBoundingClientRect().top<=140)c=i}
+if(c<0)c=0;for(var j=0;j<L.length;j++)L[j].classList.toggle("on",j===c)}
+addEventListener("scroll",up,{passive:true});
+addEventListener("resize",function(){if(m)document.documentElement.style.setProperty("--masthead-h",m.offsetHeight+"px");up()});
+up()})();
+</script>
+</body>
+</html>

@@ -9,22 +9,24 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
 <style>
 :root{
-  --ground:#f3f5f8; --surface:#ffffff; --surface-2:#e9edf2; --sunken:#eef1f5;
-  --ink:#161a21; --ink-2:#434b58; --ink-3:#6d7583; --rule:#d5dae2; --rule-2:#c2c9d3;
-  --queue:#0b6ea9; --queue-soft:#e2eff8; --queue-line:#9dc7e3;
-  --stack:#8a5606; --stack-soft:#f8efdc; --stack-line:#dcbc84;
-  --start:#1c7a45; --exit:#a3319a; --wall:#a7b0bb;
-  --queue-tint:#8dbedd; --stack-tint:#d3ab63;
-  --shadow:0 1px 2px rgba(20,28,40,.06), 0 8px 24px -12px rgba(20,28,40,.18);
+  --ground:#f5f4f0; --surface:#ffffff; --surface-2:#eae8e2; --sunken:#f0eeea;
+  --ink:#15171c; --ink-2:#3b4250; --ink-3:#5f6774; --rule:#d8d5cd; --rule-2:#c5c1b8;
+  --queue:#0a5f96; --queue-soft:#e2edf6; --queue-line:#94bcd9;
+  --stack:#7f4e06; --stack-soft:#f6ecd8; --stack-line:#d7b67c;
+  --start:#1b7a45; --exit:#9b2e92; --wall:#adaeaa;
+  --queue-tint:#88b5d4; --stack-tint:#cfa65d;
+  --task:#7a1f2e; --task-soft:#f4e7ea; --task-line:#d2a2ad;
+  --shadow:0 1px 2px rgba(30,26,20,.06), 0 8px 24px -12px rgba(30,26,20,.16);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --ground:#0f1217; --surface:#161a21; --surface-2:#1d222b; --sunken:#12161c;
-    --ink:#e6eaf0; --ink-2:#b2bac6; --ink-3:#828b99; --rule:#282e38; --rule-2:#333b47;
-    --queue:#5db6ec; --queue-soft:#132738; --queue-line:#2b5876;
-    --stack:#e2a951; --stack-soft:#2c2312; --stack-line:#6b552a;
-    --start:#4fc07f; --exit:#e07ad4; --wall:#464e5a;
-    --queue-tint:#356a8e; --stack-tint:#7d6231;
+    --ground:#111318; --surface:#181b22; --surface-2:#232833; --sunken:#14171d;
+    --ink:#e8eaef; --ink-2:#b6bdc9; --ink-3:#8a929f; --rule:#2a2f39; --rule-2:#363c48;
+    --queue:#62b8ee; --queue-soft:#14283a; --queue-line:#2d5a79;
+    --stack:#e3ab55; --stack-soft:#2d2413; --stack-line:#6c572b;
+    --start:#52c283; --exit:#e07cd6; --wall:#4a505a;
+    --queue-tint:#376c90; --stack-tint:#7f6433;
+    --task:#e39aa7; --task-soft:#2f191e; --task-line:#6f3a46;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
   }
 }
@@ -116,13 +118,13 @@ code{
 /* ---- code blocks ---- */
 figure{margin:26px 0}
 .code{
-  background:var(--sunken); border:1px solid var(--rule); border-radius:6px;
+  background:var(--surface); border:1px solid var(--rule); border-radius:6px;
   overflow-x:auto; box-shadow:var(--shadow);
 }
 .code-head{
   display:flex; justify-content:space-between; align-items:baseline; gap:16px;
   padding:9px 16px; border-bottom:1px solid var(--rule);
-  background:var(--surface); border-radius:6px 6px 0 0;
+  background:var(--sunken); border-radius:6px 6px 0 0;
   font-family:"IBM Plex Mono",monospace; font-size:12px;
   position:sticky; left:0;
 }
@@ -187,7 +189,7 @@ figcaption b{color:var(--ink-2); font-weight:600}
 .panel p:last-child{margin-bottom:0}
 .panel pre{
   margin:0 0 12px; font-family:"IBM Plex Mono",monospace; font-size:12.5px;
-  line-height:1.6; background:var(--sunken); border:1px solid var(--rule);
+  line-height:1.6; background:var(--surface); border:1px solid var(--rule);
   border-radius:5px; padding:12px; overflow-x:auto; color:var(--ink);
 }
 .panel pre .c{color:var(--ink-3)}
@@ -310,15 +312,155 @@ footer p{margin:0 0 8px; max-width:640px}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important; transition:none !important}
 }
+/* ---- lab rail (generated; edit the injector, not this) -----------------
+   Wide screens: the rail is an absolute left column spanning the page. Its
+   top block is decoration, sized to the masthead by script, so the menu
+   begins level with section 00; the menu itself is sticky, so the snippet
+   scrolls away and the navigation stays. Narrow screens: a compact block of
+   links, and the page keeps its own boxed contents list under the standfirst. */
+:root{--labrail:21rem; --masthead-h:340px}
+.labrail{background:var(--surface); border-right:1px solid var(--rule);
+  padding:22px 20px 28px; font-size:14.5px; line-height:1.5; z-index:20}
+@media (min-width:1180px){
+  body{position:relative; padding-left:var(--labrail)}
+  .labrail{position:absolute; left:0; top:0; bottom:0; width:var(--labrail);
+    padding:0}
+  .lr-art{height:var(--masthead-h); padding:26px 22px; display:flex;
+    flex-direction:column; justify-content:flex-end; overflow:hidden}
+  .lr-nav{position:sticky; top:0; max-height:100vh; overflow-y:auto;
+    padding:22px 20px 28px}
+  header.masthead nav.toc{display:none}   /* it lives in the rail up here */
+}
+.lr-art svg{width:100%; height:auto; display:block}
+.lr-art .cap{font:500 10.5px/1.4 "IBM Plex Sans",sans-serif; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3); border-top:1px solid var(--rule);
+  padding-top:10px; margin:14px 0 0}
+.lr-art{display:none}
+@media (min-width:1180px){.lr-art{display:flex}}
+
+.labrail .lr-brand{display:block; text-decoration:none; color:var(--ink);
+  margin-bottom:20px}
+.labrail .lr-brand .up{display:block; font:500 11px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-bottom:6px}
+.labrail .lr-brand b{font:600 16px/1.28 "IBM Plex Sans",sans-serif; letter-spacing:-.01em}
+.labrail h2{display:flex; align-items:center; gap:10px;
+  font:600 11.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink); margin:26px 0 10px; padding:0; border:0}
+.labrail h2::after{content:""; flex:1; height:1px; background:var(--rule-2)}
+.labrail .lr-nav>div:first-of-type h2{margin-top:18px}
+.labrail ul{list-style:none; margin:0; padding:0}
+.labrail a.lr{display:block; padding:6px 10px; border-radius:7px;
+  text-decoration:none; color:var(--ink-2); font-size:14.5px}
+.labrail a.lr:hover{background:var(--sunken); color:var(--ink)}
+.labrail a.lr[aria-current]{background:var(--queue-soft); color:var(--queue); font-weight:600}
+.labrail a.lr code{font:500 13.5px/1.5 "IBM Plex Mono",monospace; background:none;
+  padding:0; color:inherit}
+
+.labrail a.lr .t{display:block}
+.labrail a.lr .d{display:block; font:400 12px/1.35 "IBM Plex Sans",sans-serif;
+  color:var(--ink-3); margin-top:1px}
+.labrail a.lr[aria-current] .d{color:var(--queue); opacity:.85; font-weight:400}
+
+/* The assignment itself, first: one line per part, letter in mono, the parts
+   where code gets written in the lab's task colour; run-and-watch parts muted. */
+.labrail .lr-todo a{display:grid; grid-template-columns:2.4rem 1fr; gap:0 6px;
+  align-items:baseline; padding:5px 10px; border-radius:7px; text-decoration:none;
+  color:var(--ink-2)}
+.labrail .lr-todo a:hover{background:var(--sunken); color:var(--ink)}
+.labrail .lr-todo .k{font:500 12.5px/1.5 "IBM Plex Mono",monospace; color:var(--ink-3);
+  letter-spacing:.02em}
+.labrail .lr-todo .t{font-size:14.5px; font-weight:600}
+.labrail .lr-todo .d{grid-column:2; font:400 12px/1.35 "IBM Plex Sans",sans-serif;
+  color:var(--ink-3); margin-top:1px}
+.labrail .lr-todo .d code{font:500 11.5px/1.4 "IBM Plex Mono",monospace; background:none;
+  padding:0; color:inherit}
+.labrail .lr-todo a.do .k,.labrail .lr-todo a.do .t{color:var(--task)}
+.labrail .lr-todo a.do:hover{background:var(--task-soft)}
+.labrail .lr-readme{margin:6px 0 0; padding:0 10px; font-size:12.5px}
+.labrail .lr-readme a{color:var(--ink-3); text-decoration:none; border-bottom:1px solid var(--rule-2)}
+.labrail .lr-readme a:hover{color:var(--task); border-color:var(--task-line)}
+
+/* A helper note sits under the guide it serves: indented, on a hairline,
+   lighter weight — subordinate, not equal. */
+.labrail li.sub a.lr{margin-left:12px; padding-left:12px; border-left:2px solid var(--rule);
+  border-radius:0 7px 7px 0}
+.labrail li.sub a.lr .t{font-weight:400; font-size:13.5px}
+.labrail li.sub a.lr[aria-current]{border-left-color:var(--queue)}
+
+/* This page's own sections, in the page's own voice: mono, numbered, with the
+   assignment marker the boxed list used. The current one lights up on scroll. */
+.labrail .lr-toc a{display:block; padding:5.5px 10px; border-radius:7px;
+  text-decoration:none; font:400 14px/1.45 "IBM Plex Mono",monospace;
+  letter-spacing:.02em; color:var(--ink-3)}
+.labrail .lr-toc a:hover{background:var(--sunken); color:var(--queue)}
+.labrail .lr-toc a.on{background:var(--queue-soft); color:var(--queue); font-weight:500}
+.labrail .lr-toc a.assign{color:var(--task); font-weight:500}
+.labrail .lr-toc a.assign.on{background:var(--task-soft); color:var(--task)}
+
+.labrail .lr-foot{margin:24px 0 0; padding-top:15px; border-top:1px solid var(--rule);
+  font-size:13px}
+.labrail .lr-foot a{color:var(--ink-3); text-decoration:none}
+.labrail .lr-foot a:hover{color:var(--queue)}
+@media (max-width:1179px){
+  /* Narrow: the lab is long-form reading, so the navigation goes AFTER it
+     rather than ahead of it. The page already names itself in its masthead
+     and keeps its own boxed contents list, so nothing is lost from the top. */
+  body{display:flex; flex-direction:column}
+  .labrail{order:99; position:static; width:auto; border-right:0;
+    border-top:1px solid var(--rule); border-bottom:0; display:grid;
+    align-items:start; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:0 24px}
+  .labrail .lr-nav{display:contents}
+  .labrail .lr-brand{grid-column:1/-1}
+  .labrail .lr-sections{display:none}
+  .labrail h2{margin-top:16px}
+  .labrail .lr-foot{grid-column:1/-1}
+}
 </style>
 </head>
 <body>
+<!-- pp26:labrail -->
+<aside class="labrail">
+  <div class="lr-art" aria-hidden="false">
+    <svg viewBox="0 0 285 209" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A 15 by 11 maze solved by breadth-first search, the shortest path drawn from start to exit"><g opacity=".55"><rect x="0" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="57" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="95" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="133" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="171" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="209" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="0" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="19" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="19" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="19" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="19" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="95" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="133" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="38" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="57" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="57" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="57" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="57" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="76" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="95" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="171" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="209" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="114" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="133" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="152" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="171" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="171" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="171" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="171" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="0" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="19" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="38" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="57" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="76" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="95" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="114" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="133" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="152" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="171" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="190" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="209" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="228" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="247" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/><rect x="266" y="190" width="19" height="19" rx="3.5" fill="var(--wall)"/></g><circle cx="85.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="104.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="123.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="47.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="28.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="47.5" cy="104.5" r="2" fill="var(--queue-tint)"/><circle cx="28.5" cy="104.5" r="2" fill="var(--queue-tint)"/><circle cx="47.5" cy="142.5" r="2" fill="var(--queue-tint)"/><circle cx="28.5" cy="142.5" r="2" fill="var(--queue-tint)"/><circle cx="47.5" cy="180.5" r="2" fill="var(--queue-tint)"/><circle cx="28.5" cy="180.5" r="2" fill="var(--queue-tint)"/><circle cx="104.5" cy="85.5" r="2" fill="var(--queue-tint)"/><circle cx="104.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="123.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="142.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="161.5" r="2" fill="var(--queue-tint)"/><circle cx="142.5" cy="180.5" r="2" fill="var(--queue-tint)"/><circle cx="180.5" cy="85.5" r="2" fill="var(--queue-tint)"/><circle cx="180.5" cy="47.5" r="2" fill="var(--queue-tint)"/><circle cx="180.5" cy="104.5" r="2" fill="var(--queue-tint)"/><circle cx="180.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="237.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="218.5" cy="47.5" r="2" fill="var(--queue-tint)"/><circle cx="256.5" cy="66.5" r="2" fill="var(--queue-tint)"/><circle cx="218.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="237.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="256.5" cy="28.5" r="2" fill="var(--queue-tint)"/><circle cx="199.5" cy="180.5" r="2" fill="var(--queue-tint)"/><polyline points="28.5,28.5 47.5,28.5 66.5,28.5 66.5,47.5 66.5,66.5 66.5,85.5 66.5,104.5 66.5,123.5 66.5,142.5 66.5,161.5 66.5,180.5 85.5,180.5 104.5,180.5 104.5,161.5 104.5,142.5 104.5,123.5 104.5,104.5 123.5,104.5 142.5,104.5 142.5,85.5 142.5,66.5 161.5,66.5 180.5,66.5 199.5,66.5 218.5,66.5 218.5,85.5 218.5,104.5 237.5,104.5 256.5,104.5 256.5,123.5 256.5,142.5 237.5,142.5 218.5,142.5 218.5,161.5 218.5,180.5 237.5,180.5 256.5,180.5" fill="none" stroke="var(--queue)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28.5" cy="28.5" r="4.2" fill="var(--start)"/><circle cx="256.5" cy="180.5" r="4.2" fill="var(--exit)"/></svg>
+    <p class="cap">breadth-first search &middot; 37 steps</p>
+  </div>
+  <div class="lr-nav">
+    <a class="lr-brand" href="https://homes.cs.aau.dk/~lego/pp26/s2.html">
+      <span class="up">PP26 &middot; Session 2</span><b>Lab 2 &mdash; Persistent Queue</b></a>
+      <div class="lr-what">
+        <h2>What to do</h2>
+        <ul class="lr-todo"><li><a class="do" href="queue-on-paper.pdf"><span class="k">paper</span><span class="t">On paper</span><span class="d">the two-list queue, by hand</span></a></li><li><a class="do" href="python-pqueue.html"><span class="k">A</span><span class="t">Python</span><span class="d"><code>python/pqueue.py</code> — four TODOs</span></a></li><li><a class="" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/README.md#part-b--the-payoff"><span class="k">B</span><span class="t">The payoff</span><span class="d">run it — nothing to write</span></a></li><li><a class="do" href="ocaml-pqueue.html"><span class="k">C</span><span class="t">OCaml</span><span class="d"><code>ocaml/lib/pqueue.ml</code> — three TODOs</span></a></li><li><a class="" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/README.md#part-d--breaking-the-bank"><span class="k">D</span><span class="t">Breaking the bank</span><span class="d">run it — nothing to write</span></a></li><li><a class="do" href="java-pqueue.html"><span class="k">E</span><span class="t">Java · homework</span><span class="d"><code>java/PQueue.java</code> — four TODOs</span></a></li></ul>
+        <p class="lr-readme"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/README.md">full instructions &mdash; README</a></p>
+      </div>
+      <div class="lr-sections">
+        <h2>On this page</h2>
+        <ul class="lr-toc"><li><a class="" href="#shape">01 &middot; the shape</a></li><li><a class="" href="#boundary">02 &middot; the boundary</a></li><li><a class="" href="#algorithm">03 &middot; the algorithm</a></li><li><a class="" href="#frontier">04 &middot; the frontier</a></li><li><a class="" href="#wiring">05 &middot; the wiring</a></li><li><a class="" href="#run">06 &middot; run it</a></li></ul>
+      </div>
+      <div>
+        <h2>Lab pages</h2>
+        <ul><li><a class="lr" href="index.html"><span class="t">One queue, three languages</span><span class="d">the lab — overview, general architecture, assignments</span></a></li><li><a class="lr" href="python-pqueue.html"><span class="t">Four holes in a queue</span><span class="d">Python · reading guide, part A</span></a></li><li class="sub"><a class="lr" href="python-architecture.html"><span class="t">Three layers, one search</span><span class="d">how the Python solver is built</span></a></li><li><a class="lr" href="ocaml-pqueue.html"><span class="t">Three holes in a queue</span><span class="d">OCaml · reading guide, part C</span></a></li><li class="sub"><a class="lr" href="ocaml-architecture.html" aria-current='page'><span class="t">What the types are for</span><span class="d">how the OCaml solver is built</span></a></li><li><a class="lr" href="java-pqueue.html"><span class="t">Four holes, all final</span><span class="d">Java · reading guide, part E · homework</span></a></li><li class="sub"><a class="lr" href="java-architecture.html"><span class="t">Immutability, spelled out</span><span class="d">how the Java solver is built</span></a></li></ul>
+      </div>
+      <div>
+        <h2>Code</h2>
+        <ul>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/tour.ml"><code>tour.ml</code></a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/python/pqueue.py"><code>python/pqueue.py</code></a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/ocaml/lib/pqueue.ml"><code>ocaml/lib/pqueue.ml</code></a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/java/PQueue.java"><code>java/PQueue.java</code></a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/homework.ml"><code>homework.ml</code></a></li>
+        </ul>
+      </div>
+      <p class="lr-foot"><a href="https://homes.cs.aau.dk/~lego/pp26/">&larr; Programming Paradigms</a></p>
+  </div>
+</aside>
+<!-- /pp26:labrail -->
 
 <header class="masthead">
   <div class="wrap">
     <p class="eyebrow"><a href="https://homes.cs.aau.dk/~lego/pp26/">PP26</a> &nbsp;&middot;&nbsp; <a href="https://homes.cs.aau.dk/~lego/pp26/s2.html">Session 2</a> &nbsp;&middot;&nbsp; <a href="index.html">lab</a> &nbsp;&middot;&nbsp; OCaml &nbsp;&middot;&nbsp; architecture note</p>
     <h1>What the Types Are For</h1>
-    <p class="standfirst">The OCaml solver walks the same maze as the Python one, from the same language-independent specification, and the two agree cell for cell. This note is about what the OCaml version can <em>state</em> that the Python version can only intend: a boundary written in <code>pqueue.mli</code>, and a frontier whose type the compiler follows. The companion notes are <a href="architecture.html">Three Layers, One Search</a> (Python) and <a href="java-architecture.html">Immutability, Spelled Out</a> (Java).</p>
+    <p class="standfirst">The OCaml solver walks the same maze as the Python one, from the same language-independent specification, and the two agree cell for cell. This note is about what the OCaml version can <em>state</em> that the Python version can only intend: a boundary written in <code>pqueue.mli</code>, and a frontier whose type the compiler follows. The companion notes are <a href="python-architecture.html">Three Layers, One Search</a> (Python) and <a href="java-architecture.html">Immutability, Spelled Out</a> (Java).</p>
     <nav class="toc">
       <a href="#shape">01 &middot; the shape</a>
       <a href="#boundary">02 &middot; the boundary</a>
@@ -508,5 +650,17 @@ dune exec bin/solver.exe -- $M --bfs --inspect=40</pre>
 </section>
 
 </main>
+<script>/* pp26:labrail-spy — size the rail's top block to the masthead,
+   and mark the section the reader is in */
+(function(){var m=document.querySelector("header.masthead");
+if(m)document.documentElement.style.setProperty("--masthead-h",m.offsetHeight+"px");
+var L=[].slice.call(document.querySelectorAll(".lr-toc a"));if(!L.length)return;
+var S=L.map(function(a){return document.getElementById(a.hash.slice(1))});
+function up(){var c=-1;for(var i=0;i<S.length;i++){if(S[i]&&S[i].getBoundingClientRect().top<=140)c=i}
+if(c<0)c=0;for(var j=0;j<L.length;j++)L[j].classList.toggle("on",j===c)}
+addEventListener("scroll",up,{passive:true});
+addEventListener("resize",function(){if(m)document.documentElement.style.setProperty("--masthead-h",m.offsetHeight+"px");up()});
+up()})();
+</script>
 </body>
 </html>
