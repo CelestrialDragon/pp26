@@ -19,18 +19,22 @@ let is_empty q = q.front = []
    empty, the reversed [back] must become the new front. Build every
    queue below through [make] and the invariant holds everywhere. *)
 let make front back =
-  ignore front; ignore back;
-  failwith "TODO 1: make"
+  match front with
+  | [] -> {front = List.rev back; back =[];}
+  | _ -> {front; back;}
+
+(*ignore front; ignore back;
+  failwith "TODO 1: make"*)
 
 (* TODO 2: cons [x] onto [back]; keep [front] as it is (shared!). *)
-let enqueue x q =
-  ignore x; ignore q;
-  failwith "TODO 2: enqueue"
+let enqueue x q = 
+  make q.front (x :: q.back)
 
 (* TODO 3: take the head of [front]; rebuild the rest through [make]. *)
 let dequeue q =
-  ignore q;
-  failwith "TODO 3: dequeue"
+  match q.front with
+  | [] -> None
+  | x :: rest -> Some (x, make rest q.back)
 
 (* Provided. *)
 let peek q = match q.front with [] -> None | x :: _ -> Some x

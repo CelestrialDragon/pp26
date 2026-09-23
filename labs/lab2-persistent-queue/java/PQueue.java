@@ -58,26 +58,43 @@ public final class PQueue<T> {
      *  A plain loop over local variables is fine — the nodes themselves
      *  cannot be modified (records have no setters). */
     private static <T> Node<T> rev(Node<T> lst) {
-        throw new UnsupportedOperationException("TODO 1: rev");
+        Node<T> new_lst = null;
+
+        while (lst != null) {
+            new_lst = new Node<>(lst.head(), new_lst);
+            lst = lst.tail();
+        }
+
+        return new_lst;
+
     }
 
     /** TODO 2: smart constructor — restore the invariant: if front is
      *  empty, the reversed back must become the front. Build every queue
      *  below only through make, and the invariant holds everywhere. */
     private static <T> PQueue<T> make(Node<T> front, Node<T> back) {
-        throw new UnsupportedOperationException("TODO 2: make");
+        if (front == null){
+            return new PQueue<>(rev(back), null);
+        }
+        return new PQueue<>(front, back);
+
     }
 
     /** TODO 3: a new queue with x at the back, O(1).
      *  Cons onto back; keep front AS IS — shared, not copied. */
     public PQueue<T> enqueue(T x) {
-        throw new UnsupportedOperationException("TODO 3: enqueue");
+        return this.make(this.front, new Node<T>(x, this.back));
     }
 
     /** TODO 4: the front element and the new version, via make.
      *  Throws NoSuchElementException on the empty queue. */
     public Dequeued<T> dequeue() {
-        throw new UnsupportedOperationException("TODO 4: dequeue");
+        if (this.front == null) {
+            throw new NoSuchElementException();
+        }
+        T value = this.front.head();
+        PQueue<T> rest = this.make(this.front.tail(),this.back);
+        return new Dequeued<>(value, rest);
     }
 
     // ------------------------------------------------------------ helpers

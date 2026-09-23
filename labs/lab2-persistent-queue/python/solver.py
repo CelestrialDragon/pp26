@@ -24,6 +24,7 @@ from types import SimpleNamespace
 import maze as M
 import pqueue as P
 import pstack as S
+import pflood as f
 import render
 
 # ---- the two frontiers -------------------------------------------------
@@ -51,6 +52,17 @@ stack_frontier = SimpleNamespace(
     is_empty=S.is_empty,
     to_list=S.to_list,
 )
+
+# ff frontier: Talked with leon test made to see difrent results
+ff_frontier = SimpleNamespace(
+    name="ff (flood fill)",
+    empty=f.EMPTY,
+    put=f.put,
+    take=f.take,
+    is_empty=f.is_empty,
+    to_list=f.to_list,
+)
+
 
 # ---- the search --------------------------------------------------------
 
@@ -102,8 +114,14 @@ def main(argv):
         return 2
 
     mz = M.load(args[0])
+    f.set_goal(mz.end)
     # No flag means --bfs: the default frontier is the one under construction.
-    ops = stack_frontier if "dfs" in flags else queue_frontier
+    if "ff" in flags:
+        ops = ff_frontier
+    elif "dfs" in flags:
+        ops = stack_frontier
+    else:
+        ops = queue_frontier
 
     try:
         path, trace, versions = search(mz, ops)

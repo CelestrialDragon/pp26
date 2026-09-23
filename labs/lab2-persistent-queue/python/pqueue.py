@@ -33,40 +33,46 @@ def peek(q):
 
 
 def _rev(lst):
-    """TODO 1: reverse a cons-list, returning a new cons-list.
+    running_lst = lst
+    new_lst = None
+    while running_lst is not None:
+        head, tail = running_lst
+        new_lst = (head, new_lst)
+        running_lst = tail
 
-    _rev((1, (2, (3, None))))  ==  (3, (2, (1, None)))
-
-    An imperative while-loop over local variables is fine — the lists
-    themselves must not be touched (they can't be: tuples are immutable).
-    """
-    raise NotImplementedError("TODO 1: _rev")
+    return new_lst
 
 
 def _make(front, back):
-    """TODO 2: smart constructor.
-
-    Return a queue (front, back) — but restore the invariant first:
-    if `front` is empty, the reversed `back` must BECOME the front.
-    Every other function builds queues only through _make, so the
-    invariant will hold everywhere. This is where the O(n) work hides.
-    """
-    raise NotImplementedError("TODO 2: _make")
+    if front is None:
+        frontnew = _rev(back)
+        backnew = None
+        return (frontnew,backnew)
+    else:
+        return front, back
 
 
 def enqueue(q, x):
+    front, _back = q
     """TODO 3: return a new queue with x added at the back. O(1).
 
     Do not rebuild anything: cons x onto back, keep front AS IS (shared!).
     """
+    return _make(front, (x, _back))
     raise NotImplementedError("TODO 3: enqueue")
 
 
 def dequeue(q):
+    front, _back = q
+    if front is None:
+            raise IndexError
+    value, _front = front
+    
     """TODO 4: return (value, new_queue); raise IndexError if empty.
 
     Take the head of front; rebuild the rest through _make.
     """
+    return (value, _make(_front, _back))
     raise NotImplementedError("TODO 4: dequeue")
 
 
