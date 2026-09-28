@@ -48,8 +48,8 @@ operators a tune reads left to right: `q C 4 ++ q D 4 ++ q E 4 ++ q C 4`, and a 
 `q C 4 // q E 4 // q G 4`.
 
 A `Seq` or a `Par` holds two melodies: the type is a **tree**. Every transformation in Part C
-builds a new tree and reuses the subtrees it did not change, without copying them — the
-persistent structures of session 2.
+builds a new tree and can reuse unchanged subtrees without copying them — the persistent
+structures of session 2.
 
 The piece we test on is Bach's Invention no. 1 in C major, BWV 772: two voices, 22 bars,
 467 notes, in `tunes.ml`, one `let` per bar and voice. `voice1` is the upper voice alone;
@@ -167,7 +167,9 @@ pretty : melody -> string
 ```
 
 **C3** Play a melody backwards. `Seq` swaps its two halves; `Par` does not — time reverses,
-simultaneity does not.
+simultaneity does not. Each voice is reversed on its own and the voices of a `Par` stay aligned
+at their start: a shorter voice is not moved to the end. (Reversing the whole timeline instead
+would need leading silence in the shorter voice — a question for the discussion.)
 
 ```ocaml
 retrograde : melody -> melody

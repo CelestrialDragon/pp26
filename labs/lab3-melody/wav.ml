@@ -2,8 +2,10 @@
 let rate = 44100.
 let pi = 4.0 *. atan 1.0
 
-let write filename (events : Melody.event list) =
-  let total = List.fold_left (fun m (e : Melody.event) -> Float.max m (e.at +. e.secs)) 0. events in
+(* ?secs: the melody's whole length in seconds, so a trailing rest is written as silence;
+   without it the file ends with the last sound. *)
+let write ?(secs = 0.) filename (events : Melody.event list) =
+  let total = List.fold_left (fun m (e : Melody.event) -> Float.max m (e.at +. e.secs)) secs events in
   let buf = Array.make (int_of_float (total *. rate) + 1) 0. in
   List.iter (fun (e : Melody.event) ->
     let s0 = int_of_float (e.at *. rate) and len = int_of_float (e.secs *. rate) in

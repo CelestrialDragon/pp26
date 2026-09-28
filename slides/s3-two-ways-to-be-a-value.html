@@ -164,6 +164,20 @@ html, body { background: var(--bg); color: var(--fg); margin: 0; }
 .reveal .c-green { color: var(--green); }
 .reveal .sz-s { font-size: 0.85em; }
 .reveal .sz-l { font-size: 1.15em; }
+/* a swap: a fade-out fragment and a .swap fragment with the same index replace each other in the
+   flow — one line, no overlay. In edit mode both are shown, one after the other, so both can be edited. */
+.reveal .slides section .fragment.fade-out.visible { display: none; }
+.reveal .slides section .fragment.swap:not(.visible) { display: none; }
+html.liveedit .reveal .slides section .fragment.fade-out, html.liveedit .reveal .slides section .fragment.swap { display: inline !important; }
+/* the two complete programs, bottom right of "Two ways, stated" */
+.reveal .srcs { position: absolute; right: 0; bottom: 28px; display: flex; gap: 14px; align-items: center; }
+.reveal .srcs span { font-size: 24px; color: var(--muted); margin-right: 4px; }
+.reveal .srcs a { font-size: 21px; color: var(--fg); text-decoration: none; padding: 4px 18px; border: 1.5px solid rgba(235, 129, 27, .5); border-radius: 999px; background: rgba(235, 129, 27, .14); }
+.reveal .srcs a:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+/* runnable code is editable on the slide; Reset puts it back */
+.reveal button.run.reset { background: var(--muted); }
+.reveal pre code[data-src] { cursor: text; }
+.reveal pre code[data-src]:focus { outline: 2px solid var(--accent); outline-offset: 3px; }
 </style>
 </head>
 <body>
@@ -476,14 +490,14 @@ const test4 = [3, 4, 5, 6].map(x => contains1u(union1u({ kind: 'finite', xs: [3,
       <p>Every operation gains a case. In <code>contains1</code>:</p>
       <pre style="font-size:21px"><code class="language-js">s.kind === 'union' ? contains1(s.s, x)
                   || contains1(s.t, x)</code></pre>
-      <p>— <code>union2</code>, written as data. <code>isEmpty1</code> asks both halves too. <code>equal1</code> has no case to write: two unions cannot be compared without a normal form.</p>
+      <p>— <code>union2</code>, written as data. <code>isEmpty1</code> asks both halves too. <code>equal1</code> needs a <b>normal form</b> — does the set hold the evens, and which other elements — twelve lines, in <code>demos/set_way1.ml</code>.</p>
       </div>
       <h3 class="fragment" data-fragment-index="1">Way 2</h3>
       <p class="fragment" data-fragment-index="1">Nothing to do. <code>union2b</code> already returns a set: a record of two functions is always a valid set.</p>
     </div>
   </div>
   <div class="box fragment" data-fragment-index="2">In Way 1 every result must be one of the kinds. A new kind must keep <span class="hl">every operation closed</span> — or it costs one more kind, and one more case in every operation.</div>
-  <aside class="notes">The slide the earlier draft did not have: with only finite and evens, union1 had nowhere to put {3, 5} ∪ evens, and "four cases" was not true. The Union kind is the honest repair: a union the operation could not compute, kept as data. It is also the lab's Seq and Par two hours early: an operation whose result is stored as a term. contains1 on a union is union2 with a tag in front — the two ways meet here. equal1 on a union is the one cell Way 1 leaves open; it needs a normal form (an "evens" flag plus the odd elements), which is a slide of its own and not this session's. The same four kinds, Empty, Insert, Evens, Union, are the four files: demos/set_way1.ml, demos/set_way2.ml, demos/SetWay1.java, demos/SetWay2.java.</aside>
+  <aside class="notes">The slide the earlier draft did not have: with only finite and evens, union1 had nowhere to put {3, 5} ∪ evens, and "four cases" was not true. The Union kind is the honest repair: a union the operation could not compute, kept as data. It is also the lab's Seq and Par two hours early: an operation whose result is stored as a term. contains1 on a union is union2 with a tag in front — the two ways meet here. equal1 on a union needs a normal form: an "evens" flag plus the elements not covered by it; demos/set_way1.ml has it in twelve lines, so equality stays one more function, total on every kind — Way 1's promise holds. Second review (2026-09-28): an unfinished algorithm must not look like a limitation of Way 1. The same four kinds, Empty, Insert, Evens, Union, are the four files: demos/set_way1.ml, demos/set_way2.ml, demos/SetWay1.java, demos/SetWay2.java.</aside>
 </section>
 
 <!-- 12 -->
@@ -850,12 +864,12 @@ evens.contains = x => x % 2 === 0;    // its own; evens.kind is still found on e
     <tr><td class="s rl" data-r="1">Empty</td><td class="cell" data-r="1" data-c="1">✓</td><td class="cell" data-r="1" data-c="2">✓</td><td class="cell" data-r="1" data-c="3">✓</td><td class="cell" data-r="1" data-c="4">✓</td></tr>
     <tr><td class="s rl" data-r="2">Insert</td><td class="cell" data-r="2" data-c="1">✓</td><td class="cell" data-r="2" data-c="2">✓</td><td class="cell" data-r="2" data-c="3">✓</td><td class="cell" data-r="2" data-c="4">✓</td></tr>
     <tr><td class="s rl" data-r="3">Evens</td><td class="cell" data-r="3" data-c="1">✓</td><td class="cell" data-r="3" data-c="2">✓</td><td class="cell" data-r="3" data-c="3">✓</td><td class="cell" data-r="3" data-c="4">✓</td></tr>
-    <tr><td class="s rl" data-r="4">Union</td><td class="cell" data-r="4" data-c="1">✓</td><td class="cell" data-r="4" data-c="2">✓</td><td class="cell" data-r="4" data-c="3">✓</td><td class="ext">?</td></tr>
+    <tr><td class="s rl" data-r="4">Union</td><td class="cell" data-r="4" data-c="1">✓</td><td class="cell" data-r="4" data-c="2">✓</td><td class="cell" data-r="4" data-c="3">✓</td><td class="cell" data-r="4" data-c="4">✓</td></tr>
   </table>
   <div class="cols">
     <div>
       <div class="fragment" data-anim="col" data-n="1"><p><b>Algebraic data types</b> (Way 1): one function per operation, every kind inside it — a <span class="w1">column</span> at a time.</p></div>
-      <div class="fragment" data-anim="col" data-n="2"><p>One more operation is one more column, <code>equal</code> included — except on a <code>Union</code>, never computed.</p></div>
+      <div class="fragment" data-anim="col" data-n="2"><p>One more operation is one more column, <code>equal</code> included: a function inspects both sets, through a normal form.</p></div>
     </div>
     <div>
       <div class="fragment" data-anim="row" data-n="1"><p><b>Objects</b> (Way 2): one class per kind, every operation inside it — a <span class="w2">row</span> at a time.</p></div>
@@ -863,7 +877,7 @@ evens.contains = x => x % 2 === 0;    // its own; evens.kind is still found on e
     </div>
   </div>
   <div class="box fragment">Wadler (1998) named the problem of growing both ways at once, with the compiler still checking every cell: <b>the expression problem</b>. Its resolutions are session 11.</div>
-  <aside class="notes">Extension 1 was a new column, extension 2 the equal column, extension 3 two new rows. Clicks: 1 fills contains/isEmpty/union for all four kinds (blue): Way 1 writes each as one function; 2 fills the equal column for Empty, Insert and Evens — Way 1 can, by inspecting both, and by comparing tags — but not for Union: no normal form; 3 clears and fills the Empty and Insert rows (orange); 4 fills the Evens and Union rows — Way 2 can, one class each; the equal column gets no row. The one open cell, equal for Union, is open on both sides, for different reasons: Way 1 has not computed the set, Way 2 cannot look at it. Then the callout. The ledger owes S11 the resolutions; here only the phenomenon (S11 in the 13-session numbering).</aside>
+  <aside class="notes">Extension 1 was a new column, extension 2 the equal column, extension 3 two new rows. Clicks: 1 fills contains/isEmpty/union for all four kinds (blue): Way 1 writes each as one function; 2 fills the equal column for all four kinds — Way 1 can, by inspecting both through a normal form (demos/set_way1.ml); 3 clears and fills the Empty and Insert rows (orange); 4 fills the Evens and Union rows — Way 2 can, one class each; the equal column gets no row: the only cells Way 2 cannot fill, and Way 1 fills them all. Then the callout. The ledger owes S11 the resolutions; here only the phenomenon (S11 in the 13-session numbering).</aside>
 </section>
 
 <!-- 29 -->
@@ -1059,7 +1073,7 @@ class Insert extends Set {
       </table>
     </div>
   </div>
-  <aside class="notes">The lab folder: melody.ml with TODO holes, tunes.ml (BWV 772, two voices, one let per bar, verified against LilyPond MIDI), main.ml (one check per TODO, writes bach.wav after B1), wav.ml provided. The S2 promise about persistent trees is kept here: Seq and Par build a persistent tree, and every Part C operation returns a new tree sharing the untouched subtrees. Reading: the lecture gives the idea, CS3110 gives the language.</aside>
+  <aside class="notes">The lab folder: melody.ml with TODO holes, tunes.ml (BWV 772, two voices, one let per bar, verified against LilyPond MIDI), main.ml (one check per TODO, writes bach.wav after B1), wav.ml provided. The S2 promise about persistent trees is kept here: Seq and Par build a persistent tree, and the Part C transformations build new trees and can reuse unchanged subtrees without copying them (pretty returns a string; transpose rebuilds every node it changes). Reading: the lecture gives the idea, CS3110 gives the language.</aside>
 </section>
 
 </div>

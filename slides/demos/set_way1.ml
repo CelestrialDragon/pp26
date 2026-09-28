@@ -27,19 +27,25 @@ let rec union s t =
   | Insert (n, r), t -> Insert (n, union r t)
   | (Evens | Union _), t -> Union (s, t)
 
-(* equal inspects both sets. Finite against finite: compare elements. Evens against
-   anything: compare tags. A Union has no normal form here: this is the open cell. *)
-let rec elements = function
-  | Empty -> []
-  | Insert (n, r) -> n :: elements r
-  | Evens | Union _ -> invalid_arg "elements: not finite"
+(* equal inspects both sets, through a normal form: does the set hold the evens, and which
+   other elements does it hold? Two sets are equal when their normal forms are. Every kind
+   is covered, Union included: equality is one more function, as Way 1 promises. *)
+let rec has_evens = function
+  | Empty -> false
+  | Insert (_, r) -> has_evens r
+  | Evens -> true
+  | Union (s, t) -> has_evens s || has_evens t
 
-let equal s t =
-  match s, t with
-  | Union _, _ | _, Union _ -> failwith "equal on a Union: needs a normal form"
-  | Evens, Evens -> true
-  | Evens, _ | _, Evens -> false
-  | _ -> List.for_all (contains t) (elements s) && List.for_all (contains s) (elements t)
+let rec inserted = function
+  | Empty | Evens -> []
+  | Insert (n, r) -> n :: inserted r
+  | Union (s, t) -> inserted s @ inserted t
+
+let normal s =
+  let e = has_evens s in
+  e, List.sort_uniq compare (List.filter (fun n -> not (e && n mod 2 = 0)) (inserted s))
+
+let equal s t = normal s = normal t
 
 let () =
   let s = Insert (3, Insert (5, Insert (3, Empty))) in          (* 3 inserted twice *)
@@ -47,4 +53,16 @@ let () =
   Printf.printf "%b %b %b\n" (is_empty Empty) (is_empty s) (is_empty (union Empty Empty));
   List.iter (fun x -> Printf.printf "%b " (contains s x)) [3; 4; 5; 6]; print_newline ();
   List.iter (fun x -> Printf.printf "%b " (contains u x)) [3; 4; 5; 6]; print_newline ();
-  Printf.printf "%b %b\n" (equal s (Insert (5, Insert (3, Empty)))) (equal Evens s)
+  Printf.printf "%b %b %b %b\n" (equal s (Insert (5, Insert (3, Empty)))) (equal Evens s)
+    (equal Evens (Insert (2, Evens))) (equal (Union (s, Evens)) (Insert (3, Insert (5, Evens))));
+  (* property: equal s t holds exactly when contains agrees on every point, for every set
+     built from a small grammar in which each constructor appears inside every other *)
+  let small = [Empty; Insert (3, Empty); Insert (2, Insert (3, Empty)); Evens] in
+  let level xs = xs @ List.concat_map (fun a -> List.map (fun b -> Union (a, b)) xs) xs
+                 @ List.map (fun a -> Insert (2, a)) xs @ List.map (fun a -> Insert (5, a)) xs in
+  let sets = level (level small) in
+  let pts = List.init 21 (fun i -> i - 10) in
+  let bad = List.fold_left (fun n s -> List.fold_left (fun n t ->
+      if equal s t = List.for_all (fun x -> contains s x = contains t x) pts then n else n + 1) n sets) 0 sets in
+  Printf.printf "equal vs pointwise contains on %d x %d sets: %s\n" (List.length sets) (List.length sets)
+    (if bad = 0 then "agree" else string_of_int bad ^ " DISAGREE")

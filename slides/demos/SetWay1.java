@@ -31,25 +31,40 @@ class SetWay1 {
       default                   -> new Union(s, t);
     };
   }
-  static java.util.List<Integer> elements(Set s) {
+  // equal inspects both sets, through a normal form: does the set hold the evens, and which
+  // other elements does it hold? Every kind is covered, Union included.
+  record Normal(boolean evens, java.util.SortedSet<Integer> rest) {}
+  static boolean hasEvens(Set s) {
     return switch (s) {
-      case Empty e              -> java.util.List.of();
-      case Insert(int n, Set r) -> { var l = new java.util.ArrayList<>(elements(r)); l.add(n); yield l; }
-      default                   -> throw new IllegalArgumentException("not finite");
+      case Empty e              -> false;
+      case Insert(int n, Set r) -> hasEvens(r);
+      case Evens e              -> true;
+      case Union(Set a, Set b)  -> hasEvens(a) || hasEvens(b);
     };
   }
-  // equal inspects both. Finite against finite: elements. Evens: tags. A Union: the open cell.
-  static boolean equal(Set s, Set t) {
-    if (s instanceof Union || t instanceof Union) throw new UnsupportedOperationException("equal on a Union: needs a normal form");
-    if (s instanceof Evens || t instanceof Evens) return s.getClass() == t.getClass();
-    return elements(s).stream().allMatch(x -> contains(t, x)) && elements(t).stream().allMatch(x -> contains(s, x));
+  static void inserted(Set s, java.util.List<Integer> out) {
+    switch (s) {
+      case Empty e              -> {}
+      case Insert(int n, Set r) -> { out.add(n); inserted(r, out); }
+      case Evens e              -> {}
+      case Union(Set a, Set b)  -> { inserted(a, out); inserted(b, out); }
+    }
   }
+  static Normal normal(Set s) {
+    boolean e = hasEvens(s);
+    var xs = new java.util.ArrayList<Integer>(); inserted(s, xs);
+    var rest = new java.util.TreeSet<Integer>();
+    for (int n : xs) if (!(e && n % 2 == 0)) rest.add(n);
+    return new Normal(e, rest);
+  }
+  static boolean equal(Set s, Set t) { return normal(s).equals(normal(t)); }
   public static void main(String[] a) {
     Set s = new Insert(3, new Insert(5, new Insert(3, new Empty())));   // 3 inserted twice
     Set u = union(s, new Evens());
     System.out.println(isEmpty(new Empty()) + " " + isEmpty(s) + " " + isEmpty(union(new Empty(), new Empty())));
     for (int x : new int[]{3, 4, 5, 6}) System.out.print(contains(s, x) + " "); System.out.println();
     for (int x : new int[]{3, 4, 5, 6}) System.out.print(contains(u, x) + " "); System.out.println();
-    System.out.println(equal(s, new Insert(5, new Insert(3, new Empty()))) + " " + equal(new Evens(), s));
+    System.out.println(equal(s, new Insert(5, new Insert(3, new Empty()))) + " " + equal(new Evens(), s) + " "
+      + equal(new Evens(), new Insert(2, new Evens())) + " " + equal(union(s, new Evens()), new Insert(3, new Insert(5, new Evens()))));
   }
 }

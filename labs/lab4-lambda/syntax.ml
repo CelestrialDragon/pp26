@@ -2,7 +2,8 @@
      λx. t   or   \x. t        a function (λx y. t abbreviates λx. λy. t)
      t u                        an application; groups to the left
      (t)                        grouping
-     a name                     a variable — or, if it is defined below, its definition
+     a name                     a variable — or, if it is defined below and not bound by an
+                                enclosing λ, its definition
      a number                   the Church numeral *)
 open Term
 
@@ -59,7 +60,8 @@ let rec parse s =
   let toks = ref (tokens s) in
   let peek () = match !toks with t :: _ -> Some t | [] -> None in
   let next () = match !toks with t :: r -> toks := r; t | [] -> raise (Parse_error "unexpected end") in
-  let rec term () =
+  (* bound: the names bound by the enclosing λs — such a name is a variable, whatever the table says *)
+  let rec term bound =
     match peek () with
     | Some "\\" ->
         ignore (next ());
@@ -68,24 +70,25 @@ let rec parse s =
           | Some x -> ignore (next ()); binders (x :: acc)
           | None -> raise (Parse_error "expected .") in
         let xs = binders [] in
-        let body = term () in
+        let body = term (xs @ bound) in
         List.fold_right (fun x b -> Lam (x, b)) xs body
     | _ ->
-        let rec apps t = match atom () with Some u -> apps (App (t, u)) | None -> t in
-        (match atom () with Some t -> apps t | None -> raise (Parse_error "expected a term"))
-  and atom () =
+        let rec apps t = match atom bound with Some u -> apps (App (t, u)) | None -> t in
+        (match atom bound with Some t -> apps t | None -> raise (Parse_error "expected a term"))
+  and atom bound =
     match peek () with
     | None | Some ")" | Some "." -> None
-    | Some "(" -> ignore (next ()); let t = term () in
+    | Some "(" -> ignore (next ()); let t = term bound in
         (match next () with ")" -> Some t | _ -> raise (Parse_error "expected )"))
-    | Some "\\" -> Some (term ())
+    | Some "\\" -> Some (term bound)
     | Some name ->
         ignore (next ());
         if String.length name > 0 && name.[0] >= '0' && name.[0] <= '9' then Some (numeral (int_of_string name))
+        else if List.mem name bound then Some (Var name)
         else (match List.assoc_opt name definitions with
               | Some src -> Some (parse src)
               | None -> Some (Var name))
   in
-  let t = term () in
+  let t = term [] in
   if !toks <> [] then raise (Parse_error ("unexpected " ^ List.hd !toks));
   t

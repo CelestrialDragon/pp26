@@ -691,7 +691,7 @@ RecursionError: maximum recursion depth exceeded</pre>
     </div>
   </div>
   <p class="fn">A tree 100 000 notes deep. Right: session 2's stack in a new job — Lab 2's maze visit was this loop.</p>
-  <aside class="notes">Both run here, in Python (Pyodide): the left one fails at Python's own limit, the right one counts 100 001 notes. The explicit stack is the recursion's stack made visible; the order we push the children is the order they are counted — depth first, as in the maze.</aside>
+  <aside class="notes">Both run here, in Python (Pyodide): the left one fails at Python's own limit, the right one counts 100 001 notes. The explicit stack is the recursion's stack made visible; the order we push the children is the order they are counted — depth first, as the recursion.</aside>
 </section>
 
 <!-- 16 -->
@@ -856,7 +856,7 @@ fold_right:  3 − (1 − (4 − 0))  =  6</code></pre>
 <!-- 24 -->
 <section>
   <h2><code>fold</code> as a rewriting of the list’s tree</h2>
-  <p class="tight">A list is a tree of <code>(:)</code> nodes ending in <code>[]</code>. <code>fold_right f z</code> replaces every <code>(:)</code> by a call to <code>f</code> and <code>[]</code> by <code>z</code> — same shape; <code>fold_left f z</code> builds the mirrored tree from <code>z</code> upwards.</p>
+  <p class="tight">A list is a tree of <code>(:)</code> nodes ending in <code>[]</code>. <code>fold_right f xs z</code> replaces every <code>(:)</code> by a call to <code>f</code> and <code>[]</code> by <code>z</code> — same shape; <code>fold_left f z xs</code> builds the mirrored tree from <code>z</code> upwards.</p>
   <div id="fv"></div>
   <aside class="notes">Run fold_left: the accumulator travels left to right, one value carried, every f runs as soon as its element is met — the loop of slide 17. Switch to fold_right: every f must wait for the rest of the list — the "?" nodes are the pending frames of slide 13; then the values come back from the right. Switch to (−): same picture, different answers, −8 and 6.</aside>
 </section>
@@ -994,7 +994,7 @@ let rec fact n =
     <tr><td class="s">3</td><td>Do we need a loop construct at all?</td><td>No. The recursion is written once, in <code>fold</code>; a use passes the body and writes no control. <code>fold_left</code> and <code>fold_right</code> differ in the order of applying <code>f</code>.</td></tr>
     <tr><td class="s">4</td><td>In which order, and when, are arguments evaluated?</td><td>The language decides both: the order (fixed or unspecified) and the mode — by value, by name, by need. Under call by value <code>if</code> cannot be a function unless the caller delays the branches.</td></tr>
   </table>
-  <div class="box fragment">Each time the choice was implicit, it was in fact the <span class="hl">functional</span> <span class="hl">paradigm</span>: recursion rather than an explicit stack, <code>fold</code> rather than a loop, a function that delays rather than an argument evaluated first. Block 2 formalises these choices in a minimal setting of the functional paradigm: the <span class="hl">λ-calculus</span>.</div>
+  <div class="box fragment">Each time the choice was implicit, it was <span class="hl">functional programming</span> expressing control through recursion and function values: recursion rather than an explicit stack, <code>fold</code> rather than a loop, a function that delays rather than an argument evaluated first. Block 2 formalises these choices in a minimal setting of the functional paradigm: the <span class="hl">λ-calculus</span>.</div>
   <aside class="notes">One line per part; the questions are the dividers' subtitles. If asked whether "machine vs calculus" and "explicit vs implicit control" are the same distinction: they are not — the tail-recursive sum is functional syntax with fully explicit control, and Algol's call-by-name is implicit control in an imperative language. Say it as an answer, not as a slide; it is not a standard presentation. Break. Block 2 starts from the three forms of slide 6 and never uses a number it has not defined.</aside>
 </section>
 

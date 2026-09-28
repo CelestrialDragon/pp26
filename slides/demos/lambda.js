@@ -34,27 +34,28 @@
     const toks = src.replace(/\\/g, 'λ').match(/λ|\.|\(|\)|\+|×|\*|[A-Za-zΩ_][A-Za-z0-9_'’]*|[0-9]+/g) || [];
     let i = 0;
     const peek = () => toks[i], next = () => toks[i++];
-    function term() {
+    // bound: the names bound by the enclosing λs — such a name is a variable, never a definition
+    function term(bound) {
       if (peek() === 'λ') { next(); const xs = []; while (peek() !== '.') xs.push(next()); next();
-        let b = term(); for (let j = xs.length - 1; j >= 0; j--) b = { k: 'l', x: xs[j], b }; return b; }
-      return arith ? sum() : app();
+        let b = term(bound.concat(xs)); for (let j = xs.length - 1; j >= 0; j--) b = { k: 'l', x: xs[j], b }; return b; }
+      return arith ? sum(bound) : app(bound);
     }
-    function app() {
-      let t = atom(); if (!t) throw new Error('term expected');
-      for (;;) { const u = atom(); if (!u) return t; t = { k: 'a', f: t, a: u }; }
+    function app(bound) {
+      let t = atom(bound); if (!t) throw new Error('term expected');
+      for (;;) { const u = atom(bound); if (!u) return t; t = { k: 'a', f: t, a: u }; }
     }
-    function prod() { let t = app(); while (peek() === '×' || peek() === '*') { next(); t = { k: 'o', op: '×', l: t, r: app() }; } return t; }
-    function sum() { let t = prod(); while (peek() === '+') { next(); t = { k: 'o', op: '+', l: t, r: prod() }; } return t; }
-    function atom() {
+    function prod(bound) { let t = app(bound); while (peek() === '×' || peek() === '*') { next(); t = { k: 'o', op: '×', l: t, r: app(bound) }; } return t; }
+    function sum(bound) { let t = prod(bound); while (peek() === '+') { next(); t = { k: 'o', op: '+', l: t, r: prod(bound) }; } return t; }
+    function atom(bound) {
       const t = peek(); if (t === undefined || t === ')' || t === '.' || t === '+' || t === '×' || t === '*') return null;
-      if (t === '(') { next(); const e = term(); if (next() !== ')') throw new Error(') expected'); return e; }
-      if (t === 'λ') return term();
+      if (t === '(') { next(); const e = term(bound); if (next() !== ')') throw new Error(') expected'); return e; }
+      if (t === 'λ') return term(bound);
       next();
       if (/^[0-9]+$/.test(t)) return arith ? { k: 'n', v: +t } : numeral(+t);
-      if (t in DEFS_SRC) return { k: 'd', n: t };
+      if (t in DEFS_SRC && !bound.includes(t)) return { k: 'd', n: t };
       return { k: 'v', n: t };
     }
-    const e = term(); if (i < toks.length) throw new Error('unexpected ' + toks[i]); return e;
+    const e = term([]); if (i < toks.length) throw new Error('unexpected ' + toks[i]); return e;
   }
   function numeral(n) { let b = { k: 'v', n: 'x' }; for (let j = 0; j < n; j++) b = { k: 'a', f: { k: 'v', n: 'f' }, a: b }; return { k: 'l', x: 'f', b: { k: 'l', x: 'x', b } }; }
   for (const n in DEFS_SRC) DEFS[n] = parse(DEFS_SRC[n]);

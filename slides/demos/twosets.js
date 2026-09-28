@@ -82,25 +82,48 @@ const isEmpty1u = s =>
   s.kind === 'evens'  ? false :
   s.kind === 'union'  ? isEmpty1u(s.s) && isEmpty1u(s.t) :
                         s.xs.length === 0;
-const equal1u = (s, t) => {
-  if (s.kind === 'union' || t.kind === 'union') throw new Error("equal on a union: needs a normal form");
-  if (s.kind === 'evens' || t.kind === 'evens') return s.kind === t.kind;
-  return equal1(s.xs, t.xs);
-};
+// equal1 through a normal form: does the set hold the evens, and which other elements?
+const hasEvens = s => s.kind === 'evens' || (s.kind === 'union' && (hasEvens(s.s) || hasEvens(s.t)));
+const listed   = s => s.kind === 'finite' ? s.xs : s.kind === 'union' ? [...listed(s.s), ...listed(s.t)] : [];
+const normal1  = s => { const e = hasEvens(s); return [e, [...new Set(listed(s).filter(n => !(e && n % 2 === 0)))].sort((a, b) => a - b)]; };
+const equal1u  = (s, t) => JSON.stringify(normal1(s)) === JSON.stringify(normal1(t));
+// insert1 for every kind: the union with a singleton (merged when s is finite)
+const insert1u = (s, n) => union1t(s, finite1([n]));
 const test4 = [3, 4, 5, 6].map(x => contains1u(union1t(finite1([3, 5]), evens1), x));
 console.log("evens    way 1:", test4, " kind of {3,5} ∪ evens:", union1t(finite1([3, 5]), evens1).kind);
 
 // ---- The check the slides rely on: one client, both ways, same answers -------------
-// (a duplicate insert, an empty union, a union with the evens)
+// (a duplicate insert, an empty union, a union with the evens, inserts into the evens and into a union)
 const client = (empty, insert, union, contains, isEmpty, evens) => {
   const s = insert(insert(insert(empty, 3), 5), 3);        // 3 inserted twice
   const u = union(s, evens);
-  return [isEmpty(empty), isEmpty(s), isEmpty(union(empty, empty)),
-          ...[3, 4, 5, 6].map(x => contains(s, x)), ...[3, 4, 5, 6].map(x => contains(u, x))];
+  const v = insert(evens, 3), w = insert(u, 7);            // insert into the evens, into a union
+  return [isEmpty(empty), isEmpty(s), isEmpty(union(empty, empty)), isEmpty(v), isEmpty(w),
+          ...[3, 4, 5, 6].map(x => contains(s, x)), ...[3, 4, 5, 6].map(x => contains(u, x)),
+          ...[3, 4, 5, 6, 7].map(x => contains(v, x)), ...[3, 4, 5, 6, 7].map(x => contains(w, x))];
 };
-const r1 = client(finite1([]), (s, n) => contains1u(s, n) ? s : finite1([...s.xs, n]), union1t, contains1u, isEmpty1u, evens1);
+const r1 = client(finite1([]), insert1u, union1t, contains1u, isEmpty1u, evens1);
 const r2 = client(empty2b, insert2b, union2b, contains2b, isEmpty2, evens2);
 const same = JSON.stringify(r1) === JSON.stringify(r2);
 console.log("same client, both ways:", r1.join(' '));
-console.log(same ? "OK: both ways agree" : "MISMATCH: way 2 gave " + r2.join(' '));
-if (!same) process.exit(1);
+// Way 1 alone: equal, on every kind
+const eq = [equal1u(insert1u(insert1u(finite1([]), 3), 5), insert1u(insert1u(finite1([]), 5), 3)),
+            equal1u(evens1, insert1u(evens1, 2)),
+            equal1u(union1t(finite1([3, 5]), evens1), insert1u(insert1u(evens1, 3), 5)),
+            equal1u(union1t(finite1([3, 5]), evens1), evens1)];
+console.log("equal1 on every kind (expect true true true false):", eq.join(' '));
+// Property: equal1(s, t) holds exactly when contains1 agrees on every point. Checked on every set
+// the makers build from a small grammar (depth 2), so every constructor appears inside every other.
+const small = [finite1([]), finite1([3]), finite1([2, 3]), evens1];
+const level = xs => [...xs, ...xs.flatMap(a => xs.flatMap(b => [union1t(a, b)])), ...xs.map(a => insert1u(a, 2)), ...xs.map(a => insert1u(a, 5))];
+const sets = level(level(small));
+const pts = Array.from({ length: 21 }, (_, i) => i - 10);
+let bad = 0;
+for (const s of sets) for (const t of sets) {
+  const pointwise = pts.every(x => contains1u(s, x) === contains1u(t, x));
+  if (equal1u(s, t) !== pointwise) bad++;
+}
+console.log(`equal1 vs pointwise contains1 on ${sets.length}×${sets.length} sets: ${bad ? bad + ' DISAGREE' : 'agree'}`);
+const ok = same && JSON.stringify(eq) === JSON.stringify([true, true, true, false]) && bad === 0;
+console.log(ok ? "OK: both ways agree; equal1 total on Way 1" : "MISMATCH: way 2 gave " + r2.join(' '));
+if (!ok) process.exit(1);
