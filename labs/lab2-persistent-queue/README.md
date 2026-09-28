@@ -37,10 +37,11 @@ invariant guarantees that the *oldest* element is always the head of `front`,
 so `peek` and `dequeue` are one pointer away — except when `front` runs dry
 and `make` performs one O(n) reversal.
 
-**Why is that acceptable? A banker's argument.** Charge every `enqueue` two
-coins: one for the cons, one deposited *on the element*. When the reversal
-finally happens, each element in `back` pays for its own move with its
-deposited coin. Every element is reversed **at most once**, so n operations
+**Why is that acceptable? A banker's argument.** Count one step per
+operation plus one per element a reversal moves. Give every operation one coin
+for its own step, and every `enqueue` a second coin deposited *on the
+element*. When the reversal finally happens, each element in `back` pays for
+its own move with its deposited coin. Every element is reversed **at most once**, so n operations
 cost O(n) total: **amortized O(1)**. Remember the highlighted assumption —
 the lab's last part returns to it.
 
@@ -152,7 +153,8 @@ same numbers.
 cd python && python3 bench.py
 ```
 
-The banker's proof assumed each version is dequeued at most once. But the
+The banker's proof assumed a linear history: each version is dequeued at
+most once, and the output of one operation is the input of the next. But the
 queue is persistent — nothing prevents a program from dequeuing the *same*
 version a thousand times. The benchmark does exactly that, with a version
 whose `front` is nearly empty. Watch the "amortized O(1)" operation cost

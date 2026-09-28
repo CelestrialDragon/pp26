@@ -749,7 +749,7 @@ make(front, back) = (front, back)</pre>
     <p>Every operation returns a new queue and no version is ever modified. The invariant guarantees that the oldest element is always the head of <code>front</code>, so <code>peek</code> and <code>dequeue</code> are one pointer away — except when <code>front</code> is exhausted and <code>make</code> performs a single O(n) reversal.</p>
 
     <div class="callout">
-      <p><strong>Why that is acceptable: a banker's argument.</strong> Charge every <code>enqueue</code> two coins: one for the cons cell, one deposited <em>on the element itself</em>. When the reversal eventually happens, each element in <code>back</code> pays for its own move with the coin it is carrying. No element is ever reversed twice, so n operations cost O(n) in total — <strong>amortised O(1)</strong> per operation.</p>
+      <p><strong>Why that is acceptable: a banker's argument.</strong> Count one step per operation, plus one per element a reversal moves. Give every operation one coin for its own step, and every <code>enqueue</code> a second coin deposited <em>on the element itself</em>. When the reversal eventually happens, each element in <code>back</code> pays for its own move with the coin it is carrying. No element is ever reversed twice, so n operations cost O(n) in total — <strong>amortised O(1)</strong> per operation.</p>
       <p>Note the word <em>eventually</em>, and note that the argument counts coins across a whole sequence of operations. The third point below returns to what that assumes.</p>
     </div>
   </div>
@@ -800,7 +800,7 @@ make(front, back) = (front, back)</pre>
     <p>This is worth stating plainly, because it is the honest starting point. An ordinary mutable queue would run the solver correctly and with less allocation. Persistence is not a performance argument and it is not required by breadth-first search. If finding a path were the only goal, the whole design would be unjustified.</p>
 
     <h4>2. It makes the version history free</h4>
-    <p>Because <code>take</code> returns <em>a value and a new frontier</em> rather than modifying one in place, every intermediate frontier remains valid indefinitely. The solver therefore keeps all of them, in a list, at the cost of one pointer per step:</p>
+    <p>Because <code>take</code> returns <em>a value and a new frontier</em> rather than modifying one in place, every intermediate frontier remains valid indefinitely. The solver therefore keeps all of them, in a list, at the cost of one pointer per step. Free in allocation, not in memory: a retained version keeps every node it reaches alive, so a program that holds old roots pays in what the collector cannot reclaim.</p>
   </div>
 
   <figure class="col">
@@ -838,7 +838,7 @@ make(front, back) = (front, back)</pre>
 
     <h4>3. It is what breaks the amortised bound</h4>
     <p>This is the reason the containers <em>had</em> to be persistent, rather than merely could be.</p>
-    <p>Recall the banker's argument from the start of this section: each element is pushed onto <code>back</code> once, reversed into <code>front</code> once, and taken once, so the O(n) reversal is paid for by the n cheap operations that preceded it. That argument contains a silent premise — <strong>each version is used at most once</strong>, so operations form a single line and the deposited coins are spent exactly once.</p>
+    <p>Recall the banker's argument from the start of this section: each element is pushed onto <code>back</code> once, reversed into <code>front</code> once, and taken once, so the O(n) reversal is paid for by the n cheap operations that preceded it. That argument contains a silent premise — <strong>each version is used at most once</strong>: the history is linear, the output of one operation is the input of the next, and the deposited coins are spent along that one line. Persistence lets one state have several futures.</p>
     <p>Persistence is precisely the power to violate that premise. Retain one version whose <code>front</code> holds a single element and whose <code>back</code> holds a thousand, then call <code>dequeue</code> on <em>that same version</em> a thousand times. Every call triggers the full reversal, because no call can see the work done by the others, and each has an equal right to the coins. The amortised bound collapses to O(n) per operation.</p>
 
     <div class="callout">
@@ -1150,7 +1150,7 @@ java MazeSolver $M --dfs</pre>
         <span class="where">read Part One, then jump to Part Four</span></li>
       <li><b>Shawn T. O&rsquo;Neil, <a href="https://journal.r-project.org/articles/RJ-2015-009/">&ldquo;Implementing Persistent O(1) Stacks and Queues in R&rdquo;</a> (R Journal, 2015).</b> Okasaki&rsquo;s queue in a fifth language, packaged as CRAN&rsquo;s <code>rstackdeque</code> &mdash; and, like this lab, demonstrated on maze generation and solving.</li>
       <li><b>Hood &amp; Melville (1981); Kaplan &amp; Tarjan (1995).</b> Queues with <em>worst-case</em> O(1) bounds rather than amortised ones, obtained by incremental rebuilding rather than laziness — the other way out of the same problem.</li>
-      <li><b>Driscoll, Sarnak, Sleator &amp; Tarjan, "Making data structures persistent" (1986).</b> Where the vocabulary comes from: <em>partial</em> persistence (old versions readable) versus <em>full</em> persistence (old versions writable). The <code>--inspect</code> flag in this lab uses the partial kind.</li>
+      <li><b>Driscoll, Sarnak, Sleator &amp; Tarjan, "Making data structures persistent" (1986).</b> Where the vocabulary comes from: <em>partial</em> persistence (old versions readable) versus <em>full</em> persistence (old versions writable). <code>--inspect</code> only reads old versions, but the queue itself is fully persistent: any old version can be the input of a new update. Part D does exactly that, and that is what breaks the bound.</li>
       <li><b>Git's object model.</b> A production persistent data structure: a commit is a new version of a whole tree that shares every unchanged subtree with its parent. The reason <code>git checkout</code> of an old commit is cheap is the reason <code>--inspect</code> is cheap here.</li>
       <li><b>Clojure's persistent vectors; Scala's immutable collections; React's state discipline.</b> The same idea at industrial scale, and the reason "don't mutate, return a new one" is now ordinary advice rather than an academic position.</li>
       <li><b><a href="https://hypirion.com/musings/understanding-persistent-vector-pt-1">&ldquo;Understanding Clojure's Persistent Vectors&rdquo;</a> (hyPiRion, 2013).</b> Three heavily illustrated posts on the bit-partitioned trie behind the vectors named above: how a persistent structure gets effectively constant-time indexing and update once cons cells are no longer enough. The companion post on <a href="https://hypirion.com/musings/understanding-clojure-transients">transients</a> covers the escape hatch — mutation that no one is able to observe — which is the other half of the amortisation story.

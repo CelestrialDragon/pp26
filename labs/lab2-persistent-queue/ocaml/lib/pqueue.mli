@@ -20,7 +20,8 @@ val enqueue : 'a -> 'a t -> 'a t
 
 val dequeue : 'a t -> ('a * 'a t) option
 (** [dequeue q] is [Some (front element, rest)], or [None] if empty.
-    Amortized O(1) — for linear use; see the handout. *)
+    Amortized O(1) along a linear history (each version dequeued once).
+    Reusing an old version can make every dequeue O(n); see the handout. *)
 
 val peek : 'a t -> 'a option
 (** The element [dequeue] would return, without removing it. *)

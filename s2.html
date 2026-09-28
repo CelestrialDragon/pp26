@@ -82,20 +82,24 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
   <h2>Three things to take away</h2>
   <div class="cards">
     <article class="card num" data-n="1">
-      <h3>Persistence is visible in the type</h3>
+      <h3>The update style is visible in the interface</h3>
       <p>An operation returning <code>unit</code> or <code>void</code> has
          changed something we cannot see. One returning a new <code>t</code>
          hands us the next version and leaves the old one standing. We can read
-         a module&rsquo;s interface and know which world we are in, before
-         seeing a single line of implementation.</p>
+         a module&rsquo;s interface and know which world it intends, before
+         seeing a single line of implementation. The type shows the intent; it
+         cannot promise that nothing is mutated behind it.</p>
     </article>
     <article class="card num" data-n="2">
-      <h3>Immutability &rArr; safe sharing &rArr; persistence</h3>
-      <p>A chain of implications, and the middle link carries the weight:
-         sharing is <em>safe</em> when no version can be changed through
-         another version&rsquo;s pointer. Immutability buys that outright.
-         It is not the only way to buy it &mdash; ownership and undetectable
-         mutation also work &mdash; but it is the one a compiler checks.</p>
+      <h3>Immutability makes sharing safe; safe sharing makes persistence affordable</h3>
+      <p>Two steps, not one. Immutability alone gives persistence: nothing is
+         ever overwritten, so every old version stays valid. Structural sharing
+         is what makes that affordable, one pointer per version instead of a
+         copy &mdash; and sharing is <em>safe</em> only when no version can be
+         changed through another version&rsquo;s pointer, which immutability
+         buys outright. It is not the only way to buy it &mdash; ownership and
+         undetectable mutation also work &mdash; but it is the one a compiler
+         checks.</p>
     </article>
     <article class="card num" data-n="3">
       <h3>A paradigm is not a language</h3>
@@ -114,7 +118,7 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
     <tbody>
       <tr><td class="p">1</td><td><strong>Persistent data structures.</strong>
           Recipe or definition; a stack twice, the checkpoint trick and where it fails;
-          immutability &rArr; safe sharing &rArr; persistence, in Java and in Python;
+          why immutability gives persistence and sharing makes it cheap, in Java and in Python;
           languages that start persistent.
           <a href="https://leon-gondelman.github.io/pp26/slides/s2-persistence-block-1.pdf">slides (PDF)</a></td></tr>
       <tr><td class="p">2</td><td><strong>Introduction to OCaml.</strong>
@@ -316,8 +320,9 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
         <a href="https://doi.org/10.1016/0022-0000(89)90034-2">JCSS, 1989</a>.
         Where the vocabulary comes from: <em>partial</em> persistence, where
         old versions can be read, against <em>full</em> persistence, where they
-        can be written too. The <code>--inspect</code> flag in the lab is the
-        partial kind.</li>
+        can be written too. <code>--inspect</code> only reads old versions;
+        the lab&rsquo;s queue is fully persistent, and Part D updates an old
+        version on purpose.</li>
 
     <li><strong>Hood and Melville (1981); Kaplan and Tarjan (1995).</strong>
         Queues with worst-case O(1) bounds instead of amortised ones, reached
