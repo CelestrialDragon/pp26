@@ -6,12 +6,12 @@ The search below never says "queue" or "stack". It only says:
     x, frontier = ops.take(frontier)
 
 Plug in the persistent queue -> breadth-first search, shortest path.
-Plug in the lecture's stack    -> depth-first search, first path found.
+Plug in the lecture's stack    -> stack-based search, first path found.
 Same algorithm text; the DATA STRUCTURE decides the paradigm of the search.
 
 Usage:
     python3 solver.py ../mazes/medium.txt --bfs   # BFS: the persistent queue
-    python3 solver.py ../mazes/medium.txt --dfs   # DFS: the lecture's stack
+    python3 solver.py ../mazes/medium.txt --dfs   # the lecture's stack
     python3 solver.py ../mazes/medium.txt         # no flag = --bfs
 
     python3 solver.py ../mazes/medium.txt --bfs --html=bfs.html  # time travel
@@ -44,7 +44,7 @@ queue_frontier = SimpleNamespace(
 
 # LIFO frontier: the persistent stack from the lecture (pstack.py, provided).
 stack_frontier = SimpleNamespace(
-    name="DFS (stack frontier)",
+    name="stack-based (stack frontier)",
     empty=S.EMPTY,
     put=S.push,
     take=S.pop,

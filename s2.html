@@ -207,7 +207,7 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
           sharing.</td></tr>
       <tr class="watch"><td class="p">B</td><td><strong>The payoff.</strong>
           Our queue drives a maze solver. Swapping it for the lecture&rsquo;s
-          stack turns breadth-first search into depth-first, without touching
+          stack turns breadth-first search into a stack-based search, without touching
           the search: the algorithm never mentions queue or stack, only a
           frontier. A slider then scrubs through every frontier the search ever
           had, and <code>--inspect=40</code> asks what the frontier held at

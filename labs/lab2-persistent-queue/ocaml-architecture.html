@@ -560,7 +560,7 @@ val of_list  : 'a list -&gt; 'a t</pre>
       loop frontier</pre>
     </div>
 
-    <p>Three names appear from the container: <code>ops.empty</code>, <code>ops.put</code>, <code>ops.take</code>. The words <em>queue</em> and <em>stack</em> appear nowhere in the loop. Supply a queue and the loop is breadth-first; supply a stack and the very same loop is depth-first.</p>
+    <p>Three names appear from the container: <code>ops.empty</code>, <code>ops.put</code>, <code>ops.take</code>. The words <em>queue</em> and <em>stack</em> appear nowhere in the loop. Supply a queue and the loop is breadth-first; supply a stack and the very same loop is a stack-based search.</p>
 
     <p>Note also what <code>take</code> returns: <code>('a * 'f) option</code> &mdash; the element <em>and the new frontier</em>, or nothing at all. The loop cannot forget the empty case, and it cannot mutate the frontier it was handed. Every step names a new version, and the old ones remain valid &mdash; which is how <code>--inspect</code> can ask what the frontier held at step&nbsp;40 without anything having been recorded.</p>
   </div>
@@ -597,7 +597,7 @@ stack_frontier : (int * int, <span class="hl">(int * int) list</span>)     front
     <p>Because <code>search</code> is written for <em>any</em> <code>'f</code>, it is incapable of depending on which one arrives. Not unlikely to; incapable. There is no cast to reach through the abstraction and no field to inspect, because within the loop the type <code>'f</code> has no structure at all. The agnosticism the Python note describes as a discipline is here a property the compiler establishes before the program runs.</p>
 
     <div class="callout">
-      <p><strong>The stack needs no module behind it.</strong> <code>queue_frontier</code> is built from <code>Pqueue</code>; <code>stack_frontier</code> is built from nothing &mdash; its <code>empty</code> is <code>[]</code>, its <code>put</code> is <code>::</code>, and its <code>take</code> is a two-case <code>match</code>. OCaml's built-in list <em>is</em> the lecture's persistent stack, so the depth-first half of this lab is supplied by the language itself. That is also why <code>--dfs</code> runs before a single TODO is filled in.</p>
+      <p><strong>The stack needs no module behind it.</strong> <code>queue_frontier</code> is built from <code>Pqueue</code>; <code>stack_frontier</code> is built from nothing &mdash; its <code>empty</code> is <code>[]</code>, its <code>put</code> is <code>::</code>, and its <code>take</code> is a two-case <code>match</code>. OCaml's built-in list <em>is</em> the lecture's persistent stack, so the stack half of this lab is supplied by the language itself. That is also why <code>--dfs</code> runs before a single TODO is filled in.</p>
     </div>
 
     <p>A record whose fields are functions has a proper name, and gets it in session&nbsp;5. For now it reads as a bundle of operations passed as one value.</p>

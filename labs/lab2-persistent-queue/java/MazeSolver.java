@@ -12,7 +12,7 @@ import java.util.Map;
  * The search never says "queue" or "stack" — it talks to the Frontier
  * interface. QueueFrontier (the PQueue) makes it breadth-first search;
  * StackFrontier (a bare cons-list, the lecture's persistent stack) makes
- * the SAME search depth-first. In Java the swap happens through an
+ * the SAME search stack-based. In Java the swap happens through an
  * interface and dynamic dispatch — hold that thought for session 9.
  *
  * Run:  javac *.java && java MazeSolver ../mazes/medium.txt [--dfs]
@@ -112,7 +112,7 @@ public final class MazeSolver {
 
         print(grid, path, visited, !noColour && colourAvailable(),
               dfs ? SEEN_STACK : SEEN_QUEUE);
-        String name = dfs ? "DFS (stack frontier)" : "BFS (queue frontier)";
+        String name = dfs ? "stack-based (stack frontier)" : "BFS (queue frontier)";
         System.out.println(path == null
                 ? name + ": no path found"
                 : name + ": explored " + explored + " cells, path length " + path.size());

@@ -4,7 +4,7 @@
    operations in [frontier_ops]. Plug in the persistent queue and it is
    breadth-first search (shortest path); plug in a bare list used as a
    stack — the lecture's persistent stack — and the SAME search text
-   becomes depth-first. The data structure decides the paradigm.
+   becomes stack-based. The data structure decides the paradigm.
 
    Usage (the same flags as python/solver.py):
      dune exec bin/solver.exe -- ../mazes/medium.txt --bfs   # the persistent queue
@@ -41,7 +41,7 @@ let queue_frontier =
 (* OCaml's built-in list IS the lecture's persistent stack, so this
    frontier needs no module behind it at all. *)
 let stack_frontier =
-  { name = "DFS (stack frontier)";
+  { name = "stack-based (stack frontier)";
     empty = [];
     put = (fun x s -> x :: s);
     take = (function [] -> None | x :: s -> Some (x, s));

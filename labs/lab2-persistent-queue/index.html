@@ -767,7 +767,7 @@ make(front, back) = (front, back)</pre>
         <canvas id="cv-bfs"></canvas>
       </div>
       <div class="board s">
-        <h4>stack frontier &nbsp;· DFS</h4>
+        <h4>stack frontier &nbsp;· stack-based</h4>
         <p class="stat" id="stat-dfs">&nbsp;</p>
         <canvas id="cv-dfs"></canvas>
       </div>
@@ -789,7 +789,7 @@ make(front, back) = (front, back)</pre>
 
   <div class="col">
     <p style="margin-top:26px">The outlined cells are the frontier — the contents of the queue or the stack at that instant — and they are the only mechanical difference between the two runs. What that difference produces is the shape of the pale region behind them. BFS spreads outwards evenly, so by the time it first reaches the exit it has necessarily arrived by a shortest route. DFS follows a single thread, commits to a corridor, and returns the first path it finds rather than the best one.</p>
-    <p>Run the slider to the end and compare the two. DFS leaves whole regions of the maze white — never visited at all — and still comes back with a path <strong>28 steps longer</strong> than it needed to be. BFS looks at <strong>66 more cells</strong> and is repaid in the guarantee. Neither behaviour is better; they are different guarantees, and we select between them by choosing a data structure.</p>
+    <p>Run the slider to the end and compare the two. The stack-based search leaves whole regions of the maze white — never visited at all — and still comes back with a path <strong>28 steps longer</strong> than it needed to be. BFS looks at <strong>66 more cells</strong> and is repaid in the guarantee. Neither behaviour is better; they are different guarantees, and we select between them by choosing a data structure.</p>
   </div>
 
   <div class="col">
@@ -860,7 +860,7 @@ make(front, back) = (front, back)</pre>
 
   <div class="figure-wide">
     <div class="diagram">
-      <svg viewBox="0 0 900 396" role="img" aria-label="Three layers: the search is written once against a frontier of five operations and a graph that answers adjacency. The frontier has two implementations, a persistent queue giving breadth-first search and a persistent stack giving depth-first search; one assignment chooses between them.">
+      <svg viewBox="0 0 900 396" role="img" aria-label="Three layers: the search is written once against a frontier of five operations and a graph that answers adjacency. The frontier has two implementations, a persistent queue giving breadth-first search and a persistent stack giving a stack-based search; one assignment chooses between them.">
         <defs>
           <marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M0 0 L10 5 L0 10 z" class="d-arrow"/>
@@ -904,7 +904,7 @@ make(front, back) = (front, back)</pre>
 
         <rect class="d-box-s" x="650" y="302" width="220" height="62" rx="5"/>
         <text class="d-name" x="760" y="326" text-anchor="middle">persistent stack — LIFO</text>
-        <text class="d-sub d-sub-s" x="760" y="345" text-anchor="middle">newest ⟹ depth-first</text>
+        <text class="d-sub d-sub-s" x="760" y="345" text-anchor="middle">newest ⟹ stack-based</text>
 
         <text class="d-note" x="60" y="322">one assignment,</text>
         <text class="d-note" x="60" y="340">in argument parsing,</text>
@@ -996,7 +996,7 @@ dune exec bin/solver.exe -- $M --dfs</pre>
         <tr>
           <th>implementation</th>
           <th class="q">bfs explored</th><th class="q">bfs path</th>
-          <th class="s">dfs explored</th><th class="s">dfs path</th>
+          <th class="s">stack explored</th><th class="s">stack path</th>
         </tr>
       </thead>
       <tbody>
@@ -1068,7 +1068,7 @@ dune exec bin/solver.exe -- $M --dfs</pre>
           <td>throws <code>NoSuchElementException</code></td>
         </tr>
         <tr>
-          <td>the DFS side needs</td>
+          <td>the stack side needs</td>
           <td>a whole module, <code>pstack.py</code></td>
           <td class="no">nothing — a built-in list already is a persistent stack</td>
           <td>a <code>StackFrontier</code> record implementing the interface</td>
@@ -1151,6 +1151,8 @@ java MazeSolver $M --dfs</pre>
       <li><b>Shawn T. O&rsquo;Neil, <a href="https://journal.r-project.org/articles/RJ-2015-009/">&ldquo;Implementing Persistent O(1) Stacks and Queues in R&rdquo;</a> (R Journal, 2015).</b> Okasaki&rsquo;s queue in a fifth language, packaged as CRAN&rsquo;s <code>rstackdeque</code> &mdash; and, like this lab, demonstrated on maze generation and solving.</li>
       <li><b>Hood &amp; Melville (1981); Kaplan &amp; Tarjan (1995).</b> Queues with <em>worst-case</em> O(1) bounds rather than amortised ones, obtained by incremental rebuilding rather than laziness — the other way out of the same problem.</li>
       <li><b>Driscoll, Sarnak, Sleator &amp; Tarjan, "Making data structures persistent" (1986).</b> Where the vocabulary comes from: <em>partial</em> persistence (old versions readable) versus <em>full</em> persistence (old versions writable). <code>--inspect</code> only reads old versions, but the queue itself is fully persistent: any old version can be the input of a new update. Part D does exactly that, and that is what breaks the bound.</li>
+      <li><b>David Eppstein, <a href="https://11011110.github.io/blog/2013/12/17/stack-based-graph-traversal.html">&ldquo;Stack-based graph traversal &ne; depth first search&rdquo;</a> (11011110, 2013).</b> Why replacing the queue by a stack in our loop gives a search that is neither BFS nor DFS on a graph with cycles, with the two-line fix.
+        <span class="where">read after the caveat above</span></li>
       <li><b>Git's object model.</b> A production persistent data structure: a commit is a new version of a whole tree that shares every unchanged subtree with its parent. The reason <code>git checkout</code> of an old commit is cheap is the reason <code>--inspect</code> is cheap here.</li>
       <li><b>Clojure's persistent vectors; Scala's immutable collections; React's state discipline.</b> The same idea at industrial scale, and the reason "don't mutate, return a new one" is now ordinary advice rather than an academic position.</li>
       <li><b><a href="https://hypirion.com/musings/understanding-persistent-vector-pt-1">&ldquo;Understanding Clojure's Persistent Vectors&rdquo;</a> (hyPiRion, 2013).</b> Three heavily illustrated posts on the bit-partitioned trie behind the vectors named above: how a persistent structure gets effectively constant-time indexing and update once cons cells are no longer enough. The companion post on <a href="https://hypirion.com/musings/understanding-clojure-transients">transients</a> covers the escape hatch — mutation that no one is able to observe — which is the other half of the amortisation story.
@@ -1158,8 +1160,9 @@ java MazeSolver $M --dfs</pre>
     </ul>
 
     <div class="callout">
-      <p><strong>A caveat on the BFS/DFS comparison above.</strong> The numbers on this page make DFS look simply better, and on exploration it mostly is: measured over 120 generated mazes (21&times;31, 40 per setting), DFS settled fewer cells than BFS in 36/40 perfect mazes and 39/40 braided ones, and on <code>mazes/large.txt</code> it settles 444 cells against BFS's 1201. What DFS never does is find a <em>shorter</em> path &mdash; 0/40, in every setting.</p>
-      <p>In a perfect maze it does not need to. A maze with no loops is a tree: there is exactly one simple path between start and exit, so both searches return the same path (40/40, identical length) and BFS's guarantee costs about 1.4&times; the exploration while buying nothing. Loops are what give the guarantee value &mdash; at the braid of 0.06 used for these mazes DFS averages 71.8 steps against BFS's 57.0, worst case +52. So the question is never &ldquo;which search is better&rdquo;, but what a worst-case bound is worth on the graph actually at hand; the braid parameter is the dial that sets its price.</p>
+      <p><strong>A caveat on the comparison above.</strong> The numbers on this page make the stack-based search look simply better, and on exploration it mostly is: measured over 120 generated mazes (21&times;31, 40 per setting), the stack settled fewer cells than BFS in 36/40 perfect mazes and 39/40 braided ones, and on <code>mazes/large.txt</code> it settles 444 cells against BFS's 1201. What the stack never does is find a <em>shorter</em> path &mdash; 0/40, in every setting.</p>
+      <p>In a perfect maze it does not need to. A maze with no loops is a tree: there is exactly one simple path between start and exit, so both searches return the same path (40/40, identical length) and BFS's guarantee costs about 1.4&times; the exploration while buying nothing. Loops are what give the guarantee value &mdash; at the braid of 0.06 used for these mazes the stack averages 71.8 steps against BFS's 57.0, worst case +52. So the question is never &ldquo;which search is better&rdquo;, but what a worst-case bound is worth on the graph actually at hand; the braid parameter is the dial that sets its price.</p>
+      <p><strong>Why we do not call it depth-first.</strong> Our loop marks a cell the moment it is pushed. With a queue that is the textbook breadth-first search. With a stack it is not quite the textbook depth-first search: a cell pushed early by a cell high in the tree can be popped much later, after the search has gone deep elsewhere, so it is discovered by the wrong parent. On a perfect maze the two coincide, because a tree gives every cell one possible parent. On our braided mazes they differ, and the tree our search builds has cross edges that a depth-first tree never has. David Eppstein&rsquo;s post <a href="https://11011110.github.io/blog/2013/12/17/stack-based-graph-traversal.html">&ldquo;Stack-based graph traversal &ne; depth first search&rdquo;</a> (2013) shows the two repairs: move the visited check from push to pop, or keep a stack of iterators, which is the recursion&rsquo;s own stack made explicit. Session 4&rsquo;s explicit stack walks a tree, where the two searches coincide, so nothing there needs correcting.</p>
     </div>
   </div>
 

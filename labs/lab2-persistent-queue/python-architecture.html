@@ -668,7 +668,7 @@ pop(s)          <span class="c"># O(1), allocates nothing</span></pre>
 
     <table class="iface">
       <thead>
-        <tr><th>ops.<em>name</em></th><th class="q">queue_frontier &nbsp;→ BFS</th><th class="s">stack_frontier &nbsp;→ DFS</th></tr>
+        <tr><th>ops.<em>name</em></th><th class="q">queue_frontier &nbsp;→ BFS</th><th class="s">stack_frontier &nbsp;→ stack-based</th></tr>
       </thead>
       <tbody>
         <tr><td>empty</td>    <td class="q">P.EMPTY</td>    <td class="s">S.EMPTY</td></tr>
@@ -692,7 +692,7 @@ queue_frontier = SimpleNamespace(
 
 <span class="c"># LIFO frontier: the persistent stack from the lecture (pstack.py, provided).</span>
 stack_frontier = SimpleNamespace(
-    name="DFS (stack frontier)",
+    name="stack-based (stack frontier)",
 <span class="hl-s">    empty=S.EMPTY, put=S.push, take=S.pop,</span>
     is_empty=S.is_empty, to_list=S.to_list,
 )</pre>

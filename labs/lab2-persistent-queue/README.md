@@ -92,7 +92,7 @@ correct **ephemeral** one.
 ### Part B — the payoff
 
 The four runs below are, in order: breadth-first with the persistent queue;
-the one-line swap to depth-first; the time-travel view, written to a file; and
+the one-line swap to the stack-based search; the time-travel view, written to a file; and
 a question put to an old version of the frontier.
 
 ```bash
@@ -113,7 +113,7 @@ Part A is done it says so instead of crashing.
 Open the HTML file and drag the slider. Then look at `solver.py`: the search
 never mentions "queue" or "stack" — it is written against a tiny frontier
 interface. Swapping the persistent queue for the lecture's persistent stack
-turns breadth-first search into depth-first search **without touching the
+turns breadth-first search into a stack-based search **without touching the
 algorithm**. Compare the two explorations and the two path lengths.
 
 `--inspect=40` prints the frontier *as it was* at step 40. No replaying, no
