@@ -11,12 +11,12 @@ Same algorithm text; the DATA STRUCTURE decides the paradigm of the search.
 
 Usage:
     python3 solver.py ../mazes/medium.txt --bfs   # BFS: the persistent queue
-    python3 solver.py ../mazes/medium.txt --dfs   # the lecture's stack
+    python3 solver.py ../mazes/medium.txt --stack # the lecture's stack (--dfs: old name)
     python3 solver.py ../mazes/medium.txt         # no flag = --bfs
 
     python3 solver.py ../mazes/medium.txt --bfs --html=bfs.html  # time travel
     python3 solver.py ../mazes/medium.txt --bfs --inspect=40     # old version
-    python3 solver.py ../mazes/medium.txt --dfs --no-color        # plain glyphs
+    python3 solver.py ../mazes/medium.txt --stack --no-color      # plain glyphs
 """
 import sys
 from types import SimpleNamespace
@@ -96,14 +96,17 @@ def main(argv):
         print(__doc__)
         return 1
 
-    if "bfs" in flags and "dfs" in flags:
-        print("pick one frontier: --bfs (queue) or --dfs (stack)",
+    # --dfs is the flag's old name, kept as an alias: the search it selects
+    # is stack-based, not depth-first (see the caveat on the lab page).
+    want_stack = "stack" in flags or "dfs" in flags
+    if "bfs" in flags and want_stack:
+        print("pick one frontier: --bfs (queue) or --stack (stack)",
               file=sys.stderr)
         return 2
 
     mz = M.load(args[0])
     # No flag means --bfs: the default frontier is the one under construction.
-    ops = stack_frontier if "dfs" in flags else queue_frontier
+    ops = stack_frontier if want_stack else queue_frontier
 
     try:
         path, trace, versions = search(mz, ops)
@@ -111,12 +114,12 @@ def main(argv):
         print(f"--bfs runs on the persistent queue of pqueue.py, which is not yet "
               f"finished ({todo}).\n"
               f"  * fill the TODOs in pqueue.py  (Part A), or\n"
-              f"  * run --dfs right now: the stack frontier is provided.",
+              f"  * run --stack right now: the stack frontier is provided.",
               file=sys.stderr)
         return 1
 
     print(render.ascii_maze(mz, path=path, visited=[p for p, _ in trace],
-                           frontier=("stack" if "dfs" in flags else "queue"),
+                           frontier=("stack" if want_stack else "queue"),
                            colour=False if "no-color" in flags else None))
     print(f"{ops.name}: explored {len(trace)} cells, "
           + (f"path length {len(path)}" if path else "no path found"))

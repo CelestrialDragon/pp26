@@ -788,7 +788,7 @@ make(front, back) = (front, back)</pre>
   </p>
 
   <div class="col">
-    <p style="margin-top:26px">The outlined cells are the frontier — the contents of the queue or the stack at that instant — and they are the only mechanical difference between the two runs. What that difference produces is the shape of the pale region behind them. BFS spreads outwards evenly, so by the time it first reaches the exit it has necessarily arrived by a shortest route. DFS follows a single thread, commits to a corridor, and returns the first path it finds rather than the best one.</p>
+    <p style="margin-top:26px">The outlined cells are the frontier — the contents of the queue or the stack at that instant — and they are the only mechanical difference between the two runs. What that difference produces is the shape of the pale region behind them. BFS spreads outwards evenly, so by the time it first reaches the exit it has necessarily arrived by a shortest route. The stack explores the most recently discovered pending cell first. This changes the exploration order and may produce a longer path. Because cells are marked when inserted, this is stack-based graph traversal, not general DFS.</p>
     <p>Run the slider to the end and compare the two. The stack-based search leaves whole regions of the maze white — never visited at all — and still comes back with a path <strong>28 steps longer</strong> than it needed to be. BFS looks at <strong>66 more cells</strong> and is repaid in the guarantee. Neither behaviour is better; they are different guarantees, and we select between them by choosing a data structure.</p>
   </div>
 
@@ -949,14 +949,14 @@ make(front, back) = (front, back)</pre>
 python3 -m unittest test_pqueue -v
 M=../mazes/medium.txt
 python3 solver.py $M --bfs
-python3 solver.py $M --dfs
+python3 solver.py $M --stack
 python3 bench.py</pre>
       <p class="links">
         <span><a class="file" href="python-pqueue.html">python-pqueue.html</a> — the four holes</span>
         <span><a class="file" href="python-architecture.html">python-architecture.html</a> — the wiring</span>
         <span><a class="file" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/python/pqueue.py">python/pqueue.py</a> — the file to edit</span>
       </p>
-      <p class="todo">4 TODOs · <code>--dfs</code> works before a line is written</p>
+      <p class="todo">4 TODOs · <code>--stack</code> works before a line is written</p>
     </div>
 
     <div class="route ml">
@@ -967,7 +967,7 @@ python3 bench.py</pre>
 dune runtest
 M=../mazes/medium.txt
 dune exec bin/solver.exe -- $M --bfs
-dune exec bin/solver.exe -- $M --dfs</pre>
+dune exec bin/solver.exe -- $M --stack</pre>
       <p class="links">
         <span><a class="file" href="ocaml-architecture.html">ocaml-architecture.html</a> — the wiring</span>
         <span><a class="file" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/ocaml/lib/pqueue.mli">ocaml/lib/pqueue.mli</a> — the spec</span>
@@ -981,6 +981,7 @@ dune exec bin/solver.exe -- $M --dfs</pre>
   <div class="col">
     <h3 class="sub">Two flags worth trying in every implementation</h3>
     <ul class="marks">
+      <li><b><code>--stack</code></b> selects the stack frontier. All three solvers also accept <code>--dfs</code>, the flag&rsquo;s old name, kept so earlier commands keep running. What either selects is the stack-based search, not depth-first search: the loop marks a cell when it is inserted, and with a stack that is a different traversal. The caveat under <a href="#numbers">the check</a> says why.</li>
       <li><b><code>--inspect=40</code></b> prints the frontier <em>as it was</em> at step 40. Nothing is replayed and nothing is logged; the solver retained every version. If this seems unremarkable, work out what it would have cost with a mutable queue.</li>
       <li><b><code>--html=bfs.html</code></b> writes the page dragged in <a href="#demo">§01</a>. All three languages emit a byte-identical file, because the page is HTML and JavaScript in every case — a small reminder that the interesting differences between these three programs are not in what they can produce.</li>
     </ul>
@@ -991,7 +992,7 @@ dune exec bin/solver.exe -- $M --dfs</pre>
     <p>One specification should produce one behaviour. On <code>mazes/medium.txt</code> all three solvers must agree exactly — including the Java row, which can only be filled in after the homework in <a href="#homework">§05</a>.</p>
 
     <table class="results">
-      <caption>solver mazes/medium.txt --bfs | --dfs</caption>
+      <caption>solver mazes/medium.txt --bfs | --stack</caption>
       <thead>
         <tr>
           <th>implementation</th>
@@ -1122,7 +1123,7 @@ dune exec bin/solver.exe -- $M --dfs</pre>
 javac *.java &amp;&amp; java Tests
 M=../mazes/medium.txt
 java MazeSolver $M
-java MazeSolver $M --dfs</pre>
+java MazeSolver $M --stack</pre>
       <p class="links">
         <span><a class="file" href="java-architecture.html">java-architecture.html</a> — the wiring</span>
         <span><a class="file" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/java/PQueue.java">java/PQueue.java</a> — the file to edit</span>

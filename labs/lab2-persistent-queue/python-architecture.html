@@ -702,16 +702,16 @@ stack_frontier = SimpleNamespace(
 
   <figure class="col">
     <div class="code">
-      <div class="code-head"><span class="path">python/solver.py</span><span class="lines">line 113</span></div>
+      <div class="code-head"><span class="path">python/solver.py</span><span class="lines">line 109</span></div>
 <pre><span class="c"># No flag means --bfs: the default frontier is the one under construction.</span>
-<span class="hl">ops = stack_frontier if "dfs" in flags else queue_frontier</span></pre>
+<span class="hl">ops = stack_frontier if want_stack else queue_frontier</span></pre>
     </div>
     <figcaption><b>This is the whole of &quot;choosing an algorithm.&quot;</b> A single assignment, made during argument parsing, remote from both the search and the maze.</figcaption>
   </figure>
 
   <div class="col">
     <div class="callout">
-      <p><strong>The single point of difference.</strong> <code>put</code> followed by <code>take</code> returns the <em>oldest</em> element on the queue and the <em>newest</em> on the stack. That one difference is what makes the same loop either expand in rings from the start — breadth-first, with a guaranteed shortest path — or descend a single corridor until it dead-ends — depth-first, returning the first path found.</p>
+      <p><strong>The single point of difference.</strong> <code>put</code> followed by <code>take</code> returns the <em>oldest</em> element on the queue and the <em>newest</em> on the stack. That one difference is what makes the same loop either expand in rings from the start — breadth-first, with a guaranteed shortest path — or follow the stack. The stack explores the most recently discovered pending cell first. This changes the exploration order and may produce a longer path. Because cells are marked when inserted, this is stack-based graph traversal, not general DFS.</p>
       <p>The maze never learns which occurred. <code>search</code> never asks.</p>
       <p>Both searches run side by side, one step at a time, in <a href="index.html#demo">§03 of the session page</a>.</p>
     </div>
@@ -727,7 +727,7 @@ stack_frontier = SimpleNamespace(
   <div class="col">
     <div class="shell">
 <div><span class="prompt">$ </span>python3 -m unittest test_pqueue -v      <span class="c"># Part A: make these pass, in order</span></div>
-<div><span class="prompt">$ </span>python3 solver.py ../mazes/medium.txt --dfs   <span class="c"># works before a line is written</span></div>
+<div><span class="prompt">$ </span>python3 solver.py ../mazes/medium.txt --stack <span class="c"># works before a line is written (--dfs: old name, same search)</span></div>
 <div><span class="prompt">$ </span>python3 solver.py ../mazes/medium.txt --bfs   <span class="c"># runs on the persistent queue</span></div>
 <div><span class="prompt">$ </span>python3 solver.py ../mazes/medium.txt --bfs --html=bfs.html</div>
 <div><span class="prompt">$ </span>python3 solver.py ../mazes/medium.txt --bfs --inspect=40</div>

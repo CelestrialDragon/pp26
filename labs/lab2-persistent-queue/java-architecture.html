@@ -595,7 +595,7 @@ record <span class="hl">StackFrontier(Pos head, StackFrontier tail)</span> imple
 
     <p>Three languages, three ways to say <em>same interface, two implementations</em>: Python gathers five functions into a <code>SimpleNamespace</code> and nothing checks that they exist; OCaml uses a record of functions whose second type parameter is the frontier itself, so the search is polymorphic in it; Java declares an interface and dispatches dynamically. Java's is the version that needs no explanation in this room &mdash; which is exactly why it is worth noticing that the other two achieved the same separation without it.</p>
 
-    <p>The highlighted line repays a second look. <code>StackFrontier</code> is a record whose <code>tail</code> is another <code>StackFrontier</code>: the frontier <em>is</em> its own cons cell, so the persistent stack needs no separate class and no queue behind it. Its <code>put</code> is one <code>new</code>, and its <code>take</code> returns the two components it already has. That is why <code>--dfs</code> produces a complete search before any of the four TODOs is written.</p>
+    <p>The highlighted line repays a second look. <code>StackFrontier</code> is a record whose <code>tail</code> is another <code>StackFrontier</code>: the frontier <em>is</em> its own cons cell, so the persistent stack needs no separate class and no queue behind it. Its <code>put</code> is one <code>new</code>, and its <code>take</code> returns the two components it already has. That is why <code>--stack</code> produces a complete search before any of the four TODOs is written. <code>--dfs</code> is still accepted: it is the flag&rsquo;s old name, kept so earlier commands keep running, but the search it selects is stack-based, not depth-first (see the caveat in <a href="index.html#numbers">the check</a>).</p>
   </div>
 </section>
 
@@ -610,7 +610,7 @@ record <span class="hl">StackFrontier(Pos head, StackFrontier tail)</span> imple
 <pre>javac *.java
 java Tests
 java MazeSolver ../mazes/medium.txt
-java MazeSolver ../mazes/medium.txt --dfs</pre>
+java MazeSolver ../mazes/medium.txt --stack</pre>
     </div>
 
     <p><code>javac *.java</code> compiles all three files; <code>java Tests</code> runs the tests and <code>java MazeSolver</code> the search. There is no build directory and nothing to clean beyond the <code>.class</code> files left beside the sources.</p>

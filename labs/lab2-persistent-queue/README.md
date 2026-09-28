@@ -97,13 +97,15 @@ a question put to an old version of the frontier.
 
 ```bash
 python3 solver.py ../mazes/medium.txt --bfs
-python3 solver.py ../mazes/medium.txt --dfs
+python3 solver.py ../mazes/medium.txt --stack
 python3 solver.py ../mazes/medium.txt --bfs --html=bfs.html
 python3 solver.py ../mazes/medium.txt --bfs --inspect=40
 ```
 
-`--dfs` works before a single line is written — the stack frontier is provided
-in `python/pstack.py`. Read it: it is the same file shape as `pqueue.py` with
+`--stack` works before a single line is written — the stack frontier is provided
+in `python/pstack.py`. (`--dfs` is still accepted, as the flag's old name; it
+selects the same stack-based search, which is not depth-first search — the
+caveat on the lab page explains why.) Read it: it is the same file shape as `pqueue.py` with
 the same interface, and it has no TODOs, because for a LIFO structure
 persistence is free (`push` shares the *entire* old stack and there is no
 rebalancing step). All the difficulty of Part A lives in `pqueue._make`.
@@ -128,12 +130,12 @@ versions is free when nothing can modify them.
 cd ocaml
 dune runtest
 dune exec bin/solver.exe -- ../mazes/medium.txt --bfs
-dune exec bin/solver.exe -- ../mazes/medium.txt --dfs
+dune exec bin/solver.exe -- ../mazes/medium.txt --stack
 dune exec bin/solver.exe -- ../mazes/medium.txt --bfs --html=bfs.html
 dune exec bin/solver.exe -- ../mazes/medium.txt --bfs --inspect=40
 ```
 
-The solver takes the same flags as the Python one — `--bfs`, `--dfs`,
+The solver takes the same flags as the Python one — `--bfs`, `--stack` (alias `--dfs`),
 `--html[=FILE]`, `--inspect[=N]`, `--no-color` — and writes a byte-identical
 time-travel page, because that page is HTML and JavaScript in both cases.
 
@@ -168,7 +170,7 @@ will have the tools in session 5.)
 ```bash
 cd java
 javac *.java && java Tests
-java MazeSolver ../mazes/medium.txt [--dfs]
+java MazeSolver ../mazes/medium.txt [--stack]
 ```
 
 Fill the four TODOs in `PQueue.java`. Note what Java adds that Python could
@@ -179,8 +181,12 @@ the lecture's "why `private` and `final`?" slide, enforced by a compiler.
 
 - Add a **priority-queue frontier** to `solver.py` (Python's `heapq` is fine)
   with Manhattan distance to the exit as priority — the same search text
-  becomes greedy best-first / A*. One observation: `heapq` is ephemeral —
-  what does that break in `--inspect`?
+  becomes greedy best-first search. It is not A*: A* orders by path cost so
+  far plus the heuristic, and it must update a cell's best known cost and
+  parent when a better route is found, which our first-discovery-only loop
+  never does. Swapping the frontier cannot turn it into A*; the loop itself
+  would have to change. One observation: `heapq` is ephemeral — what does
+  that break in `--inspect`?
 - Make `dequeue` in OCaml return the **pair queue-with-both-halves** needed
   for a double-ended queue (`enqueue_front`). Where does the invariant fight
   back?

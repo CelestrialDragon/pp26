@@ -597,7 +597,7 @@ stack_frontier : (int * int, <span class="hl">(int * int) list</span>)     front
     <p>Because <code>search</code> is written for <em>any</em> <code>'f</code>, it is incapable of depending on which one arrives. Not unlikely to; incapable. There is no cast to reach through the abstraction and no field to inspect, because within the loop the type <code>'f</code> has no structure at all. The agnosticism the Python note describes as a discipline is here a property the compiler establishes before the program runs.</p>
 
     <div class="callout">
-      <p><strong>The stack needs no module behind it.</strong> <code>queue_frontier</code> is built from <code>Pqueue</code>; <code>stack_frontier</code> is built from nothing &mdash; its <code>empty</code> is <code>[]</code>, its <code>put</code> is <code>::</code>, and its <code>take</code> is a two-case <code>match</code>. OCaml's built-in list <em>is</em> the lecture's persistent stack, so the stack half of this lab is supplied by the language itself. That is also why <code>--dfs</code> runs before a single TODO is filled in.</p>
+      <p><strong>The stack needs no module behind it.</strong> <code>queue_frontier</code> is built from <code>Pqueue</code>; <code>stack_frontier</code> is built from nothing &mdash; its <code>empty</code> is <code>[]</code>, its <code>put</code> is <code>::</code>, and its <code>take</code> is a two-case <code>match</code>. OCaml's built-in list <em>is</em> the lecture's persistent stack, so the stack half of this lab is supplied by the language itself. That is also why <code>--stack</code> runs before a single TODO is filled in. <code>--dfs</code> is still accepted: it is the flag&rsquo;s old name, kept so earlier commands keep running, but the search it selects is stack-based, not depth-first (see the caveat in <a href="index.html#numbers">the check</a>).</p>
     </div>
 
     <p>A record whose fields are functions has a proper name, and gets it in session&nbsp;5. For now it reads as a bundle of operations passed as one value.</p>
@@ -635,7 +635,7 @@ dune runtest
 
 M=../mazes/medium.txt
 dune exec bin/solver.exe <span class="hl">--</span> $M --bfs
-dune exec bin/solver.exe <span class="hl">--</span> $M --dfs
+dune exec bin/solver.exe <span class="hl">--</span> $M --stack
 dune exec bin/solver.exe -- $M --bfs --inspect=40</pre>
     </div>
 

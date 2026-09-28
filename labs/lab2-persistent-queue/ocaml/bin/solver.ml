@@ -8,12 +8,12 @@
 
    Usage (the same flags as python/solver.py):
      dune exec bin/solver.exe -- ../mazes/medium.txt --bfs   # the persistent queue
-     dune exec bin/solver.exe -- ../mazes/medium.txt --dfs   # a plain list
+     dune exec bin/solver.exe -- ../mazes/medium.txt --stack # a plain list (--dfs: old name)
      dune exec bin/solver.exe -- ../mazes/medium.txt         # no flag = --bfs
 
      ... --bfs --html=bfs.html   # time travel, open it in a browser
      ... --bfs --inspect=40      # ask an old version what it held
-     ... --dfs --no-color        # plain glyphs
+     ... --stack --no-color      # plain glyphs
 
    (A record whose fields are functions? That trick gets a proper name
    in session 5. Today, just read it as "a bundle of operations".) *)
@@ -131,14 +131,19 @@ let search grid ops =
 
 (* ---- command line -------------------------------------------------- *)
 
+(* --dfs is the flag's old name, kept as an alias: the search it selects is
+   stack-based, not depth-first (see the caveat on the lab page). *)
+let want_stack flags = List.mem_assoc "stack" flags || List.mem_assoc "dfs" flags
+
 let usage = "\
 Maze search over a persistent frontier.
 
-usage: solver <maze-file> [--bfs | --dfs] [--html[=FILE]] [--inspect[=N]]
+usage: solver <maze-file> [--bfs | --stack] [--html[=FILE]] [--inspect[=N]]
                           [--no-color]
 
   --bfs           frontier = the persistent queue (the default)
-  --dfs           frontier = a plain list used as a stack
+  --stack         frontier = a plain list used as a stack
+                  (--dfs: the old name of this flag, still accepted)
   --html[=FILE]   write a self-contained time-travel page (search.html)
   --inspect[=N]   print the frontier as it was at step N
   --no-color      plain glyphs, no ANSI colour"
@@ -171,7 +176,7 @@ let report grid ops flags outcome =
        ?path:outcome.path
        ~visited:(List.map fst outcome.trace)
        ?colour:(if flag "no-color" <> None then Some false else None)
-       ~seen:(if flag "dfs" <> None then Render.seen_stack else Render.seen_queue)
+       ~seen:(if want_stack flags then Render.seen_stack else Render.seen_queue)
        ());
   (match outcome.path with
    | Some cells ->
@@ -207,8 +212,8 @@ let () =
   let has k = List.mem_assoc k flags in
   match args with
   | [] -> print_endline usage; exit 1
-  | _ when has "bfs" && has "dfs" ->
-      prerr_endline "pick one frontier: --bfs (queue) or --dfs (stack)";
+  | _ when has "bfs" && want_stack flags ->
+      prerr_endline "pick one frontier: --bfs (queue) or --stack (stack)";
       exit 2
   | maze_file :: _ ->
       let grid = load_maze maze_file in
@@ -223,8 +228,8 @@ let () =
               "--bfs runs on the persistent queue of pqueue.ml, which is not yet \
                finished (%s).\n\
               \  * fill the TODOs in lib/pqueue.ml  (Part C), or\n\
-              \  * run --dfs right now: the stack frontier is provided.\n"
+              \  * run --stack right now: the stack frontier is provided.\n"
               msg;
             1
       in
-      exit (if has "dfs" then go stack_frontier else go queue_frontier)
+      exit (if want_stack flags then go stack_frontier else go queue_frontier)
