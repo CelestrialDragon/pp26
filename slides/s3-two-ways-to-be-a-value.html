@@ -205,9 +205,9 @@ html, body { background: var(--bg); color: var(--fg); margin: 0; }
   <table>
     <tr><td class="s">S3 · today</td><td>how a datatype <span class="hl">organises</span> its values</td></tr>
     <tr><td class="s">S8</td><td>a type as a <b>protocol</b></td></tr>
-    <tr><td class="s">S9</td><td>what a type <b>claims</b> about a value</td></tr>
-    <tr><td class="s">S11</td><td>what a type <b>hides</b></td></tr>
-    <tr><td class="s">S12</td><td>a type as a <b>relation</b></td></tr>
+    <tr><td class="s">S10</td><td>what a type <b>claims</b> about a value</td></tr>
+    <tr><td class="s">S12</td><td>what a type <b>hides</b></td></tr>
+    <tr><td class="s">S13</td><td>a type as a <b>relation</b></td></tr>
   </table>
   </div>
   <aside class="notes">Do not resolve the question. Leave it open; today is the first of four partial answers. The two-ways claim comes on the slide "Two ways, stated", after the room has discovered it.</aside>
@@ -220,10 +220,10 @@ html, body { background: var(--bg); color: var(--fg); margin: 0; }
   <table>
     <tr><th>bundled into “object”</th><th>actually a separate axis</th><th class="s"></th></tr>
     <tr><td>mutable fields, identity</td><td>state vs. persistence</td><td class="s">S2, S7</td></tr>
-    <tr><td>inheritance, <code>extends</code></td><td>subtyping</td><td class="s">S10</td></tr>
+    <tr><td>inheritance, <code>extends</code></td><td>subtyping</td><td class="s">S11</td></tr>
     <tr><td>classes</td><td>classes vs. prototypes (Self, JS)</td><td class="s">today, one slide</td></tr>
-    <tr><td>declared <code>implements</code></td><td>nominal vs. structural typing (Java vs. Go)</td><td class="s">S10</td></tr>
-    <tr><td>static types</td><td>Smalltalk has none</td><td class="s">S9</td></tr>
+    <tr><td>declared <code>implements</code></td><td>nominal vs. structural typing (Java vs. Go)</td><td class="s">S11</td></tr>
+    <tr><td>static types</td><td>Smalltalk has none</td><td class="s">S10</td></tr>
   </table>
   <div class="box fragment">In this session, an object is <b>a value used only through the operations it carries</b>.<br><span class="small">State and identity can be added — and usually are — but they are not essential.</span></div>
   <aside class="notes">This is the stripping. Everything in the left column is real and important, and none of it is what makes an object an object. Cook 2009 defines objects this minimally.</aside>
@@ -519,9 +519,9 @@ const test4 = [3, 4, 5, 6].map(x => contains1u(union1u({ kind: 'finite', xs: [3,
   </table>
   <p class="fragment">Both are older than the languages we write them in. Reynolds (1975) called them <em>user-defined types</em> and <em>procedural data structures</em> — <span class="hl">“complementary approaches to data abstraction”</span>.</p>
   <div class="box fragment small">Two ADTs, one acronym.<br>
-  <b>Abstract</b> data type (Liskov &amp; Zilles, 1974): a type its clients know only through its operations — session 11.<br>
+  <b>Abstract</b> data type (Liskov &amp; Zilles, 1974): a type its clients know only through its operations — session 12.<br>
   <b>Algebraic</b> data type (Hope, 1980): a type whose values come in a closed list of shapes — today.</div>
-  <aside class="notes">The acronym clash costs students hours. Say it once, clearly. The abstract one is Way 1 with a wall in front; the wall is S11.</aside>
+  <aside class="notes">The acronym clash costs students hours. Say it once, clearly. The abstract one is Way 1 with a wall in front; the wall is S12.</aside>
 </section>
 
 <!-- 14 -->
@@ -767,7 +767,7 @@ s.contains(4);</code></pre>
     </ul>
     <ul>
       <li><b>privacy boundary</b></li>
-      <li><b>inheritance</b> — session 10</li>
+      <li><b>inheritance</b> — session 11</li>
       <li><b>namespace</b> — <code>Set.empty</code></li>
     </ul>
   </div>
@@ -799,11 +799,11 @@ evens.contains = x => x % 2 === 0;    // its own; evens.kind is still found on e
       </div>
       <div class="car-panel fragment current-visible" data-fragment-index="5">
         <pre class="mid"><code class="language-go">type Reader interface { Read(p []byte) (int, error) }</code></pre>
-        <p>No classes and no <code>implements</code>: any value with a <code>Read</code> method is a <code>Reader</code>. The interface is satisfied <span class="hl">by shape</span> — session 10. Same way, different amount of declaration.</p>
+        <p>No classes and no <code>implements</code>: any value with a <code>Read</code> method is a <code>Reader</code>. The interface is satisfied <span class="hl">by shape</span> — session 11. Same way, different amount of declaration.</p>
       </div>
     </div>
   </div>
-  <aside class="notes">Java panel verified: demos/Eq.java prints "true false". Fields: from outside, a field read is an operation with no arguments (Meyer's uniform access; Self's slots); public fields leak the representation — a product, Way 1. Dispatch ladder if a student asks how equals could see both: static (no dispatch) / a.equals(b) dispatches on the receiver only — the binary-method problem, Bruce et al. 1995 / visitor dispatches on both, next part / multimethods dispatch on all, S10. C++ (multiple inheritance, classes as structs with layout) is left out: it repeats Java's bundling, and inheritance is S10's axis. Smalltalk compilers inline ifTrue:ifFalse: for speed; the meaning is still the send, and [ ... ] is a block — a closure, S5's subject. Smalltalk's booleans are two objects, True and False — demos/objbool.ml is the same in OCaml.</aside>
+  <aside class="notes">Java panel verified: demos/Eq.java prints "true false". Fields: from outside, a field read is an operation with no arguments (Meyer's uniform access; Self's slots); public fields leak the representation — a product, Way 1. Dispatch ladder if a student asks how equals could see both: static (no dispatch) / a.equals(b) dispatches on the receiver only — the binary-method problem, Bruce et al. 1995 / visitor dispatches on both, next part / multimethods dispatch on all, S11. C++ (multiple inheritance, classes as structs with layout) is left out: it repeats Java's bundling, and inheritance is S11's axis. Smalltalk compilers inline ifTrue:ifFalse: for speed; the meaning is still the send, and [ ... ] is a block — a closure, S5's subject. Smalltalk's booleans are two objects, True and False — demos/objbool.ml is the same in OCaml.</aside>
 </section>
 
 <!-- part 5 -->
@@ -818,7 +818,7 @@ evens.contains = x => x % 2 === 0;    // its own; evens.kind is still found on e
   <h2>One abstraction barrier, placed two ways</h2>
   <p>Both ways hide how an operation works: a client calls <code>contains</code> and gets an answer, never seeing the body — the array scan, or the chain of calls. Any function does this much. What each way adds differs:</p>
   <table class="ways">
-    <tr class="fragment"><td class="s hl">[ADT]</td><td>Way 1, behind a wall we will build in session 11. The <b>representation type</b> is hidden: behind an <code>.mli</code>, as session 2’s stack, <code>type t</code> shows no constructors, so no client can match on a set or build one by hand. Cook calls this <span class="hl">type abstraction</span>. Only a compiler can enforce it.</td></tr>
+    <tr class="fragment"><td class="s hl">[ADT]</td><td>Way 1, behind a wall we will build in session 12. The <b>representation type</b> is hidden: behind an <code>.mli</code>, as session 2’s stack, <code>type t</code> shows no constructors, so no client can match on a set or build one by hand. Cook calls this <span class="hl">type abstraction</span>. Only a compiler can enforce it.</td></tr>
     <tr class="fragment"><td class="s hl">[Objects]</td><td>Way 2, as it stands. Nothing is hidden at the type level: the interface type is public. What is hidden is the environment of one closure — this <code>s</code>, this <code>n</code> — and it is hidden by being a function: nothing but a call can reach in. Cook calls this <span class="hl">procedural abstraction</span>: a procedure’s wall, with the data inside.</td></tr>
   </table>
   <div class="box fragment">One wall around the whole type, or <span class="hl">one wall around each value</span>.<br>Objects need no type system to keep their secrets; abstract data types do.</div>
@@ -862,8 +862,8 @@ evens.contains = x => x % 2 === 0;    // its own; evens.kind is still found on e
       <div class="fragment" data-anim="row" data-n="2"><p>One more kind is one more row, <code>Union</code> included. <code>equal</code> gets no row: a row cannot inspect another.</p></div>
     </div>
   </div>
-  <div class="box fragment">Wadler (1998) named the problem of growing both ways at once, with the compiler still checking every cell: <b>the expression problem</b>. Its resolutions are session 10.</div>
-  <aside class="notes">Extension 1 was a new column, extension 2 the equal column, extension 3 two new rows. Clicks: 1 fills contains/isEmpty/union for all four kinds (blue): Way 1 writes each as one function; 2 fills the equal column for Empty, Insert and Evens — Way 1 can, by inspecting both, and by comparing tags — but not for Union: no normal form; 3 clears and fills the Empty and Insert rows (orange); 4 fills the Evens and Union rows — Way 2 can, one class each; the equal column gets no row. The one open cell, equal for Union, is open on both sides, for different reasons: Way 1 has not computed the set, Way 2 cannot look at it. Then the callout. The ledger owes S10 the resolutions; here only the phenomenon.</aside>
+  <div class="box fragment">Wadler (1998) named the problem of growing both ways at once, with the compiler still checking every cell: <b>the expression problem</b>. Its resolutions are session 11.</div>
+  <aside class="notes">Extension 1 was a new column, extension 2 the equal column, extension 3 two new rows. Clicks: 1 fills contains/isEmpty/union for all four kinds (blue): Way 1 writes each as one function; 2 fills the equal column for Empty, Insert and Evens — Way 1 can, by inspecting both, and by comparing tags — but not for Union: no normal form; 3 clears and fills the Empty and Insert rows (orange); 4 fills the Evens and Union rows — Way 2 can, one class each; the equal column gets no row. The one open cell, equal for Union, is open on both sides, for different reasons: Way 1 has not computed the set, Way 2 cannot look at it. Then the callout. The ledger owes S11 the resolutions; here only the phenomenon (S11 in the 13-session numbering).</aside>
 </section>
 
 <!-- 29 -->
@@ -1017,25 +1017,25 @@ class Insert extends Set {
     <tr><td>OCaml</td><td><b>Way 1</b></td><td><code>object … end</code> — rarely used</td></tr>
     <tr><td>Rust, Swift, Haskell</td><td><b>Way 1</b></td><td><code>dyn Trait</code>, protocols, type classes</td></tr>
     <tr><td>Java</td><td><b>Way 2</b></td><td><code>sealed</code> + <code>record</code> + <code>switch</code>, since 2021</td></tr>
-    <tr><td>Smalltalk</td><td><b>Way 2</b> only</td><td>no static list of kinds — session 9</td></tr>
+    <tr><td>Smalltalk</td><td><b>Way 2</b> only</td><td>no static list of kinds — session 10</td></tr>
     <tr><td>Python, JavaScript</td><td><b>Way 2</b>, untyped</td><td>Python’s <code>match</code>, unchecked; a <code>kind</code> field by hand</td></tr>
     <tr><td>Go</td><td><b>Way 2</b>, by shape</td><td>a type <code>switch</code>, unchecked for missing cases</td></tr>
   </table>
   <div class="box fragment">Paradigm ≠ language: a language only makes some choices the default. The friction of saying the other thing is the <span class="hl">evidence of the default</span>.</div>
-  <aside class="notes">Course slogan, now with evidence: OCaml's objects rarely used; Java's twenty years to sealed. Rust: enums are Way 1, trait objects are Way 2 — both first-class, which is why Rust code tends to use each where it fits. Haskell's type classes and Go's structural interfaces are S10's resolutions of the expression problem; here they are only "the other way".</aside>
+  <aside class="notes">Course slogan, now with evidence: OCaml's objects rarely used; Java's twenty years to sealed. Rust: enums are Way 1, trait objects are Way 2 — both first-class, which is why Rust code tends to use each where it fits. Haskell's type classes and Go's structural interfaces are S11's resolutions of the expression problem; here they are only "the other way".</aside>
 </section>
 
 <!-- 35 -->
 <section>
-  <h2>The same question in sessions 8, 9, 11 and 12</h2>
+  <h2>The same question in sessions 8, 10, 12 and 13</h2>
   <p>This session answered <em>what is a datatype?</em> by how it <span class="hl">organises</span> its values: by construction, or by behaviour. Four later sessions answer it again:</p>
   <table>
     <tr><td class="s">S8</td><td>a type as a <b>protocol</b>: which messages, in which order — session types</td></tr>
-    <tr><td class="s">S9</td><td>what a type <b>claims</b> about a value: a type as a proof; Smalltalk’s one big sum</td></tr>
-    <tr><td class="s">S11</td><td>what a type <b>hides</b>: abstract data types. Way 1 behind a wall; session 2’s <code>.mli</code> returns</td></tr>
-    <tr><td class="s">S12</td><td>a type as a <b>relation</b>: tables, queries; a query plan is a tree — a Way 1 program</td></tr>
+    <tr><td class="s">S10</td><td>what a type <b>claims</b> about a value: a type as a proof; Smalltalk’s one big sum</td></tr>
+    <tr><td class="s">S12</td><td>what a type <b>hides</b>: abstract data types. Way 1 behind a wall; session 2’s <code>.mli</code> returns</td></tr>
+    <tr><td class="s">S13</td><td>a type as a <b>relation</b>: tables, queries; a query plan is a tree — a Way 1 program</td></tr>
   </table>
-  <aside class="notes">Four lines, four numbers; do not open any of them. S11 is where the "two ADTs" warning from part 3 pays off. S9 is where Smalltalk's lack of static types becomes "one big tagged union" (Harper).</aside>
+  <aside class="notes">Four lines, four numbers; do not open any of them. S12 is where the "two ADTs" warning from part 3 pays off. S10 is where Smalltalk's lack of static types becomes "one big tagged union" (Harper).</aside>
 </section>
 
 <!-- 36 -->

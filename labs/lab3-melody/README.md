@@ -147,7 +147,7 @@ of warnings is the checklist. Then uncomment `twice` in `tunes.ml` and the B2 ch
 
 The count is never negative. The type cannot say so — `Repeat (-1, m)` is a value it admits —
 so this is a rule we keep by hand, and our functions may assume it. What the type guarantees
-and what stays a rule beside it is a distinction session 9 returns to.
+and what stays a rule beside it is a distinction session 10 returns to.
 
 ## Part C — operations on melodies
 
