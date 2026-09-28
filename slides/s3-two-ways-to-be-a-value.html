@@ -135,6 +135,7 @@ html, body { background: var(--bg); color: var(--fg); margin: 0; }
 .reveal table.matrix th:first-child, .reveal table.matrix td:first-child { text-align: left; }
 .reveal table.matrix .ext { color: var(--muted); font-weight: 500; }
 .reveal table.matrix { margin-bottom: 14px; }
+.reveal table.matrix td, .reveal table.matrix th { padding-top: 5px; padding-bottom: 5px; }   /* five rows must fit above the two columns */
 /* carousel: one language at a time */
 .reveal .car-tabs { display: flex; gap: 8px; margin: 0 0 14px 0; }
 .reveal .car-tabs span { font-size: 26px; font-weight: 500; color: var(--muted); padding: 4px 18px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; }
@@ -200,15 +201,16 @@ html, body { background: var(--bg); color: var(--fg); margin: 0; }
     <li class="fragment">“a collection of values” — of what, arranged how?</li>
   </ul>
   <div class="fragment">
-  <p>Each describes one aspect. The question returns four times this semester:</p>
+  <p>Each describes one aspect. The question returns in four later sessions:</p>
   <table>
     <tr><td class="s">S3 · today</td><td>how a datatype <span class="hl">organises</span> its values</td></tr>
+    <tr><td class="s">S8</td><td>a type as a <b>protocol</b></td></tr>
     <tr><td class="s">S9</td><td>what a type <b>claims</b> about a value</td></tr>
     <tr><td class="s">S11</td><td>what a type <b>hides</b></td></tr>
     <tr><td class="s">S12</td><td>a type as a <b>relation</b></td></tr>
   </table>
   </div>
-  <aside class="notes">Do not resolve the question. Leave it open; today is the first of four partial answers. The two-ways claim comes on slide 12, after the room has discovered it.</aside>
+  <aside class="notes">Do not resolve the question. Leave it open; today is the first of four partial answers. The two-ways claim comes on the slide "Two ways, stated", after the room has discovered it.</aside>
 </section>
 
 <!-- 3 -->
@@ -219,9 +221,9 @@ html, body { background: var(--bg); color: var(--fg); margin: 0; }
     <tr><th>bundled into “object”</th><th>actually a separate axis</th><th class="s"></th></tr>
     <tr><td>mutable fields, identity</td><td>state vs. persistence</td><td class="s">S2, S7</td></tr>
     <tr><td>inheritance, <code>extends</code></td><td>subtyping</td><td class="s">S10</td></tr>
-    <tr><td>classes</td><td>classes vs. prototypes (Self, JS)</td><td class="s">today, one line</td></tr>
+    <tr><td>classes</td><td>classes vs. prototypes (Self, JS)</td><td class="s">today, one slide</td></tr>
     <tr><td>declared <code>implements</code></td><td>nominal vs. structural typing (Java vs. Go)</td><td class="s">S10</td></tr>
-    <tr><td>static types</td><td>Smalltalk has none — the purest object language</td><td class="s">S9</td></tr>
+    <tr><td>static types</td><td>Smalltalk has none</td><td class="s">S9</td></tr>
   </table>
   <div class="box fragment">In this session, an object is <b>a value used only through the operations it carries</b>.<br><span class="small">State and identity can be added — and usually are — but they are not essential.</span></div>
   <aside class="notes">This is the stripping. Everything in the left column is real and important, and none of it is what makes an object an object. Cook 2009 defines objects this minimally.</aside>
@@ -258,7 +260,7 @@ insert(s, n)       // the set s, with n added
 contains(s, x)     // is x in s?
 union(s, t)        // every element of s, or of t</code></pre>
   <p>Client code uses only these four names.</p>
-  <p class="fragment">Two implementations follow. The client cannot tell them apart. At least at first.</p>
+  <p class="fragment">Two implementations follow. The client cannot tell them apart — until the interface grows.</p>
   <aside class="notes">Cook 2009's running example. Keep the interface small: four names, one of them binary.</aside>
 </section>
 
@@ -337,80 +339,58 @@ const test2 = [3, 4, 5, 6].map(x => contains2(union2(a2, b2), x));
   <p class="fragment">Nothing so far tells the two apart. But what if we <span class="hl">extend</span> the interface with</p>
   <ol class="fragment">
     <li>a new operation</li>
-    <li>a new kind of set</li>
     <li>an operation on two sets</li>
+    <li>a new kind of set</li>
   </ol>
-  <aside class="notes">Run it live. Same client code, same four answers. Then announce the three extensions.</aside>
+  <aside class="notes">Run it live. Same client code, same four answers. Then announce the three extensions, in this order: the binary operation comes before any new kind, so that equal is written for the sets that exist at that point. Source of every Run: demos/twosets.js; its last block runs one client, with a duplicate insert and a union with the evens, against both ways and checks that they agree.</aside>
 </section>
 
 <!-- 9 -->
 <section>
-  <h2>Extension 1 — a new operation: <code>size</code></h2>
+  <h2>Extension 1 — a new operation: <code>isEmpty</code></h2>
   <div class="cols">
     <div>
       <h3>Way 1</h3>
-      <script class="src" id="src-size1">
-const size1 = s => s.length;
+      <script class="src" id="src-isempty1">
+const isEmpty1 = s => s.length === 0;
       </script>
-      <pre><code class="language-js" data-src="src-size1"></code></pre>
+      <pre><code class="language-js" data-src="src-isempty1"></code></pre>
       <p>One line. Nothing else is touched.</p>
-      <p><button class="run" onclick="show('out9', 'size1(union1(a1, b1)) = ' + size1(union1(a1, b1)))">Run</button></p>
+      <script class="src" id="src-isempty1-test">
+const e1 = [empty1, insert1(empty1, 3),
+  union1(empty1, empty1)].map(isEmpty1);
+      </script>
+      <pre><code class="language-js" data-src="src-isempty1-test"></code></pre>
+      <p><button class="run" onclick="show('out9', 'e1 = ' + J(e1))">Run</button></p>
       <pre class="out" id="out9"> </pre>
     </div>
     <div>
       <h3>Way 2</h3>
-      <p><code>const size2 = s => ???</code></p>
-      <p class="fragment">A function cannot be asked how many inputs it accepts.</p>
-      <div class="fragment">
-      <p>… unless a set carries <b>two</b> functions:</p>
+      <p><code>const isEmpty2 = s => ???</code></p>
+      <p class="fragment" data-fragment-index="0">A function cannot be asked whether it ever answers true — unless a set carries <b>two</b> functions:</p>
+      <div class="fragment" data-fragment-index="1">
       <script class="src" id="src-rec">
+const empty2b  = { contains: x => false,
+                   isEmpty:  () => true };
 const insert2b = (s, n) => ({
   contains: x => x === n || s.contains(x),
-  size:     () => s.size() + 1 });
+  isEmpty:  () => false });
+const union2b  = (s, t) => ({
+  contains: x => s.contains(x) || t.contains(x),
+  isEmpty:  () => s.isEmpty() && t.isEmpty() });
       </script>
-      <pre><code class="language-js" data-src="src-rec"></code></pre>
+      <script>const isEmpty2 = s => s.isEmpty();</script>
+      <pre style="font-size:21px"><code class="language-js" data-src="src-rec"></code></pre>
       </div>
     </div>
   </div>
-  <div class="box fragment">So a set becomes a <span class="hl">record of operations</span> sharing hidden data — and every existing set must be rebuilt this way.</div>
-  <aside class="notes">This is the object appearing on screen, before the word. Note the cost: every maker of sets changes, not one.</aside>
+  <div class="box fragment" data-fragment-index="2">So a set becomes a <span class="hl">record of operations</span> sharing hidden data — and every maker of sets, <code>empty</code>, <code>insert</code> and <code>union</code>, is rebuilt this way.</div>
+  <aside class="notes">This is the object appearing on screen, before the word. Each maker answers isEmpty from what it knows when it builds the set: empty says true, insert says false, union asks its two halves. Nothing inspects s. The cost: every maker changes, not one. If a student proposes adding elements() to the record: that hands the representation back through the interface, and size and equal return with it — the value has become Way 1 with an extra step. isEmpty rather than size: size of a duplicate insert would have to be guarded, and size of the evens (next extension) has no answer; isEmpty has one for every kind. demos/twosets.js prints e2 = [true, false, true] for the record version.</aside>
 </section>
 
 <!-- 10 -->
 <section>
-  <h2>Extension 2 — a new kind of set: the even numbers</h2>
-  <div class="cols">
-    <div>
-      <h3>Way 1</h3>
-      <p>No array holds the even numbers. There are now <span class="hl">two kinds</span> of set, told apart by a tag:</p>
-      <pre><code class="language-js">{ kind: 'finite', xs: [3, 5] }   // as before
-{ kind: 'evens' }                // no array
-
-const contains1 = (s, x) =>
-  s.kind === 'evens' ? x % 2 === 0
-                     : s.xs.includes(x);
-const union1 = (s, t) => /* four cases */</code></pre>
-      <p>— and <b>every</b> operation now begins by <span class="hl">reading the tag</span>.</p>
-    </div>
-    <div class="fragment">
-      <h3>Way 2</h3>
-      <script class="src" id="src-evens">
-const evens = x => x % 2 === 0;
-const test3 = [3, 4, 5, 6]
-  .map(x => contains2(union2(a2, evens), x));
-      </script>
-      <pre><code class="language-js" data-src="src-evens"></code></pre>
-      <p>One line, and it holds <em>every</em> even number — infinitely many, more than any array could list. It unions with the others as if nothing happened.</p>
-      <p><button class="run" onclick="show('out10', 'union2(a2, evens): ' + J(test3))">Run</button></p>
-      <pre class="out" id="out10"> </pre>
-    </div>
-  </div>
-  <aside class="notes">Ask the room what array holds the even numbers. Then: the tag field appears — the ancestor of the constructor.</aside>
-</section>
-
-<!-- 11 -->
-<section>
-  <h2>Extension 3 — an operation on two sets</h2>
+  <h2>Extension 2 — an operation on two sets</h2>
   <div class="cols">
     <div>
       <h3>Way 1</h3>
@@ -420,19 +400,90 @@ const test3 = [3, 4, 5, 6]
 const equal1 = (s, t) =>
   s.length === t.length &&
   s.every(x => t.includes(x));</code></pre>
-      <p>Inspects both. Could sort, merge, deduplicate, compare.</p>
+      <p>Both inspect both arrays: merge them, or compare them.</p>
     </div>
     <div>
       <h3>Way 2</h3>
       <pre><code class="language-js">const union2 = (s, t) => x => s(x) || t(x);
 
 const equal2 = (s, t) => ???</code></pre>
-      <p>Can only call. Enough for <code>union</code> —</p>
-      <p class="fragment"><span class="hl">not enough</span> for <code>equal</code>: no finite test decides whether two functions agree on every input.</p>
+      <p>Both can only call. Enough for <code>union</code> —</p>
+      <p class="fragment"><span class="hl">not enough</span> for <code>equal</code>: no finite number of calls decides whether two functions agree on every input.</p>
     </div>
   </div>
   <div class="box fragment"><b>Way 1:</b> an operation on two sets sees both representations — it can merge them, or compare them.<br><b>Way 2:</b> it can only ask each set about an <code>x</code> and combine the answers. The two sets themselves are <span class="hl">never compared</span>.</div>
-  <aside class="notes">This is the binary-method row of Cook's table, and function extensionality, without either name. Identity as a substitute for equality comes in S7.</aside>
+  <aside class="notes">This is the binary-method row of Cook's table, and function extensionality, without either name. Identity as a substitute for equality comes in S7. This slide comes before the new kind on purpose: equal1 is written for arrays, and at this point every set is an array. The next slide will make equal1 pay for the new kind.</aside>
+</section>
+
+<!-- 11 -->
+<section>
+  <h2>Extension 3 — a new kind of set: the even numbers</h2>
+  <div class="cols">
+    <div>
+      <h3>Way 1</h3>
+      <p>No array holds the even numbers. There are now <span class="hl">two kinds</span> of set, told apart by a tag:</p>
+      <pre style="font-size:21px"><code class="language-js">{ kind: 'finite', xs: [3, 5] }   // as before
+{ kind: 'evens' }                // no array
+
+const contains1 = (s, x) =>
+  s.kind === 'evens' ? x % 2 === 0
+                     : s.xs.includes(x);
+const isEmpty1 = s =>
+  s.kind === 'evens' ? false
+                     : s.xs.length === 0;</code></pre>
+      <p>— and <b>every</b> operation now begins by <span class="hl">reading the tag</span>. <code>equal1</code> gains one case per pair of kinds.</p>
+    </div>
+    <div class="fragment">
+      <h3>Way 2</h3>
+      <script class="src" id="src-evens">
+const evens = { contains: x => x % 2 === 0,
+                isEmpty:  () => false };
+const a2b = insert2b(insert2b(empty2b, 3), 5);
+const test3 = [3, 4, 5, 6].map(x =>
+  union2b(a2b, evens).contains(x));
+      </script>
+      <pre style="font-size:21px"><code class="language-js" data-src="src-evens"></code></pre>
+      <p>One record, and it holds <em>every</em> even number. The other makers and every client stay as they are.</p>
+      <p><button class="run" onclick="show('out11', 'test3 = ' + J(test3))">Run</button></p>
+      <pre class="out" id="out11"> </pre>
+    </div>
+  </div>
+  <aside class="notes">Ask the room what array holds the even numbers. Then: the tag field appears — the ancestor of the constructor. equal1's new cases: evens against evens is true, evens against a finite set is false, finite against finite as before. Way 1 can hold an infinite set only as a kind it has a name for; Way 2 holds any set it can test. Not on the slide, because the argument does not need infinity: isEmpty and equal fail on Way 2 for finite sets too.</aside>
+</section>
+
+<!-- 11b -->
+<section>
+  <h2>Extension 3, continued — the union of two kinds</h2>
+  <div class="cols">
+    <div>
+      <h3>Way 1</h3>
+      <p><code>{3, 5} ∪ evens</code> is <span class="hl">neither kind</span>. The operation keeps what it cannot compute, as a third kind:</p>
+      <pre style="font-size:21px"><code class="language-js">const union1 = (s, t) =>
+  s.kind === 'finite' && t.kind === 'finite'
+    ? finite(merge(s.xs, t.xs))
+    : { kind: 'union', s, t };</code></pre>
+      <script>
+const merge = (xs, ys) => [...xs, ...ys.filter(y => !xs.includes(y))];
+const union1u = (s, t) => s.kind === 'finite' && t.kind === 'finite' ? { kind: 'finite', xs: merge(s.xs, t.xs) } : { kind: 'union', s, t };
+const contains1u = (s, x) => s.kind === 'evens' ? x % 2 === 0 : s.kind === 'union' ? contains1u(s.s, x) || contains1u(s.t, x) : s.xs.includes(x);
+const test4 = [3, 4, 5, 6].map(x => contains1u(union1u({ kind: 'finite', xs: [3, 5] }, { kind: 'evens' }), x));
+      </script>
+      <p><button class="run" onclick="show('out11b', 'test4 = ' + J(test4))">Run</button></p>
+      <pre class="out" id="out11b"> </pre>
+    </div>
+    <div>
+      <div class="fragment" data-fragment-index="0">
+      <p>Every operation gains a case. In <code>contains1</code>:</p>
+      <pre style="font-size:21px"><code class="language-js">s.kind === 'union' ? contains1(s.s, x)
+                  || contains1(s.t, x)</code></pre>
+      <p>— <code>union2</code>, written as data. <code>isEmpty1</code> asks both halves too. <code>equal1</code> has no case to write: two unions cannot be compared without a normal form.</p>
+      </div>
+      <h3 class="fragment" data-fragment-index="1">Way 2</h3>
+      <p class="fragment" data-fragment-index="1">Nothing to do. <code>union2b</code> already returns a set: a record of two functions is always a valid set.</p>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="2">In Way 1 every result must be one of the kinds. A new kind must keep <span class="hl">every operation closed</span> — or it costs one more kind, and one more case in every operation.</div>
+  <aside class="notes">The slide the earlier draft did not have: with only finite and evens, union1 had nowhere to put {3, 5} ∪ evens, and "four cases" was not true. The Union kind is the honest repair: a union the operation could not compute, kept as data. It is also the lab's Seq and Par two hours early: an operation whose result is stored as a term. contains1 on a union is union2 with a tag in front — the two ways meet here. equal1 on a union is the one cell Way 1 leaves open; it needs a normal form (an "evens" flag plus the odd elements), which is a slide of its own and not this session's. The same four kinds, Empty, Insert, Evens, Union, are the four files: demos/set_way1.ml, demos/set_way2.ml, demos/SetWay1.java, demos/SetWay2.java.</aside>
 </section>
 
 <!-- 12 -->
@@ -440,14 +491,14 @@ const equal2 = (s, t) => ???</code></pre>
   <h2>Two ways, stated</h2>
   <table>
     <tr><th></th><th>Way 1 — a set is data</th><th>Way 2 — a set is a function</th></tr>
-    <tr><td>a new operation</td><td>one new function</td><td>every set rebuilt</td></tr>
-    <tr><td>a new kind of set</td><td>every operation changed</td><td>one new function</td></tr>
+    <tr><td>a new operation</td><td>one new function</td><td>every maker rebuilt</td></tr>
     <tr><td>an operation on two sets</td><td>inspect both</td><td>call both — no comparison</td></tr>
+    <tr><td>a new kind of set</td><td>every operation changed</td><td>one new record</td></tr>
   </table>
   <div class="box fragment small"><b>Way 1:</b> a value <span class="hl">is</span> one of a closed collection of representations, open to every operation. A new operation is free; a new representation affects every operation.</div>
   <div class="box fragment small"><b>Way 2:</b> a value <span class="hl">is</span> its own operations, bundled together when it is made. A new implementation is free; a new operation affects every implementation.</div>
-  <p class="fragment small" style="margin-top:18px">Two ways of <span class="hl">implementing one interface</span>. Neither is a language feature — we used arrays and arrow functions. The names come next.</p>
-  <aside class="notes">Layer 1, stated. Do not name ADTs or objects yet; that is the next divider. If asked about deletion: remove is one line on both sides — remove1 = (s, n) => s.filter(x => x !== n); remove2 = (s, n) => x => x !== n && s(x). Way 2 handles every POINTWISE operation (union, intersection, difference, remove, and complement x => !s(x), which Way 1's arrays cannot represent at all). What Way 2 cannot do is observe the set as a whole: size, isEmpty, enumerate, equal. The boundary is pointwise-through-the-interface vs requires-inspecting-the-whole.</aside>
+  <p class="fragment small" style="margin-top:18px">Two ways of <span class="hl">implementing one interface</span>. Neither is a language feature — we used arrays, arrow functions and records. The names come next.</p>
+  <aside class="notes">Layer 1, stated. Do not name ADTs or objects yet; that is the next divider. If asked about deletion: remove is one line on both sides — remove1 = (s, n) => s.filter(x => x !== n); remove2 = (s, n) => x => x !== n && s(x). Way 2 handles every POINTWISE operation (union, intersection, difference, remove, and complement x => !s(x), which Way 1's arrays cannot represent at all — one more kind, in Way 1). What Way 2 cannot do is observe the set as a whole: isEmpty, size, enumerate, equal. The boundary is pointwise-through-the-interface vs requires-inspecting-the-whole.</aside>
 </section>
 
 
@@ -518,10 +569,10 @@ type symbol   = Note of duration * pitch | Rest of duration</code></pre>
       </table>
     </div>
     <div class="fragment">
-      <div class="box" style="margin-top:0">The type constructors <span class="hl">form an algebra</span>. Counting is its simplest model — and it works for infinite types too, as laws rather than numbers.</div>
+      <div class="box" style="margin-top:0">The operations on types, × and +, <span class="hl">form an algebra</span>. Counting is its simplest model — and it works for infinite types too, as laws rather than numbers.</div>
       <h3 style="margin-top:26px">Products multiply, sums add</h3>
       <p>\[|A \times B| = |A|\cdot|B| \quad\; |A + B| = |A| + |B|\]</p>
-      <p>The laws of arithmetic hold as <b>isomorphisms</b> of types, with a conversion function each way:</p>
+      <p>The laws of + and × hold as <b>isomorphisms</b> of types, with a conversion function each way:</p>
       <p>\[A \times (B + C) \;\cong\; A\times B + A\times C\]</p>
     </div>
   </div>
@@ -538,7 +589,7 @@ type symbol   = Note of duration * pitch | Rest of duration</code></pre>
   int tag;        /* 0 = note, 1 = rest */
   int duration, note, octave;
 };</code></pre>
-      <p>\(2^{128}\) states. Most mean nothing: a rest with a pitch; a tag of 7.</p>
+      <p>\(2^{128}\) states, four 32-bit ints. Most mean nothing: a rest with a pitch; a tag of 7.</p>
     </div>
     <div>
       <h3>A sum</h3>
@@ -549,10 +600,10 @@ type symbol   = Note of duration * pitch | Rest of duration</code></pre>
       <p>\(4\cdot 7\cdot|\mathrm{int}| + 4\) states. Each means something.</p>
     </div>
   </div>
-  <div class="box fragment">Sums do not add possibilities. They <span class="hl">remove meaningless ones</span>.</div>
+  <div class="box fragment">Next to a struct that holds every field, a sum <span class="hl">removes the meaningless states</span>.</div>
   <table class="fragment" style="margin-top:26px">
     <tr><td class="s"><code>option</code></td><td>absence as <b>one explicit case</b>: <code>None | Some of 'a</code> has one more value than <code>'a</code>, and every <code>match</code> must handle it.</td></tr>
-    <tr><td class="s"><code>null</code></td><td>absence added to <span class="hl">every type at once</span> and recorded in none: no <code>match</code> is required, but the missing case surfaces at runtime as a <code>NullPointerException</code>.</td></tr>
+    <tr><td class="s"><code>null</code></td><td>absence added to <span class="hl">every reference type at once</span> and recorded in none: no <code>match</code> is required, but the missing case surfaces at runtime as a <code>NullPointerException</code>.</td></tr>
   </table>
   <aside class="notes">This is "make illegal states unrepresentable" (Minsky), stated as arithmetic. NullPointerException is an unchecked match.</aside>
 </section>
@@ -581,20 +632,20 @@ let rec contains s x = match s with
   <pre style="margin-bottom:14px"><code class="language-ocaml">length : 'a list -> int               (* an ordinary function *)
 Note   : duration * pitch -> symbol   (* a constructor *)</code></pre>
   <p>An ordinary function may <b>lose information</b>: from <code>length xs</code> we cannot recover <code>xs</code>; many lists share one length.</p>
-  <p class="fragment">A constructor <span class="hl">loses no information</span>. Three properties no ordinary function has:</p>
+  <p class="fragment">A constructor <span class="hl">loses no information</span> — three guarantees no function comes with:</p>
   <table class="fragment" style="margin-bottom:0">
-    <tr><td><b>injective</b></td><td>different arguments give different values</td></tr>
+    <tr><td><b>injective</b></td><td>different carried values give different values</td></tr>
     <tr><td><b>disjoint</b></td><td>different constructors never build the same value</td></tr>
     <tr><td><b>exhaustive</b></td><td>every value of the type came from some constructor</td></tr>
   </table>
   <div class="box fragment" style="margin-top:12px">So every value was built in <span class="hl">exactly one way</span>: one constructor, applied to the values it carries.</div>
   <p class="fn" style="bottom:56px"><sup>*</sup> Unlike Java’s constructors, these run no code and can be taken apart: a tag with a payload.</p>
-  <aside class="notes">This is the free-algebra property in plain words: no equations between terms. If asked: in OCaml a constructor is not a first-class function — pass (fun x -> Note x); the slide shows the type it behaves as, not a val declaration. Java's nearest relative of an ML constructor is a record; ML's nearest relative of a Java constructor is a smart constructor (a validating function that then applies the real one).</aside>
+  <aside class="notes">"Guarantees no function comes with": an ordinary function may happen to be injective, and two functions may happen to have disjoint images; nothing declares it. The three hold for the constructors as a family, by the declaration. This is the free-algebra property in plain words: no equations between terms. If asked: in OCaml a constructor is not a first-class function — pass (fun x -> Note x); the slide shows the type it behaves as, not a val declaration. Java's nearest relative of an ML constructor is a record; ML's nearest relative of a Java constructor is a smart constructor (a validating function that then applies the real one).</aside>
 </section>
 
 <!-- 20 -->
 <section>
-  <h2>Matching is the inverse</h2>
+  <h2>Matching recovers the carried values</h2>
   <pre><code class="language-ocaml">let s = Note (d, p)              (* forwards:  build            *)
 match s with Note (d, p) -> …    (* backwards: recover d and p  *)</code></pre>
   <div class="box">A constructor goes from the carried values to the value: <code>(d, p)</code> ↦ <code>Note (d, p)</code>.<br>A <code>match</code> goes <span class="hl">from the value back to the carried values</span>: <code>Note (d, p)</code> ↦ <code>(d, p)</code>.<br>It can, because every value was built in exactly one way.</div>
@@ -611,13 +662,14 @@ match s with Note (d, p) -> …    (* backwards: recover d and p  *)</code></pre
   <h2>Algebraic data types: a timeline</h2>
   <table>
     <tr><td class="s">1970s</td><td>Pascal variant records; C <code>union</code> with a tag field — the list of shapes is a convention, unchecked</td></tr>
-    <tr><td class="s">1980</td><td><b>Hope</b> (Burstall, MacQueen, Sannella): algebraic data types with pattern matching</td></tr>
+    <tr><td class="s">1977</td><td><b>NPL</b> (Burstall): types built from constructors, and patterns on them</td></tr>
+    <tr><td class="s">1980</td><td><b>Hope</b> (Burstall, MacQueen, Sannella): the closed declaration — type and constructors together</td></tr>
     <tr><td class="s">1984 →</td><td>Standard ML, then OCaml and Haskell: the ML family makes them the default</td></tr>
     <tr><td class="s">2014 →</td><td>Swift enums, Rust enums, Kotlin sealed classes, TypeScript discriminated unions</td></tr>
     <tr><td class="s">2021 →</td><td>Python 3.10 <code>match</code>; Java 17 <code>sealed</code>, Java 21 pattern <code>switch</code></td></tr>
   </table>
   <p class="fragment small">“Algebraic” also names the mathematics: the values of the type are <span class="hl">exactly the terms</span> built from its constructors, nothing more and nothing identified — the <em>initial algebra</em> of its constructors (Goguen, Thatcher, Wagner, Wright, 1977).</p>
-  <aside class="notes">The convergence is the lecture's arc: every mainstream language now has Way 1 built in. Keep the last line to one breath.</aside>
+  <aside class="notes">The convergence is the lecture's arc: most mainstream languages now have closed variants, pattern matching, or both. Not all of it: Python has the match but no closed declaration, Go has neither; slide "Every language chooses a default" says so. Keep the last line to one breath.</aside>
 </section>
 
 
@@ -635,26 +687,26 @@ match s with Note (d, p) -> …    (* backwards: recover d and p  *)</code></pre
   <div class="cols">
     <div>
       <pre><code class="language-ocaml">type set =
-  &lt; contains : int -> bool; size : int &gt;
+  &lt; contains : int -> bool; is_empty : bool &gt;
 
 let empty : set = object
   method contains _ = false
-  method size = 0
+  method is_empty = true
 end
 
 let insert (s : set) n : set = object
   method contains x = x = n || s#contains x
-  method size = s#size + 1
+  method is_empty = false
 end</code></pre>
     </div>
     <div>
-      <p><code>type set</code> is <span class="hl">the interface</span> of a set — extension 1’s record of operations, as a type — and under it two kinds of set, <code>empty</code> and <code>insert</code>.</p>
+      <p><code>type set</code> is <span class="hl">the interface</span> of a set — extension 1’s record of operations, as a type — and under it two kinds of set, <code>empty</code> and <code>insert</code><sup>*</sup>.</p>
       <p class="fragment">In the Way 1 type they were the constructors <code>Empty</code> and <code>Insert</code>; here the type lists only <b>operations</b>, and the kinds live in the code.</p>
       <div class="box fragment" style="margin-top:0"><span class="hl">No <code>match</code> on a <code>set</code>:</span> nothing at compile time says how many kinds exist, or which one we hold.<br><span class="hl">That is the point:</span> which kind we hold is decided at run time, by the object, when it is called — <b>dynamic dispatch</b>.</div>
     </div>
   </div>
-  <p class="fn"><sup>*</sup> <code>object … end</code> builds one object and <code>#</code> calls a method. No class is involved; OCaml does not need one.</p>
-  <aside class="notes">Verified: demos/objset.ml prints "true false 2 true". Read insert aloud: the new object holds s and n in its closure, exactly as insert2b did on the JavaScript slide. Sum with payload, not an enum: an enum as classes looks silly and Java has enum anyway.</aside>
+  <p class="fn"><sup>*</sup> <code>object … end</code> builds one object and <code>#</code> calls a method. No class is involved. All four kinds: <code>demos/set_way2.ml</code>.</p>
+  <aside class="notes">Verified: demos/set_way2.ml (empty, insert, evens, union, with is_empty) prints "true false true / true false true false / true true true true", the same lines as set_way1.ml and both Java files. Read insert aloud: the new object holds s and n in its closure, exactly as insert2b did on the JavaScript slide. Sum with payload, not an enum: an enum as classes looks silly and Java has enum anyway.</aside>
 </section>
 
 <!-- 23 -->
@@ -664,11 +716,11 @@ end</code></pre>
     <div>
       <pre style="font-size:21px"><code class="language-java">abstract class Set {
   abstract boolean contains(int x);
-  abstract int size();
+  abstract boolean isEmpty();
 }
 class Empty extends Set {
   boolean contains(int x) { return false; }
-  int size() { return 0; }
+  boolean isEmpty()       { return true; }
 }
 class Insert extends Set {
   private final Set s; private final int n;
@@ -676,16 +728,16 @@ class Insert extends Set {
     { this.s = s; this.n = n; }
   boolean contains(int x)
     { return x == n || s.contains(x); }
-  int size() { return s.size() + 1; }
+  boolean isEmpty()       { return false; }
 }</code></pre>
     </div>
     <div>
       <p>The abstract class is the interface<sup>*</sup>; each subclass is one kind, with its own operations.</p>
-      <p class="fragment">The fields are <code>private</code><sup>**</sup>: from a client’s side, a <code>Set</code> is only what its methods answer.</p>
+      <p>The fields are <code>private</code><sup>**</sup>: from a client’s side, a <code>Set</code> is only what its methods answer.</p>
     </div>
   </div>
-  <p class="fn fragment" data-fragment-index="0" style="bottom:40px"><sup>*</sup> A Java <code>interface</code> says the same, without fields or shared code.<br><sup>**</sup> <code>private</code>: no client reads the field. <code>final</code>: assigned once, in the constructor — a set never changes after it is made.</p>
-  <aside class="notes">Verified: demos/Sets.java prints "true false 2". Do not say sealed here. The interface question is answered on this slide only, in the footnote: an interface is the same declaration without fields or shared code; abstract class chosen so that part 5 can say "abstract class + subclasses = Way 2" and "sealed + records + switch = Way 1". final: the S2 point — a persistent value, no mutation after construction.</aside>
+  <p class="fn" style="bottom:40px"><sup>*</sup> A Java <code>interface</code> says the same, without instance fields. All four kinds: <code>demos/SetWay2.java</code>.<br><sup>**</sup> <code>private</code>: no client reads the field. <code>final</code>: assigned once, in the constructor — a set never changes after it is made.</p>
+  <aside class="notes">Verified: demos/SetWay2.java prints the same three lines as set_way2.ml. Do not say sealed here. The interface question is answered on this slide only, in the footnote: an interface is the same declaration without fields or shared code; abstract class chosen so that part 5 can say "abstract class + subclasses = Way 2" and "sealed + records + switch = Way 1". final: the S2 point — a persistent value, no mutation after construction.</aside>
 </section>
 
 <!-- 23b -->
@@ -694,7 +746,7 @@ class Insert extends Set {
   <p>A new kind is one more class:</p>
   <pre><code class="language-java">class Evens extends Set {
   boolean contains(int x) { return x % 2 == 0; }
-  int size()              { return Integer.MAX_VALUE; }
+  boolean isEmpty()       { return false; }
 }</code></pre>
   <p class="fragment"><code>Set</code>, <code>Empty</code>, <code>Insert</code> and every client <span class="hl">stay as they are</span>:</p>
   <pre class="fragment"><code class="language-java">Set s = new Insert(new Insert(new Empty(), 3), 5);
@@ -738,7 +790,7 @@ x > 0 ifTrue: [ 'positive' ] ifFalse: [ 'not' ]</code></pre>
         <pre class="mid"><code class="language-js">const empty = { contains: x => false, kind: 'set' };
 const evens = Object.create(empty);   // its prototype is empty
 evens.contains = x => x % 2 === 0;    // its own; evens.kind is still found on empty</code></pre>
-        <p>No class underneath: <span class="hl">objects are made from objects</span>. The prototype is another object, asked for any property the new one lacks. The <code>class</code> syntax of 2015 writes this down and adds no mechanism.</p>
+        <p>No class underneath: <span class="hl">objects are made from objects</span>. The prototype is another object, asked for any property the new one lacks. The <code>class</code> syntax of 2015 does not replace this: a method is still found through the prototype.</p>
       </div>
       <div class="car-panel fragment current-visible" data-fragment-index="4">
         <pre class="mid"><code class="language-ocaml">let empty = object method contains _ = false end
@@ -786,7 +838,7 @@ evens.contains = x => x % 2 === 0;    // its own; evens.kind is still found on e
     <tr><td>implementations</td><td>one per type; two do not mix</td><td>any number, one type; they mix</td></tr>
   </table>
   <p class="fragment small">Reynolds (1975) saw the two as <b>complementary</b>; Cook (2009) gave the table its rows.</p>
-  <div class="box fragment">Neither is a weaker form of the other. An object is not an abstract data type missing its type: it hides its data another way. An abstract data type is not an object missing dispatch: every value of <code>t</code> runs the same <code>contains</code>; there is nothing to choose at run time.<br><span class="hl">They hide different things, by different means</span> — the compiler, or the closure.</div>
+  <div class="box fragment">Neither is a weaker form of the other. An object is not an abstract data type missing its type: it hides its data another way. An abstract data type is not an object missing dispatch: every value of <code>t</code> runs the same <code>contains</code>, and its <code>match</code> chooses the kind — the value does not.<br><span class="hl">They hide different things, by different means</span> — the compiler, or the closure.</div>
   <aside class="notes">Reynolds, "User-defined types and procedural data structures as complementary approaches to data abstraction", 1975. Cook, "On understanding data abstraction, revisited", OOPSLA 2009, table in section 4. The "sees another value's inside" row is extension 3 from part 2.</aside>
 </section>
 
@@ -794,23 +846,24 @@ evens.contains = x => x % 2 === 0;    // its own; evens.kind is still found on e
 <section>
   <h2>The matrix: kinds × operations</h2>
   <table class="matrix" id="matrix">
-    <tr><th></th><th class="hd" data-c="1"><code>contains</code></th><th class="hd" data-c="2"><code>size</code></th><th class="hd" data-c="3"><code>union</code></th><th class="hd" data-c="4"><code>equal</code></th></tr>
+    <tr><th></th><th class="hd" data-c="1"><code>contains</code></th><th class="hd" data-c="2"><code>isEmpty</code></th><th class="hd" data-c="3"><code>union</code></th><th class="hd" data-c="4"><code>equal</code></th></tr>
     <tr><td class="s rl" data-r="1">Empty</td><td class="cell" data-r="1" data-c="1">✓</td><td class="cell" data-r="1" data-c="2">✓</td><td class="cell" data-r="1" data-c="3">✓</td><td class="cell" data-r="1" data-c="4">✓</td></tr>
     <tr><td class="s rl" data-r="2">Insert</td><td class="cell" data-r="2" data-c="1">✓</td><td class="cell" data-r="2" data-c="2">✓</td><td class="cell" data-r="2" data-c="3">✓</td><td class="cell" data-r="2" data-c="4">✓</td></tr>
-    <tr><td class="s rl" data-r="3">Evens</td><td class="cell" data-r="3" data-c="1">✓</td><td class="cell" data-r="3" data-c="2">✓</td><td class="cell" data-r="3" data-c="3">✓</td><td class="ext">?</td></tr>
+    <tr><td class="s rl" data-r="3">Evens</td><td class="cell" data-r="3" data-c="1">✓</td><td class="cell" data-r="3" data-c="2">✓</td><td class="cell" data-r="3" data-c="3">✓</td><td class="cell" data-r="3" data-c="4">✓</td></tr>
+    <tr><td class="s rl" data-r="4">Union</td><td class="cell" data-r="4" data-c="1">✓</td><td class="cell" data-r="4" data-c="2">✓</td><td class="cell" data-r="4" data-c="3">✓</td><td class="ext">?</td></tr>
   </table>
   <div class="cols">
     <div>
       <div class="fragment" data-anim="col" data-n="1"><p><b>Algebraic data types</b> (Way 1): one function per operation, every kind inside it — a <span class="w1">column</span> at a time.</p></div>
-      <div class="fragment" data-anim="col" data-n="2"><p>One more operation is one more column, <code>equal</code> included: a function inspects both sets.</p></div>
+      <div class="fragment" data-anim="col" data-n="2"><p>One more operation is one more column, <code>equal</code> included — except on a <code>Union</code>, never computed.</p></div>
     </div>
     <div>
       <div class="fragment" data-anim="row" data-n="1"><p><b>Objects</b> (Way 2): one class per kind, every operation inside it — a <span class="w2">row</span> at a time.</p></div>
-      <div class="fragment" data-anim="row" data-n="2"><p>One more kind is one more row, <code>evens</code> included. <code>equal</code> gets no row: a row cannot inspect another.</p></div>
+      <div class="fragment" data-anim="row" data-n="2"><p>One more kind is one more row, <code>Union</code> included. <code>equal</code> gets no row: a row cannot inspect another.</p></div>
     </div>
   </div>
   <div class="box fragment">Wadler (1998) named the problem of growing both ways at once, with the compiler still checking every cell: <b>the expression problem</b>. Its resolutions are session 10.</div>
-  <aside class="notes">Extension 1 was a new column, extension 2 a new row, extension 3 the equal column. Clicks: 1 fills contains/size/union for Empty and Insert (blue); 2 fills the equal column — Way 1 can; 3 clears and fills the Empty and Insert rows (orange); 4 fills the Evens row — Way 2 can; the corner cell, equal for Evens, stays open on both sides. Then the callout. The ledger owes S10 the resolutions; here only the phenomenon.</aside>
+  <aside class="notes">Extension 1 was a new column, extension 2 the equal column, extension 3 two new rows. Clicks: 1 fills contains/isEmpty/union for all four kinds (blue): Way 1 writes each as one function; 2 fills the equal column for Empty, Insert and Evens — Way 1 can, by inspecting both, and by comparing tags — but not for Union: no normal form; 3 clears and fills the Empty and Insert rows (orange); 4 fills the Evens and Union rows — Way 2 can, one class each; the equal column gets no row. The one open cell, equal for Union, is open on both sides, for different reasons: Way 1 has not computed the set, Way 2 cannot look at it. Then the callout. The ledger owes S10 the resolutions; here only the phenomenon.</aside>
 </section>
 
 <!-- 29 -->
@@ -822,7 +875,8 @@ evens.contains = x => x % 2 === 0;    // its own; evens.kind is still found on e
       <pre><code class="language-java">abstract class Set { … }
 class Empty  extends Set { … }
 class Insert extends Set { … }
-class Evens  extends Set { … }</code></pre>
+class Evens  extends Set { … }
+class Union  extends Set { … }</code></pre>
       <p>Rows. The part before, as written.</p>
     </div>
     <div class="fragment">
@@ -841,7 +895,7 @@ static double area(Shape sh) {
 }</code></pre>
     </div>
   </div>
-  <div class="box fragment"><code>permits</code> is <code>|</code>, <code>record</code> is <code>of</code>, <code>switch</code> is <code>match</code>. Java required a quarter of a century, and three additions to the language, before it could express the second form. That delay is the measure of its <span class="hl">default</span>.</div>
+  <div class="box fragment"><code>permits</code> is <code>|</code>, <code>record</code> is <code>of</code>, <code>switch</code> is <code>match</code>. Java required a quarter of a century, and three additions to the language, before it could express the second form directly, with the compiler checking the cases. That delay is the measure of its <span class="hl">default</span>.</div>
   <aside class="notes">Java 17 sealed, Java 21 pattern switch. Source demos/A.java, compiled with javac 26: Tri is deliberately missing and the next slide shows what happens. OCaml's objects are the mirror: available since 1996, rarely used. Paradigm ≠ language; a language only makes some choices the default.</aside>
 </section>
 
@@ -858,7 +912,7 @@ triangle: None</pre></td></tr>
   </table>
   <p class="fragment">OCaml warns and <span class="hl">names a missing value</span>. Java refuses to compile. Python runs, and the missing case becomes a <code>None</code> that travels on.</p>
   <p class="fn">OCaml: the lab’s <code>melody</code> with <code>Repeat</code> added and no <code>match</code> updated. Java, Python: <code>Tri</code> left out of <code>area</code>.</p>
-  <aside class="notes">All three transcripts verified on 2026-09-16 (ocaml 5.4.0, javac 26, python 3.14): demos/A.java, demos/match.py, and demos/melody_no_repeat.ml (the lab reference with Repeat's arms deleted). Python's match has no static check at all: the closed list of shapes is not declared anywhere. Live version if time: run them in a terminal.</aside>
+  <aside class="notes">All three transcripts verified on 2026-09-16 (ocaml 5.4.0, javac 26, python 3.14): demos/A.java, demos/match.py, and demos/melody_no_repeat.ml (the lab reference with Repeat's arms deleted). Python's match has no static check at all: the closed list of shapes is not declared anywhere. OCaml "warns" because the lab's dune file passes -warn-error -a; in a fresh dune project the dev profile makes warning 8 an error, and OCaml refuses like Java. Say so if a student's own project behaves differently. Live version if time: run them in a terminal.</aside>
 </section>
 
 <!-- 31 -->
@@ -875,15 +929,15 @@ is not matched: Repeat (_, _)</pre>
     </div>
     <div class="fragment">
       <h3>Way 2 — by row</h3>
-      <pre class="out tr">B.java:9: error: Evens is not abstract
+      <pre class="out tr">B.java:10: error: Evens is not abstract
 and does not override abstract method
-size() in Set</pre>
+isEmpty() in Set</pre>
       <p>Does every kind provide every operation?</p>
     </div>
   </div>
   <div class="box fragment">Each check is blind where the other sees. Extension is blocked exactly where the <span class="hl">declaration site belongs to someone else</span>: the <code>permits</code> list, or the abstract class.</div>
   <p class="fn">An <code>instanceof</code> chain is not a <code>match</code>: nothing checks it — hence the visitor.</p>
-  <aside class="notes">Java's default methods are a partial escape for new operations on an interface. Neither check can be added to the other side: Way 1 has no list of operations, Way 2 has no list of kinds. Both transcripts verified: the left from the lab reference, the right from a demos/B.java with size() removed from Evens (javac 26). The unifying sentence is the one to remember: a closed list is closed by whoever wrote it.</aside>
+  <aside class="notes">Java's default methods are a partial escape for new operations on an interface. Neither check can be added to the other side: Way 1 has no list of operations, Way 2 has no list of kinds. Both transcripts verified by demos/check.sh: the left from the lab reference, the right from demos/B.java with isEmpty() removed from Evens (javac 26). The unifying sentence is the one to remember: a closed list is closed by whoever wrote it.</aside>
 </section>
 
 <!-- 32 -->
@@ -914,11 +968,11 @@ class Insert extends Set {
         <li class="fragment"><b><code>accept</code></b>: each kind’s one new method; it calls its own arm and hands over what it carries</li>
         <li class="fragment"><code>s.accept(v)</code> <b>dispatches twice</b>: the set picks <code>accept</code>, <code>accept</code> picks the arm. <span class="hl">The set chose the arm, not the caller.</span></li>
       </ul>
-      <p class="fragment">Way 1’s trade, cost included: <code>size</code> is one visitor, written outside; a new kind needs <code>onEvens</code> in every visitor.</p>
+      <p class="fragment">Way 1’s trade, cost included: <code>isEmpty</code> is one visitor, written outside; a new kind needs <code>onEvens</code> in every visitor.</p>
     </div>
   </div>
-  <p class="fn" style="bottom:56px"><code>Empty | Insert of int * set</code> ≅ <code>{ on_empty; on_insert }</code>: a sum of products is a product of functions.</p>
-  <aside class="notes">Java 21's switch on a sealed type does the same without the ceremony — a design pattern is often a missing language feature, written by hand (Norvig 1996, in plain words). Verified: demos/V.java prints 2 for size via an anonymous visitor; demos/visitor.ml does the same with a record of functions. The ∀r form is S4's Church/Böhm–Berarducci encoding — say "visitor" here, not "Church". The last line is Norvig's observation (1996) in plain words.</aside>
+  <p class="fn" style="bottom:56px">A visitor packages the arms of a <code>match</code> as methods, one per constructor.</p>
+  <aside class="notes">The exact statement, for a question: functions out of a sum are a product of functions, r^(A+B) = r^A × r^B; the sum type itself is not isomorphic to the record — that needs the result type quantified, which is S4's encoding. Java 21's switch on a sealed type does the same without the ceremony — a design pattern is often a missing language feature, written by hand (Norvig 1996, in plain words). Verified: demos/V.java prints "true false" for isEmpty via an anonymous visitor; demos/visitor.ml prints the same with a record of functions. The ∀r form is S4's Church/Böhm–Berarducci encoding — say "visitor" here, not "Church". The last line is Norvig's observation (1996) in plain words.</aside>
 </section>
 
 <!-- 33 -->
@@ -964,8 +1018,8 @@ class Insert extends Set {
     <tr><td>Rust, Swift, Haskell</td><td><b>Way 1</b></td><td><code>dyn Trait</code>, protocols, type classes</td></tr>
     <tr><td>Java</td><td><b>Way 2</b></td><td><code>sealed</code> + <code>record</code> + <code>switch</code>, since 2021</td></tr>
     <tr><td>Smalltalk</td><td><b>Way 2</b> only</td><td>no static list of kinds — session 9</td></tr>
-    <tr><td>Python, JavaScript</td><td><b>Way 2</b>, untyped</td><td><code>match</code>, unchecked; a <code>kind</code> field by hand</td></tr>
-    <tr><td>Go</td><td><b>Way 2</b>, by shape</td><td>none: a <code>switch</code> on constants, unchecked</td></tr>
+    <tr><td>Python, JavaScript</td><td><b>Way 2</b>, untyped</td><td>Python’s <code>match</code>, unchecked; a <code>kind</code> field by hand</td></tr>
+    <tr><td>Go</td><td><b>Way 2</b>, by shape</td><td>a type <code>switch</code>, unchecked for missing cases</td></tr>
   </table>
   <div class="box fragment">Paradigm ≠ language: a language only makes some choices the default. The friction of saying the other thing is the <span class="hl">evidence of the default</span>.</div>
   <aside class="notes">Course slogan, now with evidence: OCaml's objects rarely used; Java's twenty years to sealed. Rust: enums are Way 1, trait objects are Way 2 — both first-class, which is why Rust code tends to use each where it fits. Haskell's type classes and Go's structural interfaces are S10's resolutions of the expression problem; here they are only "the other way".</aside>
@@ -1127,8 +1181,8 @@ class Insert extends Set {
       const vis = [...sec.querySelectorAll('[data-anim].visible')];
       const rows = vis.filter(f => f.dataset.anim === 'row').map(f => +f.dataset.n), cols = vis.filter(f => f.dataset.anim === 'col').map(f => +f.dataset.n);
       const mark = (el, w) => { if (el) el.classList.add('on', w); };
-      if (rows.length) { const R = Math.max(...rows) === 1 ? 2 : 3; for (let r = 1; r <= R; r++) { mark(m.querySelector(`td.rl[data-r="${r}"]`), 'w2'); for (let c = 1; c <= 3; c++) mark(cell(r, c), 'w2'); } }
-      else if (cols.length) { const C = Math.max(...cols) === 1 ? 3 : 4; for (let c = 1; c <= C; c++) { mark(m.querySelector(`th.hd[data-c="${c}"]`), 'w1'); for (let r = 1; r <= 2; r++) mark(cell(r, c), 'w1'); } }
+      if (rows.length) { const R = Math.max(...rows) === 1 ? 2 : 4; for (let r = 1; r <= R; r++) { mark(m.querySelector(`td.rl[data-r="${r}"]`), 'w2'); for (let c = 1; c <= 3; c++) mark(cell(r, c), 'w2'); } }
+      else if (cols.length) { const C = Math.max(...cols) === 1 ? 3 : 4; for (let c = 1; c <= C; c++) { mark(m.querySelector(`th.hd[data-c="${c}"]`), 'w1'); for (let r = 1; r <= 4; r++) mark(cell(r, c), 'w1'); } }
     };
     ['fragmentshown', 'fragmenthidden', 'slidechanged', 'ready'].forEach(ev => Reveal.on(ev, () => setTimeout(apply, 0)));
     window.__matrixApply = apply;

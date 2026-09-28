@@ -52,7 +52,7 @@ body{
 .wrap{max-width:930px; margin:0 auto; padding:0 28px 96px}
 .col{max-width:660px; margin-left:auto; margin-right:auto}
 .figure-wide + .col{margin-top:34px}
-.compare + .col, .mazes + .legend{margin-top:20px}
+.compare + .col{margin-top:20px}
 
 /* ---- masthead ---- */
 header.masthead{
@@ -270,29 +270,6 @@ figcaption b{color:var(--ink-2); font-weight:600}
 .results td.s{color:var(--stack); font-weight:500}
 .results tr:last-child td{border-bottom:none}
 
-/* ---- maze renders ---- */
-.mazes{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:26px 0 0}
-.maze-card{
-  border:1px solid var(--rule); border-radius:8px; background:var(--surface);
-  padding:16px 16px 14px; box-shadow:var(--shadow); overflow-x:auto; min-width:0;
-}
-.maze-card h4{
-  margin:0 0 3px; font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600;
-}
-.maze-card.q h4{color:var(--queue)} .maze-card.s h4{color:var(--stack)}
-.maze-card .stat{font-size:12.5px; color:var(--ink-3); margin:0 0 12px}
-.maze{
-  font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:12px;
-  line-height:1.02; white-space:pre; margin:0; letter-spacing:0;
-}
-.maze .w{color:var(--wall)}
-.maze .o{color:transparent}
-.maze-card.q .maze .v{color:var(--queue-tint)}
-.maze-card.s .maze .v{color:var(--stack-tint)}
-.maze .p-q{color:var(--queue); font-weight:600}
-.maze .p-s{color:var(--stack); font-weight:600}
-.maze .s{color:var(--start); font-weight:600}
-.maze .e{color:var(--exit); font-weight:600}
 .legend{
   display:flex; flex-wrap:wrap; gap:6px 18px; margin:16px 0 0;
   font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);
@@ -340,7 +317,7 @@ footer p{margin:0 0 8px; max-width:640px}
 
 @media (max-width:760px){
   body{font-size:16px}
-  .compare, .mazes{grid-template-columns:1fr}
+  .compare{grid-template-columns:1fr}
   .wrap{padding:0 20px 72px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -762,7 +739,7 @@ dune<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>
 <span class="k">let</span> <span class="o">(</span> <span class="o">++</span> <span class="o">)</span> <span class="n">a</span> <span class="n">b</span> <span class="o">=</span> <span class="nc">Seq</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span>
 <span class="k">let</span> <span class="o">(</span> <span class="o">//</span> <span class="o">)</span> <span class="n">a</span> <span class="n">b</span> <span class="o">=</span> <span class="nc">Par</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span></code></pre>
     <p>Provided: <code>beats : duration -> float</code> and <code>frequency : pitch -> float</code>. With the two operators a tune reads left to right: <code>q C 4 ++ q D 4 ++ q E 4 ++ q C 4</code>, and a chord is <code>q C 4 // q E 4 // q G 4</code>.</p>
-    <p>A <code>Seq</code> or a <code>Par</code> holds two melodies: the type is a <b>tree</b>. Every Part C operation returns a new tree and shares the parts it did not change — the persistent structures of session 2, without any extra work.</p>
+    <p>A <code>Seq</code> or a <code>Par</code> holds two melodies: the type is a <b>tree</b>. Every transformation in Part C builds a new tree and reuses the subtrees it did not change, without copying them — the persistent structures of session 2.</p>
   </div>
 </section>
 
@@ -794,7 +771,7 @@ dune<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>
     <h3 id="part-b">Part B — from a melody to sound</h3>
     <table class="parts">
       <tr><td class="k">B1</td><td>Compile the melody to events. An event is a note with a start time, a frequency and a length, in seconds. The skeleton threads a clock: the inner function returns the events of a melody started at a given beat, together with the beat at which it ends. <code>Note</code> and <code>Rest</code> are done; <code>Seq</code> and <code>Par</code> are the holes. A rest produces no event — it is the absence of one. A wrong <code>Seq</code> plays everything at once; we will hear it.<pre><code class="hl-code language-ocaml"><span class="n">to_events</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">-&gt;</span> <span class="n">melody</span> <span class="o">-&gt;</span> <span class="n">event</span> <span class="kt">list</span>      <span class="c">(* the int is the tempo *)</span></code></pre></td></tr>
-      <tr><td class="k">B2</td><td>Add a constructor: <code>Repeat of int * melody</code>. Rebuild. The compiler now warns, once per function, <em>this pattern-matching is not exhaustive</em>, with the missing case — that list of warnings is the checklist. Then uncomment <code>twice</code> in <code>tunes.ml</code> and the B2 checks in <code>main.ml</code>: repeating a voice twice must sound exactly like writing it twice.</td></tr>
+      <tr><td class="k">B2</td><td>Add a constructor: <code>Repeat of int * melody</code>. Rebuild. The compiler now warns, once per function, <em>this pattern-matching is not exhaustive</em>, with the missing case — that list of warnings is the checklist. Then uncomment <code>twice</code> in <code>tunes.ml</code> and the B2 checks in <code>main.ml</code>: repeating a voice twice must sound exactly like writing it twice. The count is never negative. The type cannot say so — <code>Repeat (-1, m)</code> is a value it admits — so this is a rule we keep by hand, and our functions may assume it.</td></tr>
     </table>
 
     <h3 id="part-c">Part C — operations on melodies</h3>

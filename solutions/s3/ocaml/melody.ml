@@ -30,7 +30,7 @@ type melody =
   | Rest of duration
   | Seq  of melody * melody      (* one after the other *)
   | Par  of melody * melody      (* at the same time    *)
-  | Repeat of int * melody       (* Part B2: n times over *)
+  | Repeat of int * melody       (* Part B2: n times over; n >= 0, which the type does not say *)
 
 let ( ++ ) a b = Seq (a, b)
 let ( // ) a b = Par (a, b)
