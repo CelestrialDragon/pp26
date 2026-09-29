@@ -216,6 +216,8 @@ td.ttl .blk-m{display:none}
   background:var(--sunk);color:var(--ink2);border:1px solid var(--line);
   transition:filter .12s ease,border-color .12s ease}
 .dl:hover{filter:brightness(.96);border-color:var(--ink3)}
+/* announced, not released: a chip that is not a link */
+.dl.soon,.dl.soon:hover{cursor:default;filter:none;background:transparent;border:1px dashed currentColor}
 /* one chip, several parts, each a link; a plain stage word may lead */
 .dl.grp .lbl{margin-right:.15em;font-weight:500;opacity:.55}
 .dl.c-solutions.grp{display:block;width:max-content}
