@@ -851,7 +851,7 @@ let b = t ()</code></pre>
     </div>
   </div>
   <div class="box fragment" data-fragment-index="1">Only with a <span class="hl">right fold</span> is our function given the rest, and can decide what becomes of it.</div>
-  <p class="fn fragment" data-fragment-index="1">On a list of <em>n</em> elements <code>fold_right</code> keeps <em>n</em> frames waiting; <code>fold_left</code> keeps none, every call being a tail call.</p>
+  <p class="fn fragment" data-fragment-index="1"><code>fold_right</code> keeps one frame waiting per element; <code>fold_left</code> keeps none: its recursive call is a tail call.</p>
   <aside class="notes">Session 4's two folds, read for one thing: what our function is given. In the left fold the recursive call is the last thing the fold does, with the rest of the list as its own argument; f sees acc and x and returns. In the right fold the recursive call is an argument of f. This is why the slides that follow use the right fold, and why block 1's exists, written with the left fold, could not stop. It is also true in Haskell: foldl on a list without end never returns, as the slide on Haskell shows.</aside>
 </section>
 
@@ -955,7 +955,7 @@ take 5 (from 0)</code></pre>
   <p>In Haskell no argument is computed before the call. It is computed when the function uses it, and at most once: session 4's <b>call-by-need</b>.</p>
   <table class="small lazy3">
     <tr><th></th><th>in OCaml, we write</th><th>in Haskell</th></tr>
-    <tr class="fragment" data-fragment-index="0"><td class="s">Block 1</td><td>another fold, to stop before the end of a list</td><td>the fold stops by itself</td></tr>
+    <tr class="fragment" data-fragment-index="0"><td class="s">Block 1</td><td>another fold, to stop before the end of a list</td><td>the right fold stops by itself</td></tr>
     <tr class="fragment" data-fragment-index="1"><td class="s">Block 2</td><td>a thunk for each value that must wait</td><td>every value waits, and is computed once</td></tr>
     <tr class="fragment" data-fragment-index="2"><td class="s">Session 6</td><td>two functions, for a search that can fail</td><td>the list of all the solutions, of which we read the first</td></tr>
   </table>
@@ -1093,7 +1093,7 @@ let squares =
       <p class="fragment" data-fragment-index="2">Nine numbers, from 0 to 8. Five of them are even.</p>
     </div>
   </div>
-  <div class="box fragment" data-fragment-index="3">Making a sequence computes nothing. The consumer decides <span class="hl">how far</span> it is computed.</div>
+  <div class="box fragment" data-fragment-index="3">Defining <code>squares</code> computes no element. The consumer decides <span class="hl">how far</span> it is computed.</div>
   <aside class="notes">Recorded from demos/pipeline.ml. Two numbers from the room before the first click. The next slide runs take 5 squares step by step. In Haskell the same line is take 5 (map square (filter even [0 ..])), on an ordinary list. Session 6 builds its event loop on values of this kind: producers that run one step when asked.</aside>
 </section>
 
@@ -1229,9 +1229,10 @@ let b = force s</code></pre>
 <!-- fibs counted -->
 <section>
   <h2><code>fibs</code>: how many additions?</h2>
-  <pre class="mid"><code class="language-ocaml">and 'a seq = 'a node Lazy.t
-let rec fibs =
-  lazy (Cons (0, lazy (Cons (1, zip_with ( + ) fibs (tail fibs)))))</code></pre>
+  <pre class="mid"><code class="language-ocaml">type 'a node = Nil | Cons of 'a * 'a seq
+and 'a seq = 'a node Lazy.t
+(* zip_with and tail read their sequences with Lazy.force *)
+let rec fibs = lazy (Cons (0, lazy (Cons (1, zip_with ( + ) fibs (tail fibs)))))</code></pre>
   <p class="ask">The same list in OCaml. To compute its first 25 numbers, how many additions are needed?</p>
   <table class="small fragment" data-fragment-index="0">
     <tr><th>the rest of the sequence is</th><th>additions</th></tr>
@@ -1265,9 +1266,9 @@ let b = pop q</code></pre>
       <pre class="out tr rec fragment" data-fragment-index="0">a=1 b=1 reversals=2</pre>
     </div>
   </div>
-  <div class="box fragment" data-fragment-index="1">The queue is persistent: <code>q</code> can be used twice, and the reversal is paid twice. With <code>lazy</code> the reversal is suspended, shared, and <span class="hl">paid once</span>.</div>
+  <div class="box fragment" data-fragment-index="1">The queue is persistent: <code>q</code> can be used twice, and the reversal is paid twice. With <code>lazy</code> the reversal is suspended inside <code>q</code>: the two pops share it, and it is <span class="hl">paid once</span>.</div>
   <p class="fn fragment" data-fragment-index="1">We write it as homework: the last part of the warm-up's sheet. Source: Okasaki 1998, chapter 6, the banker's queue.</p>
-  <aside class="notes">Lab 2, part D, ended on this question: the queue costs one reversal for n pushes, on average, as long as each version is used once. Recorded from demos/delay.ml: two pops of the same q, reversals=2; with the reversal under lazy, reversals=1. What the slide shows is the effect in its smallest form. Okasaki's queue keeps the front as a stream and an invariant on the two lengths; that is for the warm-up and the reading.</aside>
+  <aside class="notes">Lab 2, part D, ended on this question: the queue costs one reversal for n pushes, on average, as long as each version is used once. Recorded from demos/delay.ml: two pops of the same q, reversals=2; with the reversal under lazy, reversals=1. The lazy value is part of q, made once: a lazy made inside pop, at each call, would share nothing (run: reversals=2). What the slide shows is the effect in its smallest form. Okasaki's queue keeps the front as a stream and an invariant on the two lengths; that is for the warm-up and the reading.</aside>
 </section>
 
 <!-- conclusion -->
