@@ -722,6 +722,9 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal table.ways4 td.s { width: 11%; }
 .reveal table.ways4 td:nth-child(2) { width: 37%; }
 .reveal table.ways4 td:nth-child(3) { width: 38%; }
+.reveal table.ways4 tr { transition: background .2s; }
+.reveal table.ways4 tr.lit td { background: var(--box); }
+.reveal table.ways4 tr.lit td.s { color: var(--accent); }
 </style>
 </head>
 <body>
@@ -1017,19 +1020,74 @@ no newline</pre>
 <!-- three ways to stop -->
 <section>
   <h2>Three ways to stop a traversal</h2>
-  <pre class="mid"><code class="language-ocaml">exception Found
+  <div class="stack">
+    <div class="fragment out" data-fragment-index="1"><div class="fragment" data-fragment-index="0">
+      <div class="cols tightcode">
+        <div>
+          <p class="cl-cap">block 1: <code>fold_until</code>, written to be stopped</p>
+          <pre><code class="language-ocaml">let rec fold_until f acc = function
+  | [] -> acc
+  | x :: xs ->
+      match f acc x with
+      | Stop a -> a
+      | Continue a -> fold_until f a xs</code></pre>
+        </div>
+        <div>
+          <p class="cl-cap">our function answers <code>Stop</code></p>
+          <pre><code class="language-ocaml">let exists p l =
+  fold_until (fun _ x ->
+      if p x then Stop true
+      else Continue false)
+    false l</code></pre>
+        </div>
+      </div>
+    </div></div>
+    <div class="fragment out" data-fragment-index="2"><div class="fragment" data-fragment-index="1">
+      <div class="cols tightcode">
+        <div>
+          <p class="cl-cap">block 2: <code>fold_right</code>, the rest as a thunk</p>
+          <pre><code class="language-ocaml">let rec fold_right f xs z = match xs with
+  | [] -> z
+  | x :: xs ->
+      f x (fun () -> fold_right f xs z)</code></pre>
+        </div>
+        <div>
+          <p class="cl-cap">our function does not call the rest</p>
+          <pre><code class="language-ocaml">let exists p l =
+  fold_right
+    (fun x rest -> p x || rest ())
+    l false</code></pre>
+        </div>
+      </div>
+    </div></div>
+    <div class="fragment" data-fragment-index="2">
+      <div class="cols tightcode">
+        <div>
+          <p class="cl-cap">block 3: session 4's <code>fold</code>, unchanged</p>
+          <pre><code class="language-ocaml">let rec fold f acc = function
+  | [] -> acc
+  | x :: xs -> fold f (f acc x) xs</code></pre>
+        </div>
+        <div>
+          <p class="cl-cap">our function raises, inside a <code>try</code></p>
+          <pre><code class="language-ocaml">exception Found
 let exists p l =
-  try fold (fun () x -> if p x then raise Found) () l; false
+  try fold (fun () x ->
+        if p x then raise Found) () l;
+      false
   with Found -> true</code></pre>
-  <p class="ask">The newline is the third of five characters. How many does <code>fold</code> visit?</p>
-  <table class="small ways4 fragment" data-fragment-index="0">
-    <tr><th></th><th>the fold</th><th>our function stops by</th><th>visited</th></tr>
-    <tr><td class="s">Block 1</td><td><code>fold_until</code>, written to be stopped</td><td>answering <code>Stop</code></td><td>3</td></tr>
-    <tr><td class="s">Block 2</td><td><code>fold_right</code>, the rest as a thunk</td><td>not calling the rest</td><td>3</td></tr>
-    <tr><td class="s">Block 3</td><td>session 4's <code>fold</code>, unchanged</td><td>raising; <code>try … with</code> catches</td><td>3</td></tr>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="small ways4">
+    <tr><th></th><th>the fold</th><th>our function stops by</th><th>visited, of five</th></tr>
+    <tr data-lit="0"><td class="s">Block 1</td><td><code>fold_until</code>, written to be stopped</td><td>answering <code>Stop</code></td><td class="fragment" data-fragment-index="3">3</td></tr>
+    <tr data-lit="1"><td class="s">Block 2</td><td><code>fold_right</code>, the rest as a thunk</td><td>not calling the rest</td><td class="fragment" data-fragment-index="3">3</td></tr>
+    <tr data-lit="2"><td class="s">Block 3</td><td>session 4's <code>fold</code>, unchanged</td><td>raising; <code>try … with</code> catches</td><td class="fragment" data-fragment-index="3">3</td></tr>
   </table>
-  <div class="box fragment" data-fragment-index="1"><code>raise</code> leaves every frame of <code>fold</code> at once: a way out that <span class="hl">no fold gave</span>.</div>
-  <aside class="notes">Recorded from demos/newline_kh.ml, where our function also counts its calls: found=true visited=3, the number of block 1's fold_until and of block 2's fold with the rest as a thunk. fold knows nothing of the exception: raise calls the continuation given by try, and the frames of fold are dropped. This is lab 5's find, written in three ways in its part C.</aside>
+  <div class="box fragment" data-fragment-index="4"><code>raise</code> leaves every frame of <code>fold</code> at once: a way out that <span class="hl">no fold gave</span>.</div>
+  <aside class="notes">Five clicks. The box above the table changes with the first three: block 1's fold_until with its exists (demos/lists.ml), block 2's fold_right with the rest as a thunk and its exists (demos/delay.ml), then session 4's fold, as it was, with exists written around it (demos/newline_kh.ml, where our function also counts its calls); the table's row is lit with its code. Before the fourth click ask the room: the newline is the third of five characters, how many does each traversal visit? The click gives the three numbers, all 3, recorded from those three programs. The fifth click is the box: the first two folds were written so that our function could stop them; fold knows nothing of the exception, and raise calls the continuation given by try, dropping the frames of fold in between. This is lab 5's find, written in three ways in its part C.</aside>
 </section>
 
 <!-- conclusion of block 3 -->
