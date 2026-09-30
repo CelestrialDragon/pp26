@@ -269,17 +269,19 @@
     const push = (what, k) => frames.push({ items: clone(it), what, counters: [['cells built', k], ['cells in the list', 'no end']] });
     push('take receives from 0, not yet run. No cell of the list is built', 0);
     for (let k = 0; k < n; k++) {
-      it.who = { kind: 'label', x: X(k), y: Y - 100, text: 'take ' + n, cls: 'mono reader' };
+      it.who = { kind: 'label', x: X(k), y: Y - 100, text: 'take ' + (n - k), cls: 'mono reader' };
       it.down = { kind: 'edge', x: X(k), y: Y, x1: 0, y1: -84, x2: 0, y2: -40, cls: 'wire arrow' };
       it['c' + k] = { kind: 'pair', x: X(k), y: Y, text: String(k), cls: 'new', from: { x: X(k) + 12, y: Y } };
       it['p' + k] = { kind: 'edge', x1: X(k) + 40, y1: Y, x2: X(k + 1) - 70, y2: Y, cls: 'arrow ptr' };
       it.rest = { kind: 'seal', x: X(k + 1) + 12, y: Y, w: 150, h: 64, text: 'from ' + (k + 1), sub: '', cls: '' };
-      push('take reads one more element: Haskell builds the cell with ' + k + ', and nothing after it', k + 1);
+      push('take ' + (n - k) + ' reads one element: Haskell builds the cell with ' + k + ', and nothing after it', k + 1);
       it['c' + k].cls = ''; delete it['c' + k].from;
     }
-    delete it.who; delete it.down;
+    // take 0 answers [] without reading its list: the reader stands over the rest, with no arrow down to it
+    delete it.down;
     it.rest.cls = 'never'; it.rest.sub = 'never built'; it.rest.h = 84; it.rest.w = 190; it.rest.x = X(n) + 32;
-    push('take has its five elements, and the program ends. The rest of the list, from 5, is never built', n);
+    it.who = { kind: 'label', x: X(n) + 32, y: Y - 100, text: 'take 0', cls: 'mono reader' };
+    push('take 0 reads nothing: the program ends. The rest of the list, from ' + n + ', is never built', n);
     return { frames, w: 1400, h: 250 };
   };
 

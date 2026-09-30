@@ -755,6 +755,15 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal .cols.narrow-left { grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr); }
 .reveal .cols + pre.out.tr { margin: 18px 0 22px 0; }
 .reveal pre a.srclink.low { top: auto; bottom: 7px; }
+/* block 2, the primes: a table that reads the notation, and the lists that the sieve receives */
+.reveal table.reads td:first-child, .reveal table.reads th:first-child { width: 25%; }
+.reveal table.reads td:nth-child(2), .reveal table.reads th:nth-child(2) { width: 42%; }
+.reveal table.sieve { border-collapse: collapse; margin: 6px 0 26px 0; width: auto; }
+.reveal table.sieve td { border: 0; padding: 9px 0; width: 50px; text-align: center; font-family: "Fira Mono", monospace; font-size: 28px; }
+.reveal table.sieve td.s { width: 170px; text-align: left; }
+.reveal table.sieve td.p span { display: inline-block; min-width: 46px; line-height: 46px; border-radius: 23px; background: var(--accent); color: #fff; font-weight: 500; }
+.reveal table.sieve td.x { text-decoration: line-through; text-decoration-color: var(--accent); text-decoration-thickness: 3px; }
+.reveal table.sieve ~ pre.out { margin-bottom: 24px; }
 </style>
 </head>
 <body>
