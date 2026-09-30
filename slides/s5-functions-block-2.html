@@ -725,6 +725,11 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal table.ways4 tr { transition: background .2s; }
 .reveal table.ways4 tr.lit td { background: var(--box); }
 .reveal table.ways4 tr.lit td.s { color: var(--accent); }
+/* a code box whose program is a file: its language label is a small button, a link to the file */
+.reveal pre.has-src::after { content: none; }
+.reveal pre a.srclink { position: absolute; top: 7px; right: 10px; font-family: "Fira Sans", sans-serif; font-size: 18px; font-weight: 500; line-height: 1.25; letter-spacing: .03em; color: var(--accent); background: #fff; border: 1.5px solid var(--accent); border-radius: 5px; padding: 1px 9px 2px; text-decoration: none; white-space: nowrap; }
+.reveal pre a.srclink::after { content: " \2197"; }
+.reveal pre a.srclink:hover { background: var(--accent); color: #fff; }
 </style>
 </head>
 <body>

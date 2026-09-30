@@ -725,6 +725,11 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal table.ways4 tr { transition: background .2s; }
 .reveal table.ways4 tr.lit td { background: var(--box); }
 .reveal table.ways4 tr.lit td.s { color: var(--accent); }
+/* a code box whose program is a file: its language label is a small button, a link to the file */
+.reveal pre.has-src::after { content: none; }
+.reveal pre a.srclink { position: absolute; top: 7px; right: 10px; font-family: "Fira Sans", sans-serif; font-size: 18px; font-weight: 500; line-height: 1.25; letter-spacing: .03em; color: var(--accent); background: #fff; border: 1.5px solid var(--accent); border-radius: 5px; padding: 1px 9px 2px; text-decoration: none; white-space: nowrap; }
+.reveal pre a.srclink::after { content: " \2197"; }
+.reveal pre a.srclink:hover { background: var(--accent); color: #fff; }
 </style>
 </head>
 <body>
@@ -897,7 +902,7 @@ add3 10          (* 13 *)</code></pre>
       </div>
       <div class="fragment" data-fragment-index="4">
         <p class="cl-cap">In OCaml, the one variable is a <code>ref</code></p>
-        <pre><code class="language-ocaml">let fs = ref [] and i = ref 0
+        <pre class="has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/capture.ml#L13" data-at="As JavaScript's var" target="_blank" rel="noopener">OCaml</a><code class="language-ocaml">let fs = ref [] and i = ref 0
 let () =
   while !i &lt; 3 do
     fs := (fun () -> !i) :: !fs;
@@ -950,7 +955,7 @@ List.rev_map (fun f -> f ()) !fs</code></pre>
       </div>
       <div class="fragment" data-fragment-index="4">
         <p class="cl-cap">In OCaml, <code>for</code> makes a new <code>i</code> at every round</p>
-        <pre><code class="language-ocaml">let fs = ref []
+        <pre class="has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/capture.ml#L25" data-at="As JavaScript's let" target="_blank" rel="noopener">OCaml</a><code class="language-ocaml">let fs = ref []
 let () =
   for i = 0 to 2 do
     fs := (fun () -> i) :: !fs
@@ -1025,7 +1030,7 @@ let b = counter ()
       <pre class="out" id="out-counter2"> </pre>
     </div>
     <div class="fragment" data-fragment-index="0">
-      <pre class="small"><code class="language-java">class Counter {
+      <pre class="small has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/Counter.java#L7" data-at="class Counter" target="_blank" rel="noopener">Java</a><code class="language-java">class Counter {
   private int n = 0;
   int tick()   { return ++n; }
   void reset() { n = 0; }
@@ -1051,7 +1056,7 @@ System.out.println(c.tick());</code></pre>
 <!-- 3a -->
 <section class="airy">
   <h2>Two traversals of a list, in Java</h2>
-  <pre class="mid tight"><code class="language-java">List&lt;String> words = List.of("to", "be", "or", "not");</code></pre>
+  <pre class="mid tight has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/Traversals.java#L10" data-at="List&lt;String> words" target="_blank" rel="noopener">Java</a><code class="language-java">List&lt;String> words = List.of("to", "be", "or", "not");</code></pre>
   <div class="cols">
     <div>
       <pre><code class="language-java">words.forEach(w ->
@@ -1073,7 +1078,7 @@ while (it.hasNext()) {
 <!-- 3b -->
 <section class="airy">
   <h2>Two traversals of a list, in OCaml</h2>
-  <pre class="mid tight"><code class="language-ocaml">let words = ["to"; "be"; "or"; "not"]</code></pre>
+  <pre class="mid tight has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/traversals.ml#L7" data-at="let words" target="_blank" rel="noopener">OCaml</a><code class="language-ocaml">let words = ["to"; "be"; "or"; "not"]</code></pre>
   <div class="cols">
     <div>
       <pre><code class="language-ocaml">List.iter
@@ -1119,7 +1124,7 @@ while (it.hasNext()) {
 <!-- three folds -->
 <section>
   <h2><code>map</code>, <code>filter</code> and <code>length</code>, written with <code>fold_right</code></h2>
-  <pre class="mid"><code class="language-ocaml">let map f l    = fold_right (fun x r -> f x :: r) l []
+  <pre class="mid has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/lists.ml#L24" data-at="Three functions written with fold_right" target="_blank" rel="noopener">OCaml</a><code class="language-ocaml">let map f l    = fold_right (fun x r -> f x :: r) l []
 let filter p l = fold_right (fun x r -> if p x then x :: r else r) l []
 let length l   = fold_right (fun _ n -> n + 1) l 0</code></pre>
   <div class="cols fragment" data-fragment-index="0">
@@ -1182,7 +1187,7 @@ length text</code></pre>
   <h2>Is there a newline in the text?</h2>
   <div class="cols">
     <div>
-      <pre><code class="language-ocaml">let text = ['h'; 'i'; '\n'; 'y'; 'o']
+      <pre class="has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/lists.ml#L48" data-at="Is there a newline in the text?" target="_blank" rel="noopener">OCaml</a><code class="language-ocaml">let text = ['h'; 'i'; '\n'; 'y'; 'o']
 let visited = ref 0
 
 let exists p l =
@@ -1219,7 +1224,7 @@ let rec fold_until f acc = function
       | Continue a -> fold_until f a xs</code></pre>
     </div>
     <div class="fragment" data-fragment-index="0">
-      <pre><code class="language-ocaml">let () = visited := 0
+      <pre class="has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/lists.ml#L61" data-at="A different interface" target="_blank" rel="noopener">OCaml</a><code class="language-ocaml">let () = visited := 0
 let exists p l =
   fold_until (fun _ x ->
       incr visited;
@@ -1251,7 +1256,7 @@ let exists p l =
   boolean hasNext();
   T next();
 }</code></pre>
-      <pre class="fragment" data-fragment-index="0"><code class="language-java">Iterator&lt;Character> it = text.iterator();
+      <pre class="fragment has-src" data-fragment-index="0"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/ListIter.java#L30" data-at="Is there a newline in the text?" target="_blank" rel="noopener">Java</a><code class="language-java">Iterator&lt;Character> it = text.iterator();
 while (it.hasNext() &amp;&amp; !found) {
   visited++;
   found = it.next() == '\n';
@@ -1276,7 +1281,7 @@ while (it.hasNext() &amp;&amp; !found) {
   <h2>An iterator for a list, written by hand</h2>
   <div class="cols">
     <div>
-      <pre class="small"><code class="language-java">class ListIterator&lt;T>
+      <pre class="small has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/ListIter.java#L15" data-at="An iterator is an object that remembers" target="_blank" rel="noopener">Java</a><code class="language-java">class ListIterator&lt;T>
     implements Iterator&lt;T> {
   private Node&lt;T> here;
   ListIterator(Node&lt;T> l) { here = l; }
@@ -1294,7 +1299,7 @@ while (it.hasNext() &amp;&amp; !found) {
 }</code></pre>
     </div>
     <div class="fragment" data-fragment-index="0">
-      <pre><code class="language-ocaml">let iterator l =
+      <pre class="has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/lists.ml#L88" data-at="An iterator written by hand" target="_blank" rel="noopener">OCaml</a><code class="language-ocaml">let iterator l =
   let here = ref l in
   fun () ->
     match !here with
