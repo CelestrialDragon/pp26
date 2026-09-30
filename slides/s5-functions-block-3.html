@@ -1349,6 +1349,37 @@ let exists p l =
   Reveal.on('ready', runWidows);
   Reveal.on('slidechanged', runWidows);
 
+  // Wheel and trackpad: one gesture is one step, as the arrow keys. Down or right goes on, up or
+  // left goes back. A trackpad sends events for a second after the fingers leave (inertia): a step
+  // is taken when the gesture has moved enough, and the next one only after the events have
+  // stopped, or after 900 ms of a scroll that goes on. Not in edit mode, not in the overview or
+  // the list of parts, not in the print, and not over a box that scrolls by itself.
+  (() => {
+    let acc = 0, locked = false, since = 0, quiet = null;
+    const scrolls = (el, horizontal) => {
+      for (; el && el !== document.body && el.nodeType === 1; el = el.parentElement) {
+        const cs = getComputedStyle(el);
+        if (!horizontal && /auto|scroll/.test(cs.overflowY) && el.scrollHeight > el.clientHeight + 1) return true;
+        if (horizontal && /auto|scroll/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 1) return true;
+      }
+      return false;
+    };
+    window.addEventListener('wheel', e => {
+      if (e.ctrlKey || e.metaKey || /print-pdf/.test(location.search)) return;          // pinch and zoom stay the browser's
+      if (document.documentElement.classList.contains('liveedit') || Reveal.isOverview() || !document.getElementById('toc').hidden) return;
+      const horizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      if (scrolls(e.target, horizontal)) return;
+      e.preventDefault();
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;                // lines and pages, in pixels
+      clearTimeout(quiet); quiet = setTimeout(() => { locked = false; acc = 0; }, 140);
+      if (locked) { if (Date.now() - since < 900) return; locked = false; acc = 0; }
+      acc += (horizontal ? e.deltaX : e.deltaY) * unit;
+      if (Math.abs(acc) < 40) return;
+      if (acc > 0) Reveal.next(); else Reveal.prev();
+      locked = true; since = Date.now(); acc = 0;
+    }, { passive: false });
+  })();
+
   // Part shortcuts: Shift+Right / Shift+Left = next / previous part; digits 1-9 = part n.
   document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey || e.altKey || e.target.isContentEditable) return;
