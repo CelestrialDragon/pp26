@@ -1006,7 +1006,7 @@ and 'a seq = unit -> 'a node</code></pre>
     </div>
   </div>
   <div class="box fragment" data-fragment-index="1">A <span class="hl">sequence</span> <span class="aka">(also called a stream)</span><sup>*</sup> is a thunk that gives one element and the rest of the sequence.</div>
-  <p class="fn fragment" data-fragment-index="1"><sup>*</sup> Okasaki 1998, chapter 4; CS3110, section 8.4. OCaml's library has this type as <code>Seq.t</code>.</p>
+  <p class="fn fragment" data-fragment-index="1"><sup>*</sup> Okasaki 1998, chapter 4; CS3110, section 9.4. OCaml's library has this type as <code>Seq.t</code>.</p>
   <aside class="notes">The only difference between the two types is unit ->. Two types that refer to each other, hence "and". The names are the library's: Seq.t, Nil, Cons. We write the type ourselves in the lecture and in the lab, and use the library on the last slide of this part. It is a type with a parameter, 'a, written by us: session 11 explains how the compiler finds the types of the functions we write on it.</aside>
 </section>
 

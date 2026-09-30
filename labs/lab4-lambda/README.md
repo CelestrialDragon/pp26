@@ -205,5 +205,5 @@ readback : value -> term
   an OCaml function. Session 3's ladder promised a constructor carrying a function; this is
   it. What did we lose (try `readback`)?
 
-Reading: CS3110, chapter 9 (interpreters), sections 9.1–9.3; Pierce, *Types and Programming
+Reading: CS3110, chapter 10 (interpreters), sections 10.1–10.4; Pierce, *Types and Programming
 Languages*, chapter 5 (the untyped λ-calculus) for the paper exercises.

@@ -34,7 +34,7 @@ and 'a seq = unit -> 'a node
 ```
 
 A value of type `'a seq` is a **sequence** (also called a *stream*: Okasaki 1998, chapter 4;
-CS3110, section 8.4). OCaml's library has the same type as `Seq.t`, with the same two
+CS3110, section 9.4). OCaml's library has the same type as `Seq.t`, with the same two
 constructors. Here we write it ourselves.
 
 ## Files
@@ -393,4 +393,4 @@ at one position and, in its failure continuation, at the next one. The status li
   repeats it for ever, and play sixteen events of it through lab 3's `wav.ml`.
 
 Reading: Leroy, *Control structures in programming languages* (2026), chapters 6 and 7;
-CS3110, chapter 8, section 8.4 (streams and laziness).
+CS3110, chapter 9, section 9.4, sequences.
