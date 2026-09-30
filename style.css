@@ -317,6 +317,17 @@ table.langs th{text-align:left;font:600 .68rem/1.5 var(--sans);letter-spacing:.1
   text-transform:uppercase;color:var(--ink3)}
 table.parts td.p{width:2.6rem;font:700 .82rem/1.6 var(--mono);color:var(--acc-t)}
 table.langs td:first-child{width:8rem;font-weight:600;color:var(--ink)}
+
+/* code blocks on a session page (S5's types), keywords and constructors coloured */
+pre.code{font:400 .84rem/1.5 var(--mono);background:var(--sunk);border:1px solid var(--line-soft);
+  border-left:3px solid var(--acc);border-radius:6px;padding:.7rem .9rem;margin:.4rem 0 1rem;
+  overflow-x:auto;max-width:44rem}
+pre.code .k{color:var(--acc-t);font-weight:600}
+pre.code .c{color:var(--wine)}
+pre.code .cm{color:var(--ink3)}
+section>h3{margin:1.8rem 0 .5rem}
+table.langs.qa td:first-child{width:36%}
+table.langs.qa{margin-bottom:.8rem}
 table.parts tr.watch{background:var(--acc-l)}
 table.parts tr.watch td:last-child::after{content:"run and watch";display:block;
   margin-top:.4rem;font:600 .66rem/1 var(--sans);letter-spacing:.09em;
