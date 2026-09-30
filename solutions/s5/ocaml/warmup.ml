@@ -186,7 +186,7 @@ let built = ref 0          (* counts the cells that iterate builds *)
 
 (* the sequence x, f x, f (f x), ... : x is the first value, f the step from one to the next *)
 let rec iterate (f : 'a -> 'a) (x : 'a) : 'a seq =
-  fun () -> incr built; Cons (x, iterate f (f x))
+  fun () -> incr built; Cons (x, fun () -> iterate f (f x) ())
 
 let () =
   print_endline "7. a sequence without end";
@@ -197,7 +197,11 @@ let () =
     let s = iterate (fun n -> n + 1) 0 in
     let before = !built in
     let _ = take 5 s in
-    before = 0 && !built = 5)
+    before = 0 && !built = 5);
+  check "to read 5 elements, f is called 4 times: not before the next one is asked for" (fun () ->
+    let calls = ref 0 in
+    let _ = take 5 (iterate (fun n -> incr calls; n + 1) 0) in
+    !calls = 4)
 
 (* ---- 8. The triangle, as the sequence of its rows ----------------------- *)
 

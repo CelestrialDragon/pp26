@@ -190,7 +190,11 @@ let () =
     let s = iterate (fun n -> n + 1) 0 in
     let before = !built in
     let _ = take 5 s in
-    before = 0 && !built = 5)
+    before = 0 && !built = 5);
+  check "to read 5 elements, f is called 4 times: not before the next one is asked for" (fun () ->
+    let calls = ref 0 in
+    let _ = take 5 (iterate (fun n -> incr calls; n + 1) 0) in
+    !calls = 4)
 
 (* ---- 8. The triangle, as the sequence of its rows ----------------------- *)
 
