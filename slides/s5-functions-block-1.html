@@ -798,7 +798,7 @@ let rec fact n =
   <table class="road">
     <tr><td class="s">1</td><td><b>Closures</b></td><td>We start with what a function value is: a function with its environment, which can keep a state between two calls.</td></tr>
     <tr class="fragment" data-fragment-index="0"><td class="s">2</td><td><b>Traversing a list</b></td><td>First, we traverse a list by giving it a function, which it calls on every element (the list pushes the elements: internal iteration).</td></tr>
-    <tr class="fragment" data-fragment-index="1"><td class="s">3</td><td><b>Stopping</b></td><td>Problem: in a strict language, this function cannot stop the traversal before the last element.</td></tr>
+    <tr class="fragment" data-fragment-index="1"><td class="s">3</td><td><b>Stopping</b></td><td>Problem: in a strict language, the answer of this function cannot stop the traversal before the last element.</td></tr>
     <tr class="fragment" data-fragment-index="2"><td class="s">4</td><td><b>Iterators</b></td><td>Second, we traverse by asking for one element at a time (we pull the elements: external iteration). Using closures, the iterator remembers where it is in the list between two calls.</td></tr>
     <tr class="fragment" data-fragment-index="3"><td class="s">5</td><td><b>Generators</b></td><td>We let the language write the iterator: we write a function with <code>yield</code>, and the language makes the object that remembers where the function stopped.</td></tr>
   </table>
@@ -1137,6 +1137,7 @@ length text</code></pre>
     </div>
   </div>
   <div class="box fragment" data-fragment-index="1">Each of the three uses <span class="hl">every element</span> of the list. None has a reason to stop before the last one.</div>
+  <p class="fn fragment" data-fragment-index="0"><code>fold_right</code> calls our function from the last element to the first. With no effect in it, the lists are the same.</p>
   <aside class="notes">Recorded from demos/lists.ml. Read map aloud: x is the element, r the result for the rest of the list. The box prepares part 3: these three are the good case of internal iteration. iter, on the next slide, is set apart: it builds nothing, it calls our function for what the function does.</aside>
 </section>
 
@@ -1218,7 +1219,8 @@ let rec fold_until f acc = function
       | Continue a -> fold_until f a xs</code></pre>
     </div>
     <div class="fragment" data-fragment-index="0">
-      <pre><code class="language-ocaml">let exists p l =
+      <pre><code class="language-ocaml">let () = visited := 0
+let exists p l =
   fold_until (fun _ x ->
       incr visited;
       if p x then Stop true
@@ -1230,7 +1232,7 @@ let rec fold_until f acc = function
   <div class="box fragment" data-fragment-index="1">Our function's answer now carries a <span class="hl">decision</span>, <code>Stop</code> or <code>Continue</code>, and the loop reads it.<sup>*</sup></div>
   <div class="box fragment" data-fragment-index="2">Our function can stop, but it runs only when <code>fold_until</code> calls it, and we do not choose when. In part 4 <span class="hl">we</span> call <code>next</code>, which settles both: we ask when we want, and we stop by not asking.</div>
   <p class="fn fragment" data-fragment-index="1"><sup>*</sup> After <code>fold_until</code> in OCaml's Base library. An exception also leaves a traversal: session 6.</p>
-  <aside class="notes">Recorded from demos/lists.ml, which sets visited back to 0 before this run; typed after the slide before, without that line, the program prints visited=8. Two clicks after the code. The first box is what changed in principle: the interface. A fold decides everything, and our function's return value is only the next accumulator; fold_until reads a decision in that value, so one choice, whether to go on, has passed to our function. The type 'b go is that choice written as data; session 6 writes the whole rest of a traversal as a function. The second box is the limit, and the question of part 4: our function is called once per element, at the moment the list chooses; it cannot wait between two elements or ask for one. Stated about this interface, not about folds in general: an exception can leave fold, and a lazy right fold stops by itself; both come later and both change what is passed. The lab writes fold_until on the rope and uses it for End-of-line; there it returns a value of type 'b go, because a traversal of the left subtree must say to the right one that it stopped.</aside>
+  <aside class="notes">Recorded from demos/lists.ml. The first line on the right sets visited back to 0: typed after the slide before without it, the program prints visited=8. Two clicks after the code. The first box is what changed in principle: the interface. A fold decides everything, and our function's return value is only the next accumulator; fold_until reads a decision in that value, so one choice, whether to go on, has passed to our function. The type 'b go is that choice written as data; session 6 writes the whole rest of a traversal as a function. The second box is the limit, and the question of part 4: our function is called once per element, at the moment the list chooses; it cannot wait between two elements or ask for one. Stated about this interface, not about folds in general: an exception can leave fold, and a lazy right fold stops by itself; both come later and both change what is passed. The lab writes fold_until on the rope and uses it for End-of-line; there it returns a value of type 'b go, because a traversal of the left subtree must say to the right one that it stopped.</aside>
 </section>
 
 <!-- part 4 -->
@@ -1369,7 +1371,7 @@ or not None</pre>
     <tr><td class="s">one value</td><td>block 2</td><td class="empty">session 6</td></tr>
   </table>
   <p class="fragment" data-fragment-index="0">In pull, the collection gives us an iterator and we call it. In push, we give the collection a function and it calls it.</p>
-  <div class="box fragment" data-fragment-index="1">External iteration is pull, internal iteration is push. The one who <span class="hl">calls</span> is the one who can stop.</div>
+  <div class="box fragment" data-fragment-index="1">External iteration is pull, internal iteration is push. With pull, <span class="hl">we</span> choose when to ask for the next element, and we stop by not asking.</div>
   <p class="fn">Source: Meijer 2010, <em>Subject/Observer is dual to Iterator</em>; the table follows the Rx design notes.</p>
   <aside class="notes">Two minutes. Meijer's table has one or many values against synchronous pull or asynchronous push: T and Task&lt;T>, IEnumerable&lt;T> and IObservable&lt;T>. We fill the row of many values today. The cell "one value, pulled" is block 2's thunk; the cell "one value, pushed" is a promise and stays empty until session 6. Do not name either now.</aside>
 </section>
@@ -1381,7 +1383,7 @@ or not None</pre>
     <tr><th></th><th>the question</th><th>the answer</th></tr>
     <tr><td class="s">1</td><td>What does a function value carry?</td><td>Its code and its environment: a <b>closure</b>.</td></tr>
     <tr><td class="s">2</td><td>How do we visit every element of a list?</td><td>We pass a function to a fold: <b>internal iteration</b>.</td></tr>
-    <tr><td class="s">3</td><td>Can our function stop the traversal?</td><td>With <code>fold</code>, no. With <code>fold_until</code> it answers <code>Continue</code> or <code>Stop</code>.</td></tr>
+    <tr><td class="s">3</td><td>Can our function stop the traversal?</td><td>By its answer, only with <code>fold_until</code>: <code>Continue</code> or <code>Stop</code>.</td></tr>
     <tr><td class="s">4</td><td>How can the consumer choose the next step?</td><td>It calls <code>next</code>: <b>external iteration</b>.</td></tr>
     <tr><td class="s">5</td><td>How can the producer remember where it stopped?</td><td>With <code>yield</code>: a <b>generator</b>, which the language suspends.</td></tr>
   </table>
