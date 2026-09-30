@@ -22,3 +22,17 @@ main = do
   print (foldr (\x r -> x > 2 || r) False [0 ..])
   putStrLn "take 5 of a map of a filter on a list without end:"
   print (take 5 (map (\n -> n * n) (filter even [0 ..])))
+  -- when is our function called? It says so. With foldr it is the call on top: it is
+  -- called on 0, 1, 2, 3 and answers. With foldl the call on top is foldl again, and
+  -- the calls of our function wait: on [0 .. 5] they run at the end, from the last
+  -- element to the first; on [0 ..] the end never comes, and none of them runs.
+  putStrLn "foldr on [0 ..], our function traced:"
+  print (foldr fr False [0 ..])
+  putStrLn "foldl on [0 .. 5], our function traced:"
+  print (foldl fl False [0 .. 5])
+
+fr :: Integer -> Bool -> Bool
+fr x rest = trace ("  f called on " ++ show x) (x > 2 || rest)
+
+fl :: Bool -> Integer -> Bool
+fl found x = trace ("  f called on " ++ show x) (found || x > 2)

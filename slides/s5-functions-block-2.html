@@ -1033,17 +1033,27 @@ take 5 (from 0)</code></pre>
       <pre class="has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/Folds.hs#L1" data-file="demos5/Folds.hs" data-at="the two folds, in Haskell" target="_blank" rel="noopener">Haskell</a><code class="language-haskell">foldr (\x rest -> x > 2 || rest)
       False [0 ..]</code></pre>
       <pre class="out tr rec fragment" data-fragment-index="0">True</pre>
-      <p class="fragment" data-fragment-index="0">Our function is given the rest, not computed. At 3 it answers, and the cells after 3 are never built.</p>
+      <pre class="fragment" data-fragment-index="1"><code class="language-haskell">foldr f False [0 ..]
+= f 0 (foldr f False [1 ..])
+= …
+= f 3 (foldr f False [4 ..])
+= True</code></pre>
+      <p class="fragment" data-fragment-index="1">The call on top is <code>f</code>, our function. At 3 it answers, and does not read its rest.</p>
     </div>
-    <div class="fragment" data-fragment-index="1">
+    <div class="fragment" data-fragment-index="2">
       <pre><code class="language-haskell">foldl (\found x -> found || x > 2)
       False [0 ..]</code></pre>
-      <pre class="out tr rec fragment" data-fragment-index="2">the program does not end</pre>
-      <p class="fragment" data-fragment-index="2"><code>foldl</code> gives the rest of the list to itself. It answers at the end of the list, and the list has no end.</p>
+      <pre class="out tr rec fragment" data-fragment-index="3">the program does not end</pre>
+      <pre class="fragment" data-fragment-index="4"><code class="language-haskell">foldl f False [0 ..]
+= foldl f (f False 0) [1 ..]
+= foldl f (f (f False 0) 1) [2 ..]
+= foldl f (f (f (f False 0) 1) 2) [3 ..]
+= …</code></pre>
+      <p class="fragment" data-fragment-index="4">The call on top is always <code>foldl</code>: no step answers. The calls of <code>f</code> wait, and are never run.</p>
     </div>
   </div>
-  <div class="box fragment" data-fragment-index="3">Laziness delays what a function <b>is given</b>. In Haskell as in OCaml, only with the <span class="hl">right fold</span> is our function given the rest.</div>
-  <aside class="notes">Ask for the answer of each fold before showing it. Recorded from demos/Folds.hs and demos/Inf.hs: the right fold answers True. The left fold was run and stopped by hand after a minute. This closes the slide on the two folds: who holds the rest decides who can stop, in a lazy language too. It also answers the question of block 1's roadmap, where the problem of stopping was stated "in a strict language": in a lazy language the right fold stops by itself.</aside>
+  <div class="box fragment" data-fragment-index="5">Laziness delays what a function <b>is given</b>. In Haskell as in OCaml, only with the <span class="hl">right fold</span> is our function given the rest.</div>
+  <aside class="notes">Ask for the answer of each fold before showing it. Recorded from demos/Folds.hs and demos/Inf.hs: the right fold answers True. The left fold was run and stopped by hand after a minute. Under each run, the fold unfolded by its definition, with f for our function: foldr f z (x : xs) = f x (foldr f z xs), and foldl f z (x : xs) = foldl f (f z x) xs, the two of the slide "A left fold and a right fold". With foldr the call on top is f: Haskell runs it, and f 3 rest is True without rest. With foldl the call on top is foldl again, at every step: to know the result Haskell must go to the end of the list. Laziness does delay something: the argument f z x, the call of our function, which waits and is never run. So found would be True from 3 on, and nobody looks at it. demos/Folds.hs traces our function: with foldr it is called on 0, 1, 2, 3; with foldl on [0 .. 5] it is called at the end only, on 5 first; on [0 ..] it is never called. This closes the slide on the two folds: who holds the rest decides who can stop, in a lazy language too. It also answers the question of block 1's roadmap, where the problem of stopping was stated "in a strict language": in a lazy language the right fold stops by itself.</aside>
 </section>
 
 <!-- part 2 -->
