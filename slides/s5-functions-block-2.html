@@ -1487,6 +1487,14 @@ the body ran 26 times</pre>
   parts.forEach(p => { const li = document.createElement('li'); li.innerHTML = `<b>${p.name}</b> <span class="muted">${p.sub}</span>`; li.onclick = () => { Reveal.slide(p.h, 0); toggleToc(false); }; tocList.appendChild(li); });
   const toggleToc = (on) => { const t = document.getElementById('toc'); t.hidden = on === undefined ? !t.hidden : !on; };
 
+  // Print (?print-pdf): reveal lays the pages out between animation frames, and headless Chrome
+  // draws no frame when the display is off; the print was then one empty page, most of the time.
+  // In the print a frame is a timer.
+  if (/print-pdf/.test(location.search)) {
+    window.requestAnimationFrame = f => setTimeout(() => f(performance.now()), 16);
+    window.cancelAnimationFrame = id => clearTimeout(id);
+  }
+
   Reveal.initialize({
     width: 1600, height: 900, margin: 0.04, minScale: 0.2, maxScale: 2.0,
     center: false, hash: true, transition: 'none', backgroundTransition: 'none',
@@ -1616,8 +1624,30 @@ the body ran 26 times</pre>
       document.querySelectorAll('[data-anim]').forEach(f => f.classList.add('visible'));
       if (window.__matrixApply) window.__matrixApply();
     };
+    // In the print every step of a slide is shown at once, so a slide where panels take each
+    // other's place can be taller than the page, and reveal gives it a second page. What is
+    // under its title is made smaller until the slide fits on one page.
+    const fitPages = () => {
+      const cfg = Reveal.getConfig(), H = cfg.height, page = Math.floor(H * (1 + cfg.margin)) + cfg.pdfPageHeightOffset;
+      const bottom = sec => {   // the lowest point of what the slide shows, from the slide's top
+        const top = sec.getBoundingClientRect().top; let b = 0;
+        sec.querySelectorAll('*').forEach(e => {
+          if (e.closest('aside')) return;
+          const r = e.getBoundingClientRect(); if (r.width || r.height) b = Math.max(b, r.bottom - top);
+        });
+        return b;
+      };
+      document.querySelectorAll('.pdf-page').forEach(pg => {
+        const sec = pg.querySelector('section'); if (!sec) return;
+        const kids = [...sec.children].filter(e => !e.matches('h2, aside'));
+        let z = +sec.dataset.printZoom || 1;
+        while (bottom(sec) > H + 10 && z > 0.5) { z -= 0.03; kids.forEach(e => { e.style.zoom = z; }); }
+        sec.dataset.printZoom = z;
+        if (bottom(sec) <= H + 10) pg.style.height = page + 'px';
+      });
+    };
     Reveal.on('ready', () => setTimeout(printPrep, 300));
-    Reveal.on('pdf-ready', () => setTimeout(printPrep, 300));
+    Reveal.on('pdf-ready', () => { setTimeout(printPrep, 300); setTimeout(fitPages, 1500); setTimeout(fitPages, 5000); });
   }
 
   // Local preview only: reload when the built file changes on disk (the position is remembered above).
