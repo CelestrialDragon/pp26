@@ -719,8 +719,9 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal .held .frame span { font-family: "Fira Sans", sans-serif; font-size: 27px; margin-left: 18px; }
 .reveal table.fk td.s { width: 24%; font-size: 27px; color: var(--accent); font-weight: 500; }
 .reveal table.fk td, .reveal table.fk th { width: 38%; }
-.reveal table.ways3 td.s { width: 11%; }
-.reveal table.ways3 td:nth-child(2) { width: 52%; }
+.reveal table.ways4 td.s { width: 11%; }
+.reveal table.ways4 td:nth-child(2) { width: 37%; }
+.reveal table.ways4 td:nth-child(3) { width: 38%; }
 </style>
 </head>
 <body>
@@ -1017,18 +1018,17 @@ no newline</pre>
 <section>
   <h2>Three ways to stop a traversal</h2>
   <pre class="mid"><code class="language-ocaml">exception Found
-
 let exists p l =
   try fold (fun () x -> if p x then raise Found) () l; false
   with Found -> true</code></pre>
   <p class="ask">The newline is the third of five characters. How many does <code>fold</code> visit?</p>
-  <table class="small ways3 fragment" data-fragment-index="0">
-    <tr><th></th><th>to stop</th><th>visited</th></tr>
-    <tr><td class="s">Block 1</td><td>our function answers <code>Stop</code> to <code>fold_until</code></td><td>3</td></tr>
-    <tr><td class="s">Block 2</td><td>our function does not call the rest, a thunk</td><td>3</td></tr>
-    <tr><td class="s">Block 3</td><td>our function raises an exception</td><td>3</td></tr>
+  <table class="small ways4 fragment" data-fragment-index="0">
+    <tr><th></th><th>the fold</th><th>our function stops by</th><th>visited</th></tr>
+    <tr><td class="s">Block 1</td><td><code>fold_until</code>, written to be stopped</td><td>answering <code>Stop</code></td><td>3</td></tr>
+    <tr><td class="s">Block 2</td><td><code>fold_right</code>, the rest as a thunk</td><td>not calling the rest</td><td>3</td></tr>
+    <tr><td class="s">Block 3</td><td>session 4's <code>fold</code>, unchanged</td><td>raising; <code>try … with</code> catches</td><td>3</td></tr>
   </table>
-  <p class="fragment" data-fragment-index="1">For the first two we wrote another fold. Here <code>fold</code> is session 4's, unchanged.</p>
+  <div class="box fragment" data-fragment-index="1"><code>raise</code> leaves every frame of <code>fold</code> at once: a way out that <span class="hl">no fold gave</span>.</div>
   <aside class="notes">Recorded from demos/newline_kh.ml, where our function also counts its calls: found=true visited=3, the number of block 1's fold_until and of block 2's fold with the rest as a thunk. fold knows nothing of the exception: raise calls the continuation given by try, and the frames of fold are dropped. This is lab 5's find, written in three ways in its part C.</aside>
 </section>
 
@@ -1150,7 +1150,8 @@ let exists p l =
     </div>
   </div>
   <div class="box">The continuation of success <span class="hl">receives</span> the continuation of failure. When what follows does not work out, it calls it, and the search goes back to the last choice.</div>
-  <aside class="notes">Not presented. The two continuations of part 4 are named succ and fail, as in the lab. In part 4 h was given once, at the start. Here star makes a new fail at every character that it takes: fun () -> succ s fail ends the star at s, and goes on with the rest of the pattern from there. The lab's level C4 writes match_k for a whole pattern, on the rope. Programs: demos/star.ml.</aside>
+  <p>The match is at the start: <code>aaabXYZ</code> gives true too. For the whole sequence, <code>succ</code> would also ask for <code>Nil</code>.</p>
+  <aside class="notes">Not presented. The two continuations of part 4 are named succ and fail, as in the lab. In part 4 h was given once, at the start. Here star makes a new fail at every character that it takes: fun () -> succ s fail ends the star at s, and goes on with the rest of the pattern from there. The lab's level C4 writes match_k for a whole pattern, on the rope. Programs: demos/star.ml, which also runs aaabXYZ: true, went back 1 time.</aside>
 </section>
 
 <!-- the search going back -->
@@ -1161,8 +1162,7 @@ let exists p l =
      lit 'a' s (fun s fail -> lit 'b' s (fun _ _ -> true) fail) fail)
   (fun () -> false)</code></pre>
   <div id="sq-star"></div>
-  <p class="fn">The match is at the start: <code>aaabXYZ</code> gives true too. For the whole sequence, <code>succ</code> would also ask for <code>Nil</code>.</p>
-  <aside class="notes">Not presented. Step or Run; nine steps. The star takes the three a, and keeps a way back at each. The rest of the pattern, a, then fails on b, and calls the last fail kept. Recorded from demos/star.ml: on aaab, true, went back 1 time; on aaa, false, went back 3 times; on b, false, 0 times; on aaabXYZ, true, 1 time.</aside>
+  <aside class="notes">Not presented. Step or Run; nine steps. The star takes the three a, and keeps a way back at each. The rest of the pattern, a, then fails on b, and calls the last fail kept. Recorded from demos/star.ml: on aaab, true, went back 1 time; on aaa, false, went back 3 times; on b, false, 0 times.</aside>
 </section>
 
 <!-- persistent -->

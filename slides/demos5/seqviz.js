@@ -376,13 +376,13 @@
   };
 
   MODES.star = function () {
-    const s = ['a', 'a', 'a', 'b'], frames = [], X = i => 330 + i * 170, Y = 170, PX = [330, 500, 670], PY = 40;
+    const s = ['a', 'a', 'a', 'b'], frames = [], X = i => 330 + i * 170, Y = 150, PX = [330, 500, 670], PY = 36;
     const pat = ['a*', 'a', 'b'];
     const base = (pos, part, ways, taken) => {
       const it = {
         cap0: { kind: 'label', x: 40, y: PY + 10, text: 'the pattern', cls: 'cap' },
         cap1: { kind: 'label', x: 40, y: Y + 10, text: 'the sequence', cls: 'cap' },
-        cap2: { kind: 'label', x: 40, y: Y + 140, text: 'ways back, kept', cls: 'cap' }
+        cap2: { kind: 'label', x: 40, y: Y + 122, text: 'ways back, kept', cls: 'cap' }
       };
       pat.forEach((p, i) => { it['p' + i] = { kind: 'card', x: PX[i], y: PY, w: 130, h: 64, text: p, cls: i === part ? 'cur' : i < part ? 'done' : '' }; });
       s.forEach((c, i) => { it['c' + i] = { kind: 'pair', x: X(i), y: Y, text: c, cls: i === pos ? 'read' : '' }; });
@@ -392,7 +392,7 @@
         it.who = { kind: 'label', x: X(pos), y: Y - 62, text: 's', cls: 'mono reader' };
       }
       for (let i = 0; i < ways; i++)
-        it['w' + i] = { kind: 'chip', x: X(i), y: Y + 130, w: 150, h: 50, text: 'fail', cls: i === taken ? 'val new' : 'ask' };
+        it['w' + i] = { kind: 'chip', x: X(i), y: Y + 112, w: 150, h: 50, text: 'fail', cls: i === taken ? 'val new' : 'ask' };
       return it;
     };
     const push = (it, what, back) => frames.push({ items: it, what, counters: [['we went back', back, back === 1 ? 'time' : 'times']] });
@@ -407,7 +407,7 @@
     push(base(2, 1, 2, -1), 'we are at position 2 again, and the sequence has not changed. The star ends here: it has taken two a', 1);
     push(base(3, 2, 2, -1), 'a matches the a at position 2', 1);
     push(base(4, 3, 2, -1), 'b matches: the answer is true. Two ways back were kept and never called', 1);
-    return { frames, w: 1400, h: 350 };
+    return { frames, w: 1400, h: 300 };
   };
 
   // additions made when the first m numbers are read and every rest is a thunk
