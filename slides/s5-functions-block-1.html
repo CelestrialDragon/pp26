@@ -764,6 +764,9 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal table.sieve td.p span { display: inline-block; min-width: 46px; line-height: 46px; border-radius: 23px; background: var(--accent); color: #fff; font-weight: 500; }
 .reveal table.sieve td.x { text-decoration: line-through; text-decoration-color: var(--accent); text-decoration-thickness: 3px; }
 .reveal table.sieve ~ pre.out { margin-bottom: 24px; }
+/* a number that nobody has read yet: shown from the start, hatched on its click, as the rest of a lazy list */
+.reveal .slides section table.sieve td.fragment.lz { opacity: 1; visibility: inherit; transition: none; }
+.reveal .slides section table.sieve td.fragment.lz.visible { background: repeating-linear-gradient(45deg, #DDE3E5 0 5px, #F3F5F6 5px 12px); }
 </style>
 </head>
 <body>
@@ -1400,7 +1403,7 @@ or not None</pre>
   </script>
   <div class="cols">
     <div>
-      <pre><code class="language-js" data-src="src-two"></code></pre>
+      <pre class="has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/generator.js#L1" data-file="demos5/generator.js" data-at="a generator, in JavaScript" target="_blank" rel="noopener">JavaScript</a><code class="language-js" data-src="src-two"></code></pre>
       <p><button class="run" onclick="runJS(this, 'out-two', 'src-two')">Run</button> <button class="run reset" onclick="reset(this, 'out-two')">Reset</button></p>
     </div>
     <div>
@@ -1442,7 +1445,7 @@ or not None</pre>
       <p class="fragment" data-fragment-index="1">After the last <code>yield</code>, <code>done</code> is true.</p>
     </div>
     <div>
-      <pre class="small"><code class="language-js" data-src="src-twohand"></code></pre>
+      <pre class="small has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/generator_object.js#L1" data-file="demos5/generator_object.js" data-at="the object that a compiler makes" target="_blank" rel="noopener">JavaScript</a><code class="language-js" data-src="src-twohand"></code></pre>
       <p><button class="run" onclick="runJS(this, 'out-twohand', 'src-twohand')">Run</button> <button class="run reset" onclick="reset(this, 'out-twohand')">Reset</button></p>
     </div>
   </div>
