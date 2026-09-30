@@ -697,7 +697,7 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal table.orders td:nth-child(3), .reveal table.orders th:nth-child(3) { width: 9%; }
 .reveal table.orders td:nth-child(1) { width: 14%; }
 .reveal table.orders td:nth-child(2) { width: 43%; }
-/* block 3: cards of code in a drawing; the spine; a stack and frames side by side */
+/* the block on continuations (session 6, block 1): cards of code in a drawing; the spine; a stack and frames side by side */
 .reveal .seqviz.sq-sumk .sq-card text { font-size: 29px; }
 .reveal .seqviz.sq-sumk .sq-card .sq-shape { stroke: var(--ink); stroke-width: 2.5; }
 .reveal .seqviz.sq-sumk .sq-card.cur .sq-shape { stroke: var(--accent); stroke-width: 4; }
@@ -735,11 +735,11 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 <!-- 1 -->
 <section class="title" data-background-color="#23373B">
   <div class="eyebrow">PROGRAMMING PARADIGMS · SESSION 5 · BLOCK 1</div>
-  <h1>Functions as values: iterators, streams, continuations</h1>
+  <h1>Functions as values: iterators and streams</h1>
   <div class="sub"><b>Block 1</b> — Iterators: who drives the traversal?</div>
   <div class="rule"></div>
   <div class="meta">SW7 · Aalborg University Copenhagen · Autumn 2026</div>
-  <aside class="notes">Session 4 asked who decides when a step is taken. Today the program decides, and it does so in one way, three times: it passes the next step as a function. In this block the function passed is one step of a traversal.</aside>
+  <aside class="notes">Session 4 asked who decides when a step is taken. Today the program decides, and it does so in one way, in both blocks: it passes the next step as a function. In this block the function passed is one step of a traversal.</aside>
 </section>
 
 <!-- 2 -->
@@ -774,23 +774,22 @@ let rec fact n =
     (fun () -> n * fact (n - 1))</code></pre></div>
     </div>
   </div>
-  <div class="box fragment" data-fragment-index="4" style="font-size: 0.719em; width: 1408px; position: relative; left: 0px; top: -30px">For answers 2 and 3 we passed a <span class="hl">function as a value</span>. At the end of session 5 we do the same for answer 1, with <b>continuations</b>.</div>
-  <aside class="notes">One minute. Three of session 4's questions, with its answers, on the slide from the start; they are the subtitles of its parts 2, 3 and 4. Five clicks. The first question keeps the light for two of them: count written as a recursion, where the machine keeps the work still to do in its frames, then count with a loop and a stack, where the program keeps it; both are on session 4's slide "Can a loop replace every recursion?". Then fold, then my_if. The last click shows the box. What the explicit stack holds is subtrees, not frames: it is the work still to do of this one traversal, written as data. Block 3 opens on this count and asks what a function adds. Part 2 also went the other way, from a loop to a tail recursion with an accumulator; say it, it is not on the slide.</aside>
+  <div class="box fragment" data-fragment-index="4" style="font-size: 0.719em; width: 1408px; position: relative; left: 0px; top: -30px">For answers 2 and 3 we passed a <span class="hl">function as a value</span>. In session 6 we do the same for answer 1, with <b>continuations</b>.</div>
+  <aside class="notes">One minute. Three of session 4's questions, with its answers, on the slide from the start; they are the subtitles of its parts 2, 3 and 4. Five clicks. The first question keeps the light for two of them: count written as a recursion, where the machine keeps the work still to do in its frames, then count with a loop and a stack, where the program keeps it; both are on session 4's slide "Can a loop replace every recursion?". Then fold, then my_if. The last click shows the box. What the explicit stack holds is subtrees, not frames: it is the work still to do of this one traversal, written as data. Session 6 opens on this count and asks what a function adds. Part 2 also went the other way, from a loop to a tail recursion with an accumulator; say it, it is not on the slide.</aside>
 </section>
 
 <!-- 2b -->
 <section>
   <h2>Today</h2>
-  <p>We use <span class="hl">functions as values</span> to answer how a program itself can control, step by step, a traversal of its data, possibly infinite, and its own computation: computing a value only when it is needed, keeping the rest of a computation as a value.</p>
+  <p>We use <span class="hl">functions as values</span> to answer how a program itself can control, step by step, a traversal of its data, possibly infinite, and its own computation: computing a value only when it is needed.</p>
   <table class="today3">
     <tr><th></th><th>the question</th><th>the function is</th></tr>
     <tr><td class="s">Block 1</td><td>Iterators: who drives the traversal?</td><td>one step of a traversal</td></tr>
     <tr><td class="s">Block 2</td><td>Thunks and streams: when is a value computed?</td><td>a computation not yet run</td></tr>
-    <tr><td class="s">Block 3</td><td>Continuations: what does the computation do next?</td><td>the rest of the computation</td></tr>
   </table>
   <p class="today-line" style="position: relative; left: -2px; top: 46px"><b>Warm-up.</b> Questions on paper, then exercises in OCaml, on blocks 1 and 2.</p>
-  <p class="today-line" style="position: relative; left: -2px; top: 46px"><b>Lab.</b> Making a mini text editor, on a library that we write in three parts, one per block.</p>
-  <aside class="notes">Thirty seconds. The three questions are the titles of the three decks, and the titles announced on the course site. The three rows continue the three questions of the previous slide, in another order: the body of a loop was what fold received, the computation not yet run was a branch of my_if, the rest of the computation was what the stack held.</aside>
+  <p class="today-line" style="position: relative; left: -2px; top: 46px"><b>Lab.</b> Making a mini text editor, on a library that we write in three parts; the third goes with session 6.</p>
+  <aside class="notes">Thirty seconds. The two questions are the titles of the two decks, and the titles announced on the course site. The two rows continue two of the three questions of the previous slide: the body of a loop was what fold received, the computation not yet run was a branch of my_if. The third, the work still to do that the stack held, is for session 6, with continuations.</aside>
 </section>
 
 <!-- 2c: roadmap of block 1 -->
@@ -1230,8 +1229,8 @@ let rec fold_until f acc = function
   </div>
   <div class="box fragment" data-fragment-index="1">Our function's answer now carries a <span class="hl">decision</span>, <code>Stop</code> or <code>Continue</code>, and the loop reads it.<sup>*</sup></div>
   <div class="box fragment" data-fragment-index="2">Our function can stop, but it runs only when <code>fold_until</code> calls it, and we do not choose when. In part 4 <span class="hl">we</span> call <code>next</code>, which settles both: we ask when we want, and we stop by not asking.</div>
-  <p class="fn fragment" data-fragment-index="1"><sup>*</sup> After <code>fold_until</code> in OCaml's Base library. An exception also leaves a traversal: block 3.</p>
-  <aside class="notes">Recorded from demos/lists.ml, which sets visited back to 0 before this run; typed after the slide before, without that line, the program prints visited=8. Two clicks after the code. The first box is what changed in principle: the interface. A fold decides everything, and our function's return value is only the next accumulator; fold_until reads a decision in that value, so one choice, whether to go on, has passed to our function. The type 'b go is that choice written as data; block 3 writes the whole rest of a traversal as a function. The second box is the limit, and the question of part 4: our function is called once per element, at the moment the list chooses; it cannot wait between two elements or ask for one. Stated about this interface, not about folds in general: an exception can leave fold, and a lazy right fold stops by itself; both come later and both change what is passed. The lab writes fold_until on the rope and uses it for End-of-line; there it returns a value of type 'b go, because a traversal of the left subtree must say to the right one that it stopped.</aside>
+  <p class="fn fragment" data-fragment-index="1"><sup>*</sup> After <code>fold_until</code> in OCaml's Base library. An exception also leaves a traversal: session 6.</p>
+  <aside class="notes">Recorded from demos/lists.ml, which sets visited back to 0 before this run; typed after the slide before, without that line, the program prints visited=8. Two clicks after the code. The first box is what changed in principle: the interface. A fold decides everything, and our function's return value is only the next accumulator; fold_until reads a decision in that value, so one choice, whether to go on, has passed to our function. The type 'b go is that choice written as data; session 6 writes the whole rest of a traversal as a function. The second box is the limit, and the question of part 4: our function is called once per element, at the moment the list chooses; it cannot wait between two elements or ask for one. Stated about this interface, not about folds in general: an exception can leave fold, and a lazy right fold stops by itself; both come later and both change what is passed. The lab writes fold_until on the rope and uses it for End-of-line; there it returns a value of type 'b go, because a traversal of the left subtree must say to the right one that it stopped.</aside>
 </section>
 
 <!-- part 4 -->
@@ -1306,7 +1305,7 @@ or not None</pre>
     </div>
   </div>
   <div class="box fragment" data-fragment-index="1">Between two calls the iterator remembers where it is in the list, in a variable of its own, <code>here</code>. It is the <span class="hl">counter</span> of slide 10: a closure with a state.</div>
-  <aside class="notes">demos/ListIter.java and demos/lists.ml, run. Left, the class: one field, the cell where we are. Click: the same iterator as a closure, the counter with a list in the place of the number; five calls on the four words give to be, or not, then None. At the end of the list the OCaml answers None; the Java has no such value to give, and next throws NoSuchElementException, as the interface asks. On a list the place is one pointer, the rest of the list. On a tree it is a stack of subtrees: the lab writes that iterator on the rope, and block 3 derives it.</aside>
+  <aside class="notes">demos/ListIter.java and demos/lists.ml, run. Left, the class: one field, the cell where we are. Click: the same iterator as a closure, the counter with a list in the place of the number; five calls on the four words give to be, or not, then None. At the end of the list the OCaml answers None; the Java has no such value to give, and next throws NoSuchElementException, as the interface asks. On a list the place is one pointer, the rest of the list. On a tree it is a stack of subtrees: the lab writes that iterator on the rope, and session 6 derives it.</aside>
 </section>
 
 <!-- part 5 -->
@@ -1358,7 +1357,7 @@ or not None</pre>
     </div>
   </div>
   <div class="box fragment" data-fragment-index="1">From inside, a generator is an <span class="hl">object</span>: its local variables, and a position in its code.</div>
-  <aside class="notes">The one slide on generators. Say that Python and C# have generators of the same kind, written with yield; it is not on the slide. function* makes a generator; calling two() runs nothing and returns an object with next. next() answers with two fields, value and done. Both run here and print the same: the two elements, then the third call's done. From outside, a generator is an iterator; the slide shows the inside. pc is the program counter of session 4's machine, kept in a field. This is what compilers of generators to older JavaScript produce (regenerator), and what C# does for iterator blocks. The question left open for block 3: is that object something we have seen before? It is the rest of the computation.</aside>
+  <aside class="notes">The one slide on generators. Say that Python and C# have generators of the same kind, written with yield; it is not on the slide. function* makes a generator; calling two() runs nothing and returns an object with next. next() answers with two fields, value and done. Both run here and print the same: the two elements, then the third call's done. From outside, a generator is an iterator; the slide shows the inside. pc is the program counter of session 4's machine, kept in a field. This is what compilers of generators to older JavaScript produce (regenerator), and what C# does for iterator blocks. The question left open for session 6: is that object something we have seen before? It is the rest of the computation.</aside>
 </section>
 
 <!-- 24 -->

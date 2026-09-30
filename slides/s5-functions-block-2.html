@@ -697,7 +697,7 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal table.orders td:nth-child(3), .reveal table.orders th:nth-child(3) { width: 9%; }
 .reveal table.orders td:nth-child(1) { width: 14%; }
 .reveal table.orders td:nth-child(2) { width: 43%; }
-/* block 3: cards of code in a drawing; the spine; a stack and frames side by side */
+/* the block on continuations (session 6, block 1): cards of code in a drawing; the spine; a stack and frames side by side */
 .reveal .seqviz.sq-sumk .sq-card text { font-size: 29px; }
 .reveal .seqviz.sq-sumk .sq-card .sq-shape { stroke: var(--ink); stroke-width: 2.5; }
 .reveal .seqviz.sq-sumk .sq-card.cur .sq-shape { stroke: var(--accent); stroke-width: 4; }
@@ -735,7 +735,7 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 <!-- 1 -->
 <section class="title" data-background-color="#23373B">
   <div class="eyebrow">PROGRAMMING PARADIGMS · SESSION 5 · BLOCK 2</div>
-  <h1>Functions as values: iterators, streams, continuations</h1>
+  <h1>Functions as values: iterators and streams</h1>
   <div class="sub"><b>Block 2</b> — Thunks and streams: when is a value computed?</div>
   <div class="rule"></div>
   <div class="meta">SW7 · Aalborg University Copenhagen · Autumn 2026</div>
@@ -957,10 +957,10 @@ take 5 (from 0)</code></pre>
     <tr><th></th><th>in OCaml, we write</th><th>in Haskell</th></tr>
     <tr class="fragment" data-fragment-index="0"><td class="s">Block 1</td><td>another fold, to stop before the end of a list</td><td>the fold stops by itself</td></tr>
     <tr class="fragment" data-fragment-index="1"><td class="s">Block 2</td><td>a thunk for each value that must wait</td><td>every value waits, and is computed once</td></tr>
-    <tr class="fragment" data-fragment-index="2"><td class="s">Block 3</td><td>two functions, for a search that can fail</td><td>the list of all the solutions, of which we read the first</td></tr>
+    <tr class="fragment" data-fragment-index="2"><td class="s">Session 6</td><td>two functions, for a search that can fail</td><td>the list of all the solutions, of which we read the first</td></tr>
   </table>
   <div class="box fragment" data-fragment-index="3">In session 4 the language chose when an argument is computed. In session 5 <span class="hl">the program chooses</span>, with a function.</div>
-  <aside class="notes">One minute. This is where Haskell stands in the three blocks; the next slide shows the first row, and parts 2 and 3 the second. The third row is for block 3: a search with backtracking hands over what to do on success and what to do on failure; in a lazy language it returns the list of its solutions, which is computed as far as it is read (Wadler 1985, "How to replace failure by a list of successes"). Say it in one sentence here and come back to it in block 3.</aside>
+  <aside class="notes">One minute. This is where Haskell stands in the two blocks and in the first block of session 6; the next slide shows the first row, and parts 2 and 3 the second. The third row is for session 6: a search with backtracking hands over what to do on success and what to do on failure; in a lazy language it returns the list of its solutions, which is computed as far as it is read (Wadler 1985, "How to replace failure by a list of successes"). Say it in one sentence here and come back to it in session 6.</aside>
 </section>
 
 <!-- Haskell -->
@@ -1280,7 +1280,7 @@ let b = pop q</code></pre>
     <tr><td class="s">3</td><td>How many times?</td><td>Once, if we keep the result: <code>lazy</code>.</td><td>Once: every value is lazy, by default.</td></tr>
   </table>
   <div class="box fragment" data-fragment-index="0">In this block a function held <span class="hl">a computation not yet run</span>: <code>unit -> 'a</code>. We call it to get a value.</div>
-  <div class="box fragment" data-fragment-index="1">In the next block a function holds <span class="hl">the rest of the computation</span>: <code>'a -> 'r</code>. We call it to give a value.</div>
+  <div class="box fragment" data-fragment-index="1">In session 6 a function holds <span class="hl">the rest of the computation</span>: <code>'a -> 'r</code>. We call it to give a value.</div>
   <p class="fn fragment" data-fragment-index="1">Session 6: a promise is a value that is not there yet, together with what to do when it arrives.</p>
   <aside class="notes">One line per part. Promises paid in this block: session 4's "the program delays by hand" and "laziness when the program decides"; session 1's lazy list in Haskell; session 2's question on the queue, in the warm-up. The two boxes are last year's slide "From thunks to continuations": a thunk is "do this later", a continuation is "what to do once we have the value". Session 6 puts the two together: a promise is a placeholder for a result, a signal that it has arrived, and the continuations registered on it. Long break here.</aside>
 </section>

@@ -283,7 +283,7 @@
     return { frames, w: 1400, h: 250 };
   };
 
-  // ---- block 3 ---------------------------------------------------------------------------
+  // ---- continuations (session 6, block 1) ---------------------------------------------------------------------------
   //   mode 'sumk'   sum_k [3; 1; 4] k0: the continuations are built, then called (demos/sum_k.ml)
   //   mode 'iterk'  iter_k (fun x k -> Cons (x, k)) on the melody ((C D) (E F)): the traversal
   //                 stops at every note, and resumes when its rest is called (demos/leaves.ml)

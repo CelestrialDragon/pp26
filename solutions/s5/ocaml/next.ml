@@ -1,5 +1,5 @@
 (* Lab 5 — what comes next. SOLUTIONS: every hole filled.
-   Part C goes with block 3 of the lecture: we hand over the rest of the computation. *)
+   Part C goes with the first block of session 6: we hand over the rest of the computation. *)
 
 open Rope
 
