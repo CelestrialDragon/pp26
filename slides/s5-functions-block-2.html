@@ -730,6 +730,18 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal pre a.srclink { position: absolute; top: 7px; right: 10px; font-family: "Fira Sans", sans-serif; font-size: 18px; font-weight: 500; line-height: 1.25; letter-spacing: .03em; color: var(--accent); background: #fff; border: 1.5px solid var(--accent); border-radius: 5px; padding: 1px 9px 2px; text-decoration: none; white-space: nowrap; }
 .reveal pre a.srclink::after { content: " \2197"; }
 .reveal pre a.srclink:hover { background: var(--accent); color: #fff; }
+.reveal pre a.srclink.open { background: var(--accent); color: #fff; }
+/* the panel that a source button opens: the part of the file that belongs to the slide */
+.reveal .srcpanel { position: absolute; left: 40px; right: 40px; top: 126px; height: 758px; z-index: 40; box-sizing: border-box; background: #fff; border: 2px solid var(--accent); border-radius: 8px; box-shadow: 0 12px 44px rgba(35, 55, 59, .28); display: flex; flex-direction: column; text-align: left; }
+.reveal .srcpanel .sp-head { display: flex; justify-content: space-between; align-items: center; height: 52px; box-sizing: border-box; padding: 0 12px 0 22px; font-size: 22px; border-bottom: 1.5px solid var(--rule); flex: none; }
+.reveal .srcpanel .sp-head b { font-family: "Fira Mono", monospace; font-weight: 500; }
+.reveal .srcpanel .sp-lines { margin-left: 14px; }
+.reveal .srcpanel .sp-all { color: var(--accent); text-decoration: none; font-weight: 500; margin-right: 12px; }
+.reveal .srcpanel .sp-close { font: 500 30px/1 "Fira Sans", sans-serif; color: var(--fg); background: none; border: 0; padding: 2px 10px 6px; cursor: pointer; }
+.reveal .srcpanel pre { flex: 1; min-height: 0; margin: 0; width: 100%; overflow: auto; box-shadow: none; font-size: var(--sp-font, 22px); line-height: 1.45; border-radius: 0 0 6px 6px; }
+.reveal .srcpanel pre::after { content: none; }
+.reveal .srcpanel .hljs-comment { color: #3F5459; }
+.reveal .srcpanel pre code { display: block; padding: 14px 22px 16px; min-height: 100%; box-sizing: border-box; font-size: inherit; line-height: inherit; }
 </style>
 </head>
 <body>
@@ -1550,6 +1562,7 @@ the body ran 26 times</pre>
     window.addEventListener('wheel', e => {
       if (e.ctrlKey || e.metaKey || /print-pdf/.test(location.search)) return;          // pinch and zoom stay the browser's
       if (document.documentElement.classList.contains('liveedit') || Reveal.isOverview() || !document.getElementById('toc').hidden) return;
+      if (document.querySelector('.srcpanel')) return;                                   // a source panel is open: it scrolls, the deck waits
       const horizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
       if (scrolls(e.target, horizontal)) return;
       e.preventDefault();
@@ -1561,6 +1574,72 @@ the body ran 26 times</pre>
       if (acc > 0) Reveal.next(); else Reveal.prev();
       locked = true; since = Date.now(); acc = 0;
     }, { passive: false });
+  })();
+
+  // Source buttons: a link of class srclink in the corner of a code box, whose href is a file F under
+  // demos/ and whose data-at is a phrase of F. A click opens a panel over the slide with the part of F that belongs to the slide: from the
+  // line that holds the phrase to the next part of F (the line of another button of this deck, a
+  // heading made of dashes, the phrase in data-to, a line less indented than the first, or the end).
+  // A second click or Esc closes it. With
+  // ctrl, cmd or shift the click is the link's own: the whole file. Not in edit mode; if the file
+  // cannot be fetched (a deck opened from disk), the link is followed. The published deck has the
+  // file's address in data-file, since its href goes to github.com.
+  (() => {
+    const LANGS = { ml: 'ocaml', java: 'java', js: 'javascript', hs: 'haskell', py: 'python' };
+    const cache = {};
+    const source = a => a.dataset.file || a.getAttribute('href');
+    const load = url => cache[url] || (cache[url] = fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); }));
+    const close = () => { document.querySelectorAll('.srcpanel').forEach(p => p.remove()); document.querySelectorAll('a.srclink.open').forEach(a => a.classList.remove('open')); };
+    const part = (a, text) => {
+      const lines = text.replace(/\s+$/, '').split('\n');
+      const from = Math.max(0, lines.findIndex(l => l.includes(a.dataset.at)));
+      const stops = [...document.querySelectorAll('a.srclink')].filter(o => o !== a && source(o) === source(a)).map(o => o.dataset.at);
+      const depth = l => l.match(/^ */)[0].length;
+      let to = lines.length;
+      for (let i = from + 1; i < lines.length; i++) {
+        const l = lines[i];
+        if ((a.dataset.to && l.includes(a.dataset.to)) || /^\s*(\(\*|\/\/) -{4}/.test(l) || stops.some(p => l.includes(p))
+            || (l.trim() && depth(l) < depth(lines[from]))) { to = i; break; }      // the code leaves the block the part began in
+      }
+      const out = lines.slice(from, to);
+      while (out.length && !out[out.length - 1].trim()) out.pop();
+      const ind = Math.min(...out.filter(l => l.trim()).map(l => l.match(/^ */)[0].length));
+      return { lines: out.map(l => l.slice(ind)), first: from + 1, last: from + out.length };
+    };
+    const open = (a, text) => {
+      const sec = a.closest('section'), file = source(a).split('/').pop(), lang = LANGS[file.split('.').pop()];
+      const p = part(a, text), n = p.lines.length;
+      const panel = document.createElement('div');
+      panel.className = 'srcpanel';
+      panel.innerHTML = '<div class="sp-head"><span><b></b> <span class="sp-lines"></span></span><span><a class="sp-all" target="_blank" rel="noopener">whole file \u2197</a><button class="sp-close" title="close (Esc)">\u00d7</button></span></div><pre><code></code></pre>';
+      panel.querySelector('b').textContent = file;
+      panel.querySelector('.sp-lines').textContent = 'lines ' + p.first + ' to ' + p.last;
+      panel.querySelector('.sp-all').href = a.href;
+      const code = panel.querySelector('code');
+      try { code.innerHTML = hljs.highlight(p.lines.join('\n'), { language: lang }).value; code.className = 'hljs language-' + lang; }
+      catch (e) { code.textContent = p.lines.join('\n'); }
+      panel.style.setProperty('--sp-font', Math.max(18, Math.min(24, Math.floor((758 - 52 - 30) / (n * 1.45)))) + 'px');
+      panel.querySelector('.sp-close').onclick = close;
+      sec.appendChild(panel);
+      a.classList.add('open');
+    };
+    document.addEventListener('click', e => {
+      const a = e.target.closest && e.target.closest('a.srclink');
+      if (!a || e.ctrlKey || e.metaKey || e.shiftKey || document.documentElement.classList.contains('liveedit') || /print-pdf/.test(location.search)) return;
+      e.preventDefault();
+      if (a.classList.contains('open')) return close();
+      close();
+      load(source(a)).then(text => open(a, text), () => window.open(a.href, '_blank', 'noopener'));
+    });
+    // while a panel is open: Esc closes it, and the keys that move through the deck do nothing
+    document.addEventListener('keydown', e => {
+      if (!document.querySelector('.srcpanel')) return;
+      const stop = () => { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); };
+      if (e.key === 'Escape') { close(); stop(); }
+      else if (e.key === 'e' || e.key === 'E') close();                                  // edit mode starts on a slide without panel
+      else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'PageUp', 'PageDown', 'Home', 'End', 'Enter'].includes(e.key)) stop();
+    }, true);
+    ['slidechanged', 'overviewshown'].forEach(ev => Reveal.on(ev, close));
   })();
 
   // Part shortcuts: Shift+Right / Shift+Left = next / previous part; digits 1-9 = part n.
