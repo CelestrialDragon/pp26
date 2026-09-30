@@ -888,6 +888,7 @@ let rec count m = match m with
   </div>
   <p class="ask fragment" data-fragment-index="2">While <code>count_k a</code> runs, what does its continuation hold?</p>
   <div class="box fragment" data-fragment-index="3">It holds <code>b</code>, the right subtree, and <code>k</code>, what was still to do before: <span class="hl">the stack of part 1</span>, written as a function.</div>
+  <p class="fn fragment" data-fragment-index="3">Reynolds 1972: the stack is this continuation <em>defunctionalised</em>, its closures replaced by data.</p>
   <aside class="notes">The melody has the two constructors that session 4's slides used; lab 3's type has four. count_k is written from count by the rule that gave sum_k from sum: every call receives, as a function, what was written around it. There are two calls, so two continuations, one inside the other. Recorded from demos/count_k.ml, on a melody deep to the left and on one deep to the right. This pays session 4's promise, made twice in its block 1: the explicit stack is a continuation.</aside>
 </section>
 

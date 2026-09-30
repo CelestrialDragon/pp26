@@ -850,7 +850,8 @@ let b = t ()</code></pre>
       <p>Our function receives one element and <b>the fold of the rest</b>, as its second argument.</p>
     </div>
   </div>
-  <div class="box fragment" data-fragment-index="1">With a left fold, the rest never reaches our function. Only with a <span class="hl">right fold</span> can our function decide what becomes of the rest.</div>
+  <div class="box fragment" data-fragment-index="1">Only with a <span class="hl">right fold</span> is our function given the rest, and can decide what becomes of it.</div>
+  <p class="fn fragment" data-fragment-index="1">On a list of <em>n</em> elements <code>fold_right</code> keeps <em>n</em> frames waiting; <code>fold_left</code> keeps none, every call being a tail call.</p>
   <aside class="notes">Session 4's two folds, read for one thing: what our function is given. In the left fold the recursive call is the last thing the fold does, with the rest of the list as its own argument; f sees acc and x and returns. In the right fold the recursive call is an argument of f. This is why the slides that follow use the right fold, and why block 1's exists, written with the left fold, could not stop. It is also true in Haskell: foldl on a list without end never returns, as the slide on Haskell shows.</aside>
 </section>
 
@@ -1010,7 +1011,7 @@ and 'a seq = unit -> 'a node</code></pre>
     </div>
   </div>
   <div class="box fragment" data-fragment-index="1">A <span class="hl">sequence</span> <span class="aka">(also called a stream)</span><sup>*</sup> is a thunk that gives one element and the rest of the sequence.</div>
-  <p class="fn fragment" data-fragment-index="1"><sup>*</sup> Okasaki 1998, chapter 4; CS3110, section 9.4. OCaml's library has this type as <code>Seq.t</code>.</p>
+  <p class="fn fragment" data-fragment-index="1"><sup>*</sup> CS3110, section 9.4. OCaml's library has this type as <code>Seq.t</code>.</p>
   <aside class="notes">The only difference between the two types is unit ->. Two types that refer to each other, hence "and". The names are the library's: Seq.t, Nil, Cons. We write the type ourselves in the lecture and in the lab, and use the library on the last slide of this part. It is a type with a parameter, 'a, written by us: session 11 explains how the compiler finds the types of the functions we write on it.</aside>
 </section>
 
@@ -1169,6 +1170,7 @@ let b = Lazy.force l</code></pre>
   </div>
   <p class="ask">What is <code>!ticks</code> at the end of each program?</p>
   <div class="box fragment" data-fragment-index="2">A thunk <b>delays</b>. A lazy value delays and <span class="hl">remembers</span>: it is session 4's <b>call-by-need</b>.</div>
+  <p class="fn fragment" data-fragment-index="2">Okasaki 1998, chapter 4: a <em>stream</em> is part 2's sequence with a lazy value, not a thunk, for the rest.</p>
   <aside class="notes">Question 4. Two numbers from the room; the usual answers are 1 and 1, or 2 and 2. Recorded from demos/stream.ml: 2, then 1. From here on we say lazy, and no longer delayed: lazy is delay with memoisation. The next slide shows how lazy is made.</aside>
 </section>
 
@@ -1236,8 +1238,8 @@ let rec fibs =
     <tr><td>a <code>lazy</code> value, in OCaml</td><td>23</td></tr>
     <tr><td>a list, in Haskell</td><td>23</td></tr>
   </table>
-  <div class="box fragment" data-fragment-index="1">With thunks, <code>fibs</code> and <code>tail fibs</code> compute the same numbers again. With <code>lazy</code> they <span class="hl">share</span> them. In Haskell every value is a lazy value.</div>
-  <aside class="notes">The expected answer is 23: one addition for each number after the first two. Recorded from demos/stream.ml, where the additions are counted: 196 392 with fun () ->, 23 with lazy. Haskell's 23 is what call-by-need gives; it was not counted by a program. The OCaml on the slide is the version with lazy: the rest of the sequence is a lazy value in the place of a thunk, and the drawing of the slide before is the same. In demos/stream.ml its constructors are named LNil and LCons, beside the sequences of part 2; demos/fibs_lazy.ml is the program of the slide alone, with the type, zip_with and tail, which force their arguments with Lazy.force where part 2 called them. What is shared is a value that has a name: fibs is one list, read at two places. Two calls of a function with the same argument are two values, in Haskell too, and each is computed; keeping them is the memoisation of a function, in the appendix.</aside>
+  <div class="box fragment" data-fragment-index="1">With <code>lazy</code>, <code>fibs</code> and <code>tail fibs</code> <span class="hl">share</span> the numbers. In Haskell every value is lazy, by default.</div>
+  <aside class="notes">The expected answer is 23: one addition for each number after the first two. Recorded from demos/stream.ml, where the additions are counted: 196 392 with fun () ->, 23 with lazy. Haskell's 23 is what call-by-need gives; it was not counted by a program. "By default": GHC computes a value before it is needed when it can prove that it will be needed, its strictness analysis, and the programmer can ask for it with seq or a bang; the model on the slide is the language's definition, not what the compiled program does at every value. Okasaki's streams, cited here, are exactly this type: the rest of the sequence is a suspension that is memoised, which the type of part 2 is not. The OCaml on the slide is the version with lazy: the rest of the sequence is a lazy value in the place of a thunk, and the drawing of the slide before is the same. In demos/stream.ml its constructors are named LNil and LCons, beside the sequences of part 2; demos/fibs_lazy.ml is the program of the slide alone, with the type, zip_with and tail, which force their arguments with Lazy.force where part 2 called them. What is shared is a value that has a name: fibs is one list, read at two places. Two calls of a function with the same argument are two values, in Haskell too, and each is computed; keeping them is the memoisation of a function, in the appendix.</aside>
 </section>
 
 <!-- the queue -->
@@ -1274,7 +1276,7 @@ let b = pop q</code></pre>
     <tr><th></th><th>the question</th><th>the program decides, in OCaml</th><th>the language decides, in Haskell</th></tr>
     <tr><td class="s">1</td><td>When is a value computed?</td><td>When we call the <b>thunk</b> that holds it.</td><td>When it is used.</td></tr>
     <tr><td class="s">2</td><td>How far is a sequence computed?</td><td>As far as we ask: a <b>sequence</b>.</td><td>Every list is a sequence.</td></tr>
-    <tr><td class="s">3</td><td>How many times?</td><td>Once, if we keep the result: <code>lazy</code>.</td><td>Once: every value is a lazy value.</td></tr>
+    <tr><td class="s">3</td><td>How many times?</td><td>Once, if we keep the result: <code>lazy</code>.</td><td>Once: every value is lazy, by default.</td></tr>
   </table>
   <div class="box fragment" data-fragment-index="0">In this block a function held <span class="hl">a computation not yet run</span>: <code>unit -> 'a</code>. We call it to get a value.</div>
   <div class="box fragment" data-fragment-index="1">In the next block a function holds <span class="hl">the rest of the computation</span>: <code>'a -> 'r</code>. We call it to give a value.</div>
