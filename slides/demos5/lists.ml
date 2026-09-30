@@ -9,11 +9,11 @@
 
 (* ---- Part 2. Traversing a list ------------------------------------------ *)
 
-(* Session 4's two folds. fold starts from acc and goes from the first element to
-   the last; it is a loop, its recursive call is the last thing it does. *)
-let rec fold f acc = function
+(* Session 4's two folds. fold_left starts from acc and goes from the first element
+   to the last; it is a loop, its recursive call is the last thing it does. *)
+let rec fold_left f acc = function
   | [] -> acc
-  | x :: xs -> fold f (f acc x) xs
+  | x :: xs -> fold_left f (f acc x) xs
 
 (* fold_right first goes to the end of the list: f is called on the LAST element
    first, and on the first element last, with the result for the rest. *)
@@ -29,7 +29,7 @@ let length l   = fold_right (fun _ n -> n + 1) l 0
 
 (* iter: our function is called on every element, for what it does. Its result
    is thrown away: the accumulator is (), which carries nothing. *)
-let iter f l = fold (fun () x -> f x) () l
+let iter f l = fold_left (fun () x -> f x) () l
 
 let text = ['h'; 'i'; '\n'; 'y'; 'o']
 
@@ -52,7 +52,7 @@ let () =
 let visited = ref 0
 
 let exists p l =
-  fold (fun found x -> incr visited; found || p x) false l
+  fold_left (fun found x -> incr visited; found || p x) false l
 
 let () =
   let found = exists (fun c -> c = '\n') text in

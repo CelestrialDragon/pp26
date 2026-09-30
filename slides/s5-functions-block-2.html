@@ -742,6 +742,15 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal .srcpanel pre::after { content: none; }
 .reveal .srcpanel .hljs-comment { color: #3F5459; }
 .reveal .srcpanel pre code { display: block; padding: 14px 22px 16px; min-height: 100%; box-sizing: border-box; font-size: inherit; line-height: inherit; }
+/* the two call diagrams of block 1, internal and external iteration: the box that holds the loop,
+   the call written under each arrow; text sizes for a drawing scaled to one column */
+.reveal svg.callsvg text { font-size: 33px; }
+.reveal svg.callsvg text.lbl { font-size: 33px; }
+.reveal svg.callsvg text.call { font-family: "Fira Mono", monospace; font-size: 33px; fill: var(--fg); }
+.reveal svg.callsvg rect.loop { fill: #fff; stroke: var(--fg); stroke-width: 2; }
+.reveal svg.callsvg text.lp { font-size: 33px; }
+.reveal svg.callsvg path.turn { fill: none; stroke: var(--fg); stroke-width: 2.5; }
+.reveal svg.callsvg path.turnhead { fill: var(--fg); }
 </style>
 </head>
 <body>

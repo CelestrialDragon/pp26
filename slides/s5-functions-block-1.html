@@ -742,6 +742,15 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal .srcpanel pre::after { content: none; }
 .reveal .srcpanel .hljs-comment { color: #3F5459; }
 .reveal .srcpanel pre code { display: block; padding: 14px 22px 16px; min-height: 100%; box-sizing: border-box; font-size: inherit; line-height: inherit; }
+/* the two call diagrams of block 1, internal and external iteration: the box that holds the loop,
+   the call written under each arrow; text sizes for a drawing scaled to one column */
+.reveal svg.callsvg text { font-size: 33px; }
+.reveal svg.callsvg text.lbl { font-size: 33px; }
+.reveal svg.callsvg text.call { font-family: "Fira Mono", monospace; font-size: 33px; fill: var(--fg); }
+.reveal svg.callsvg rect.loop { fill: #fff; stroke: var(--fg); stroke-width: 2; }
+.reveal svg.callsvg text.lp { font-size: 33px; }
+.reveal svg.callsvg path.turn { fill: none; stroke: var(--fg); stroke-width: 2.5; }
+.reveal svg.callsvg path.turnhead { fill: var(--fg); }
 </style>
 </head>
 <body>
@@ -1116,9 +1125,9 @@ while (it.hasNext()) {
   <h2>Two folds on a list, from session 4</h2>
   <div class="cols">
     <div>
-      <pre><code class="language-ocaml">let rec fold f acc = function
+      <pre><code class="language-ocaml">let rec fold_left f acc = function
   | [] -> acc
-  | x :: xs -> fold f (f acc x) xs</code></pre>
+  | x :: xs -> fold_left f (f acc x) xs</code></pre>
       <p>From the first element to the last, with an accumulator.</p>
     </div>
     <div>
@@ -1154,22 +1163,27 @@ length text</code></pre>
     </div>
   </div>
   <div class="box fragment" data-fragment-index="1">Each of the three uses <span class="hl">every element</span> of the list. None has a reason to stop before the last one.</div>
-  <p class="fn fragment" data-fragment-index="0"><code>fold_right</code> calls our function from the last element to the first. With no effect in it, the lists are the same.</p>
-  <aside class="notes">Recorded from demos/lists.ml. Read map aloud: x is the element, r the result for the rest of the list. The box prepares part 3: these three are the good case of internal iteration. iter, on the next slide, is set apart: it builds nothing, it calls our function for what the function does.</aside>
+  <p class="fn fragment" data-fragment-index="0">With <code>fold_left</code>, <code>f x :: r</code> puts each element in front of those met before it: the list is reversed.</p>
+  <aside class="notes">Recorded from demos/lists.ml. Read map aloud: x is the element, r the result for the rest of the list. Why the right fold: it gives our function the result for the rest, and x goes in front of it; the left fold gives what was built from the elements before x, and with :: the list comes out reversed (run: [40; 30; 20; 10] for [1; 2; 3; 4]), unless we reverse it at the end. length could use either. fold_right calls our function from the last element to the first; with no effect in it the result is the same. iter, on the next slide, is called for its effect, in the order of the list: it uses the left fold. The box prepares part 3: these three are the good case of internal iteration. iter, on the next slide, is set apart: it builds nothing, it calls our function for what the function does.</aside>
 </section>
 
 <!-- 14 -->
 <section>
   <h2>Internal iteration: the collection calls our function</h2>
-  <pre class="mid tight"><code class="language-ocaml">let iter f l = fold (fun () x -> f x) () l</code></pre>
+  <pre class="mid tight"><code class="language-ocaml">let iter f l = fold_left (fun () x -> f x) () l</code></pre>
   <div class="cols">
     <div>
       <svg viewBox="0 0 830 330" class="callsvg">
-        <rect class="who" x="20" y="20" width="250" height="80" rx="8"/><text x="145" y="70">our code</text>
-        <rect class="who" x="430" y="20" width="250" height="80" rx="8"/><text x="555" y="70">iter</text>
-        <rect class="who" x="430" y="230" width="250" height="80" rx="8"/><text x="555" y="280">our function</text>
-        <line x1="270" y1="60" x2="418" y2="60" marker-end="url(#ah)"/><text class="lbl" x="344" y="44">once</text>
-        <line x1="555" y1="100" x2="555" y2="218" marker-end="url(#ah)"/><text class="lbl l" x="572" y="170">once per element</text>
+        <rect class="who" x="20" y="20" width="230" height="80" rx="8"/><text x="135" y="70">our code</text>
+        <rect class="who" x="20" y="230" width="230" height="80" rx="8"/><text x="135" y="280">our function</text>
+        <rect class="who" x="540" y="20" width="270" height="290" rx="8"/><text x="675" y="70">iter</text>
+        <rect class="loop" x="570" y="235" width="210" height="70" rx="6"/>
+        <path class="turn" d="M610,281 a13,13 0 1 1 11,-19"/><path class="turnhead" d="M615,256 l10,8 l-12,4 z"/>
+        <text class="lp" x="700" y="280">the loop</text>
+        <line x1="250" y1="60" x2="528" y2="60" marker-end="url(#ah)"/>
+        <text class="lbl" x="389" y="42">once</text><text class="call" x="389" y="100">iter f l</text>
+        <line x1="570" y1="270" x2="262" y2="270" marker-end="url(#ah)"/>
+        <text class="lbl" x="395" y="248">once per element</text><text class="call" x="395" y="310">f x</text>
         <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker></defs>
       </svg>
     </div>
@@ -1203,7 +1217,7 @@ length text</code></pre>
 let visited = ref 0
 
 let exists p l =
-  fold (fun found x ->
+  fold_left (fun found x ->
       incr visited;
       found || p x)
     false l
@@ -1264,11 +1278,38 @@ let exists p l =
   <h2>External iteration: we ask for the next element</h2>
   <div class="cols">
     <div>
+      <svg viewBox="0 0 830 330" class="callsvg">
+        <rect class="who" x="20" y="20" width="270" height="290" rx="8"/><text x="155" y="70">our code</text>
+        <rect class="loop" x="50" y="235" width="210" height="70" rx="6"/>
+        <path class="turn" d="M90,281 a13,13 0 1 1 11,-19"/><path class="turnhead" d="M95,256 l10,8 l-12,4 z"/>
+        <text class="lp" x="180" y="280">the loop</text>
+        <rect class="who" x="580" y="20" width="230" height="80" rx="8"/><text x="695" y="70">the list</text>
+        <rect class="who" x="580" y="230" width="230" height="80" rx="8"/><text x="695" y="280">its iterator</text>
+        <line x1="290" y1="60" x2="568" y2="60" marker-end="url(#ah2)"/>
+        <text class="lbl" x="429" y="42">once</text><text class="call" x="429" y="100">iterator()</text>
+        <line x1="260" y1="270" x2="568" y2="270" marker-end="url(#ah2)"/>
+        <text class="lbl" x="429" y="248">on demand</text><text class="call" x="429" y="310">next()</text>
+        <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker></defs>
+      </svg>
+    </div>
+    <div>
       <pre><code class="language-java">interface Iterator&lt;T> {
   boolean hasNext();
   T next();
 }</code></pre>
-      <pre class="fragment has-src" data-fragment-index="0"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/ListIter.java#L30" data-file="demos5/ListIter.java" data-at="Is there a newline in the text?" data-to="our iterator, on a list" target="_blank" rel="noopener">Java</a><code class="language-java">Iterator&lt;Character> it = text.iterator();
+      <p>We ask the list for an iterator, once. We call <code>next</code>: we decide when, and how many times.</p>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="0">This style is <span class="hl">external iteration</span>: the collection gives us an <b>iterator</b>, and the consumer calls it.</div>
+  <p class="fn fragment" data-fragment-index="0">Source: Gamma et al. 1994, <em>Iterator</em>. Java: <code>java.util.Iterator</code>, <code>java.lang.Iterable</code>.</p>
+  <aside class="notes">The same drawing as for internal iteration, the other way round. There the loop was inside iter, and iter called our function once per element. Here the loop is in our code: we call iterator() once, and next() each time we want an element. iterator() returns a new iterator at every call, which starts at the first element; hasNext is not drawn. Gamma et al.: who controls the iteration, the client (external) or the iterator (internal). Click: the name. The next slide is the loop, in Java.</aside>
+</section>
+
+<section>
+  <h2>The newline in the text, with an iterator</h2>
+  <div class="cols">
+    <div>
+      <pre class="has-src"><a class="srclink" href="https://github.com/leon-gondelman/pp26/blob/main/slides/demos5/ListIter.java#L30" data-file="demos5/ListIter.java" data-at="Is there a newline in the text?" data-to="our iterator, on a list" target="_blank" rel="noopener">Java</a><code class="language-java">Iterator&lt;Character> it = text.iterator();
 while (it.hasNext() &amp;&amp; !found) {
   visited++;
   found = it.next() == '\n';
@@ -1283,9 +1324,7 @@ while (it.hasNext() &amp;&amp; !found) {
       </div>
     </div>
   </div>
-  <div class="box fragment" data-fragment-index="2">This style is <span class="hl">external iteration</span>: the collection gives us an <b>iterator</b>, and the consumer calls it.</div>
-  <p class="fn fragment" data-fragment-index="2">Source: Gamma et al. 1994, <em>Iterator</em>. Java: <code>java.util.Iterator</code>, <code>java.lang.Iterable</code>.</p>
-  <aside class="notes">Recorded from demos/ListIter.java; text is the list of the five characters. The newline question of part 3 is answered with no new interface: three elements visited. Waiting is new: fold never waits between two elements. The next slide shows what the iterator keeps in order to wait.</aside>
+  <aside class="notes">Recorded from demos/ListIter.java; text is the list of the five characters. Ask for visited before the click. The newline question of part 3 is answered with no new interface: three elements visited. Waiting is new: fold never waits between two elements. The next slide shows what the iterator keeps in order to wait.</aside>
 </section>
 
 <!-- list iterator by hand -->
