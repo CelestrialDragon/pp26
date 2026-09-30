@@ -1,0 +1,14 @@
+Notes for session 5
+
+A rope is a tree. Its leaves are the characters
+of the document, read from left to right.
+
+fun x -> x + 1
+let add n = fun x -> x + n
+let add3 = add 3
+
+To find a newline we do not have to visit
+every leaf: we can stop at the first one.
+
+functions are values; a function can be handed over
+funny, but true
