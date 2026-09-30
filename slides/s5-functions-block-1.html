@@ -1597,10 +1597,10 @@ or not None</pre>
   // demos/ and whose data-at is a phrase of F. A click opens a panel over the slide with the part of F that belongs to the slide: from the
   // line that holds the phrase to the next part of F (the line of another button of this deck, a
   // heading made of dashes, the phrase in data-to, a line less indented than the first, or the end).
-  // A second click or Esc closes it. With
-  // ctrl, cmd or shift the click is the link's own: the whole file. Not in edit mode; if the file
-  // cannot be fetched (a deck opened from disk), the link is followed. The published deck has the
-  // file's address in data-file, since its href goes to github.com.
+  // The panel opens when the mouse rests on the button, not on a click: a click is the link's own,
+  // the whole file. Not in edit mode nor in the print; if the file cannot be fetched (a deck opened
+  // from disk), nothing opens and the link still works. The published deck has the file's address
+  // in data-file, since its href goes to github.com.
   (() => {
     const LANGS = { ml: 'ocaml', java: 'java', js: 'javascript', hs: 'haskell', py: 'python' };
     const cache = {};
@@ -1640,21 +1640,37 @@ or not None</pre>
       sec.appendChild(panel);
       a.classList.add('open');
     };
-    document.addEventListener('click', e => {
-      const a = e.target.closest && e.target.closest('a.srclink');
-      if (!a || e.ctrlKey || e.metaKey || e.shiftKey || document.documentElement.classList.contains('liveedit') || /print-pdf/.test(location.search)) return;
-      e.preventDefault();
-      if (a.classList.contains('open')) return close();
-      close();
-      load(source(a)).then(text => open(a, text), () => window.open(a.href, '_blank', 'noopener'));
+    // The mouse rests on a button for a second: the panel opens. It leaves the button and the panel:
+    // the panel closes, after a moment, so that the mouse can go from one to the other. The second
+    // starts on a real movement onto the button: a slide that appears under a mouse that is not
+    // moving opens nothing. A click stays the link's own.
+    const REST = 1000, GRACE = 350;
+    let resting = null, restTimer = null, leaveTimer = null, lastX = -1, lastY = -1;
+    const off = () => document.documentElement.classList.contains('liveedit') || /print-pdf/.test(location.search);
+    document.addEventListener('mousemove', e => {
+      const moved = e.clientX !== lastX || e.clientY !== lastY;
+      lastX = e.clientX; lastY = e.clientY;
+      const t = e.target.closest ? e.target : null;
+      const a = t && t.closest('a.srclink'), panel = document.querySelector('.srcpanel');
+      if (a !== resting) { clearTimeout(restTimer); resting = null; }
+      if (a && moved && !resting && !a.classList.contains('open') && !off()) {
+        resting = a;
+        restTimer = setTimeout(() => {
+          if (resting !== a || off()) return;
+          close();
+          load(source(a)).then(text => { if (resting === a) open(a, text); }, () => {});
+        }, REST);
+      }
+      if (!panel) return;
+      if ((t && t.closest('.srcpanel')) || (a && a.classList.contains('open'))) { clearTimeout(leaveTimer); leaveTimer = null; }
+      else if (!leaveTimer) leaveTimer = setTimeout(() => { leaveTimer = null; close(); }, GRACE);
     });
-    // while a panel is open: Esc closes it, and the keys that move through the deck do nothing
+    document.addEventListener('mouseleave', () => { clearTimeout(restTimer); resting = null; });
+    // Esc closes the panel, and only that. The keys that move through the deck close it and do their job.
     document.addEventListener('keydown', e => {
       if (!document.querySelector('.srcpanel')) return;
-      const stop = () => { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); };
-      if (e.key === 'Escape') { close(); stop(); }
-      else if (e.key === 'e' || e.key === 'E') close();                                  // edit mode starts on a slide without panel
-      else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'PageUp', 'PageDown', 'Home', 'End', 'Enter'].includes(e.key)) stop();
+      if (e.key === 'Escape') { close(); e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); }
+      else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'PageUp', 'PageDown', 'Home', 'End', 'Enter', 'e', 'E'].includes(e.key)) close();
     }, true);
     ['slidechanged', 'overviewshown'].forEach(ev => Reveal.on(ev, close));
   })();
