@@ -1134,7 +1134,8 @@ let squares =
 |> Seq.take 5
 |> List.of_seq</code></pre>
   <pre class="out tr rec mid fragment" data-fragment-index="0">[0; 4; 16; 36; 64]</pre>
-  <p class="fragment" data-fragment-index="1"><code>Seq.t</code> is the type that we wrote, and <code>Seq.ints 0</code> is our <code>nats 0</code>. <code>x |> f</code> is <code>f x</code>.</p>
+  <p class="fragment" data-fragment-index="1"><code>Seq.t</code> is the type that we wrote, and <code>Seq.ints 0</code> is our <code>nats 0</code>.</p>
+  <p class="fragment" data-fragment-index="1"><code>x |> f</code> is <code>f x</code>. With it the line reads in the order the elements travel, from <code>ints</code> to <code>take</code>, and not from the inside out.</p>
   <aside class="notes">Recorded from demos/stream.ml. Thirty seconds: the functions we wrote exist, under the same names. Java's Stream, Python's itertools and Rust's iterators offer the same operations; they are mutable iterators, not persistent sequences.</aside>
 </section>
 
