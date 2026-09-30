@@ -62,8 +62,9 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
   <h2>This session</h2>
   <p>Who, and how, decides the next step of a computation? Block&nbsp;1 asks it four
      times in real languages &mdash; at a function call, across an iteration, in the
-     order and the moment arguments are evaluated &mdash; and finds each time that
-     the implicit choice is the functional paradigm&rsquo;s. Block&nbsp;2 formalises
+     order and the moment arguments are evaluated &mdash; and each time sets beside
+     the explicit control a functional way to express it: recursion, a function
+     passed as the body of a loop, a function that delays an argument. Block&nbsp;2 formalises
      those choices in the smallest functional language there is, the
      &lambda;-calculus: three forms, one rule, and the strategy that picks the next
      redex.</p>
@@ -111,14 +112,17 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
               unless the caller delays the branches.</td></tr>
     </tbody>
   </table>
-  <p>Each time the choice was implicit, it was functional programming expressing control through
-     recursion and function values: recursion rather than an explicit stack, <code>fold</code>
-     rather than a loop, a function that delays rather than an argument evaluated first.</p>
+  <p>Each time, functional programming expressed the control through recursion and function
+     values: recursion rather than an explicit stack, <code>fold</code> rather than a loop, a
+     function that delays rather than an argument evaluated first. Implicit control is not
+     particular to it: an imperative program also has a call stack and an evaluation order that
+     the language fixes.</p>
 
   <h3>Block 2: block 1&rsquo;s answers in one formalism</h3>
   <ul class="refs">
-    <li><strong>The order of reduction never changes the answer.</strong> A term has at most one
-        normal form (Church and Rosser, 1936). The order decides whether we reach it; normal order
+    <li><strong>In the pure calculus, the order of reduction never changes the normal form.</strong>
+        A term has at most one normal form, up to the renaming of bound variables (Church and
+        Rosser, 1936). The order decides whether we reach it; normal order
         reaches it whenever it exists. <code>(&lambda;x. &lambda;y. y) &Omega;</code> gives
         <code>&lambda;y. y</code> in normal order, and runs for ever in applicative order.</li>
     <li><strong>A strategy says when an argument is evaluated, and each choice has a cost.</strong>
@@ -127,7 +131,8 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
         <tbody>
           <tr><td>call by value</td><td>before the call, once</td><td>work on arguments never used; &Omega; is fatal</td></tr>
           <tr><td>call by name</td><td>at each use</td><td>the same argument evaluated many times</td></tr>
-          <tr><td>call by need</td><td>at first use, once</td><td>the order of effects is no longer readable from the program</td></tr>
+          <tr><td>call by need</td><td>at first use, once</td><td>a delayed argument kept, and updated when it is first used; memory held until then; and
+              when evaluation has effects, their order is no longer readable from the program</td></tr>
         </tbody>
       </table></li>
     <li><strong>The calculus has no <code>;</code>, no <code>while</code>, no <code>if</code>.</strong>
@@ -136,9 +141,10 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
         happens to have: they are what a language without control syntax must have, and they
         suffice.</li>
   </ul>
-  <p>After session 4, the language decides the next step: whether a call keeps a frame, in what
-     order the arguments go, and when an argument is evaluated. In session 5 the program decides,
-     by passing the next step as a function.</p>
+  <p>Session 4 asked what the language decides: whether a call keeps a frame, in what order the
+     arguments go, and when an argument is evaluated. It also showed the program taking these
+     decisions itself, with an explicit stack, with <code>fold</code>, with branches wrapped in
+     functions. Session 5 develops these techniques: iterators, thunks, streams.</p>
 </section>
 
 <section>
@@ -259,7 +265,8 @@ Z = &lambda;f. (&lambda;x. f (&lambda;v. x x v)) (&lambda;x. f (&lambda;v. x x v
 <section>
   <h2>Further reading</h2>
   <p>None of this is required. Everything on the slides comes from the list on their last page;
-     these are the parts of it that are free to read.</p>
+     these are the parts of it that can be read online. Landin&rsquo;s paper is on its
+     publisher&rsquo;s site, which may ask for a university login.</p>
   <h3>Two definitions of computing</h3>
   <ul class="refs">
     <li><strong>Alan Turing, &ldquo;On computable numbers, with an application to the
@@ -275,9 +282,12 @@ Z = &lambda;f. (&lambda;x. f (&lambda;v. x x v)) (&lambda;x. f (&lambda;v. x x v
   <ul class="refs">
     <li><strong>Guy Steele, &ldquo;Debunking the &lsquo;expensive procedure call&rsquo; myth&rdquo;</strong> &mdash;
         <a href="https://dspace.mit.edu/handle/1721.1/5753">MIT AI Memo 443, 1977</a>. A procedure
-        call is a jump that passes arguments; a tail call needs no frame.</li>
+        call is a jump that passes arguments; a properly implemented tail call keeps no frame for
+        the caller.</li>
     <li><strong>William Clinger, &ldquo;Proper tail recursion and space efficiency&rdquo;</strong>
-        (PLDI 1998). What &ldquo;proper tail calls&rdquo; means, stated as a guarantee on space.</li>
+&mdash;
+        <a href="https://www.cs.tufts.edu/comp/150FP/archive/will-clinger/proper-tail-space.pdf">PLDI 1998 (PDF)</a>.
+        What &ldquo;proper tail calls&rdquo; means, stated as a guarantee on space.</li>
   </ul>
   <h3>Evaluation strategies</h3>
   <ul class="refs">

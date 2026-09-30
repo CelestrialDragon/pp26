@@ -536,8 +536,8 @@ y[x := u]        =  y                    if y ≠ x
       <div class="st narrow" data-term="(λx. λy. y) Ω" data-strategy="applicative" data-cap="30" data-extras="0"></div>
     </div>
   </div>
-  <div class="box fragment">The order never changes the answer; it decides <span class="hl">whether we get one</span>. Normal order finds the normal form whenever one exists.</div>
-  <aside class="notes">Left: one step, λy. y. Right: applicative order must first reduce the argument, and Ω steps to Ω. The last sentence is the standardisation theorem (Curry and Feys 1958; Barendregt 1984, ch. 11).</aside>
+  <div class="box fragment">In the calculus, the order never changes the normal form (up to renaming bound variables); it decides <span class="hl">whether we get one</span>. Normal order finds the normal form whenever one exists.</div>
+  <aside class="notes">Left: one step, λy. y. Right: applicative order must first reduce the argument, and Ω steps to Ω. The first sentence is Church–Rosser, stated for the pure calculus: two normal forms of one term are equal up to α-conversion. The last sentence is the standardisation theorem (Curry and Feys 1958; Barendregt 1984, ch. 11).</aside>
 </section>
 
 <!-- 35 -->
@@ -697,10 +697,10 @@ ghci> take 10 fibs
     <tr><th>strategy</th><th>an argument is evaluated</th><th>what it costs</th></tr>
     <tr><td>call-by-value</td><td>before the call, once</td><td>work on arguments never used; <code>Ω</code> is fatal</td></tr>
     <tr><td>call-by-name</td><td>at each use</td><td>the same argument evaluated many times</td></tr>
-    <tr><td>call-by-need</td><td>at first use, once</td><td>the order of effects is no longer readable from the program</td></tr>
+    <tr><td>call-by-need</td><td>at first use, once</td><td>a thunk per argument; effect order hidden</td></tr>
   </table>
-  <p class="fn fragment">That last cost is why Haskell keeps effects out of ordinary expressions — a consequence of laziness.</p>
-  <aside class="notes">Three rows, one shape each: when, and at what price. Effects under call-by-need happen when a value is first demanded, which depends on the whole program; so Haskell's IO type makes the order explicit again. Peyton Jones: laziness kept Haskell pure.</aside>
+  <p class="fn fragment">The second cost is why Haskell keeps effects out of ordinary expressions — a consequence of laziness.</p>
+  <aside class="notes">Three rows, one shape each: when, and at what price. The first cost of call-by-need is time and space: a thunk is allocated for each argument, overwritten by its value on first use, and until then it keeps alive everything it refers to — a space leak when it is never forced. Effects under call-by-need happen when a value is first demanded, which depends on the whole program; so Haskell's IO type makes the order explicit again. Peyton Jones: laziness kept Haskell pure.</aside>
 </section>
 
 
