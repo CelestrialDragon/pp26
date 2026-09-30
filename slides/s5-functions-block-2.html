@@ -751,6 +751,9 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal svg.callsvg text.lp { font-size: 33px; }
 .reveal svg.callsvg path.turn { fill: none; stroke: var(--fg); stroke-width: 2.5; }
 .reveal svg.callsvg path.turnhead { fill: var(--fg); }
+/* two columns, a narrow one for a short code and a wide one for a long one; an output box under the two columns */
+.reveal .cols.narrow-left { grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr); }
+.reveal .cols + pre.out.tr { margin: 18px 0 22px 0; }
 </style>
 </head>
 <body>
@@ -986,7 +989,7 @@ take 5 (from 0)</code></pre>
     <tr class="fragment" data-fragment-index="2"><td class="s">Session 6</td><td>two functions, for a search that can fail</td><td>the list of all the solutions, of which we read the first</td></tr>
   </table>
   <div class="box fragment" data-fragment-index="3">In session 4 the language chose when an argument is computed. In session 5 <span class="hl">the program chooses</span>, with a function.</div>
-  <aside class="notes">One minute. This is where Haskell stands in the two blocks and in the first block of session 6; the next slide shows the first row, and parts 2 and 3 the second. The third row is for session 6: a search with backtracking hands over what to do on success and what to do on failure; in a lazy language it returns the list of its solutions, which is computed as far as it is read (Wadler 1985, "How to replace failure by a list of successes"). Say it in one sentence here and come back to it in session 6.</aside>
+  <aside class="notes">One minute. This is where Haskell stands in the two blocks and in session 6; the next slide shows the first row, and parts 2 and 3 the second. The third row is for session 6: a search with backtracking hands over what to do on success and what to do on failure; in a lazy language it returns the list of its solutions, which is computed as far as it is read (Wadler 1985, "How to replace failure by a list of successes"). Say it in one sentence here and come back to it in session 6.</aside>
 </section>
 
 <!-- Haskell -->
@@ -1481,7 +1484,8 @@ the body ran 26 times</pre>
   // runJS(button, out, needs): runs the JavaScript AS SHOWN in the listed code blocks (ids of their
   // <script class="src">, comma-separated, in order) in a fresh scope; every console.log is a line of output.
   const shownSrc = id => { const c = document.querySelector('code[data-src="' + id + '"]'); return c ? c.textContent : dedent(document.getElementById(id).textContent); };
-  const fmt = v => typeof v === 'string' ? v : v === undefined ? 'undefined' : typeof v === 'function' ? '[function]' : JSON.stringify(v).replace(/"([A-Za-z_]\w*)":/g, '$1: ').replace(/,/g, ', ').replace(/\{/g, '{ ').replace(/\}/g, ' }');
+  // a field whose value is undefined is printed, as node prints it: JSON alone would leave it out
+  const fmt = v => typeof v === 'string' ? v : v === undefined ? 'undefined' : typeof v === 'function' ? '[function]' : JSON.stringify(v, (k, x) => x === undefined ? '\u0000undefined' : x).replace(/"\\u0000undefined"/g, 'undefined').replace(/"([A-Za-z_]\w*)":/g, '$1: ').replace(/,/g, ', ').replace(/\{/g, '{ ').replace(/\}/g, ' }');
   const runJS = (btn, out, ids) => {
     const lines = [], log = (...xs) => lines.push(xs.map(fmt).join(' '));
     try { new Function('console', ids.split(',').map(shownSrc).join('\n'))({ log }); }

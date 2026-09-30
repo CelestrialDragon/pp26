@@ -13,7 +13,7 @@ The lab has two halves. The **warm-up** (the sheet `warmup/warmup.pdf`, and `war
 a triangle of numbers; it is meant to be finished in the lab. The sheet ends on a homework,
 lab 2's queue, with `warmup/queue.ml`. The **quest** (Parts A, B and C) is started
 in the lab. Parts A and B go with the two blocks of the lecture and are finished during the
-week; Part C goes with the first block of session 6, on continuations, and is done after it.
+week; Part C goes with session 6, on continuations, and is done after it.
 Nothing is handed in.
 
 ## The types
@@ -318,7 +318,7 @@ status line says how many lines were asked for, and the lines after the match we
 
 ## Part C — the rest of the computation (`next.ml`)
 
-Part C goes with the first block of session 6, on continuations: we do it after that lecture.
+Part C goes with session 6, on continuations: we do it after that lecture.
 
 **C1.** Given `iter`, write `iter_k`. The function we hand over receives a leaf and `k`, the
 function that goes on with the traversal; the last argument of `iter_k` says what to do after

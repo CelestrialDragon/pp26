@@ -751,6 +751,9 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal svg.callsvg text.lp { font-size: 33px; }
 .reveal svg.callsvg path.turn { fill: none; stroke: var(--fg); stroke-width: 2.5; }
 .reveal svg.callsvg path.turnhead { fill: var(--fg); }
+/* two columns, a narrow one for a short code and a wide one for a long one; an output box under the two columns */
+.reveal .cols.narrow-left { grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr); }
+.reveal .cols + pre.out.tr { margin: 18px 0 22px 0; }
 </style>
 </head>
 <body>
@@ -1375,7 +1378,7 @@ or not None</pre>
 
 <!-- 23 -->
 <section>
-  <h2>A generator, and the object the compiler makes of it</h2>
+  <h2>A generator, in JavaScript</h2>
   <script class="src" type="text/plain" id="src-two">
     function* two() {
       yield 'h';
@@ -1383,39 +1386,59 @@ or not None</pre>
     }
 
     const g = two();
-    console.log(g.next().value, g.next().value);
-    console.log(g.next().done);
-  </script>
-  <script class="src" type="text/plain" id="src-twohand">
-    const more = v => ({ value: v, done: false });
-    const two = () => {
-      let pc = 0;
-      return { next() {
-        switch (pc) {
-          case 0: pc = 1; return more('h');
-          case 1: pc = 2; return more('i');
-          default: return { done: true };
-        } } };
-    };
-    const g = two();
-    console.log(g.next().value, g.next().value);
-    console.log(g.next().done);
+    console.log(g.next(), g.next(), g.next());
   </script>
   <div class="cols">
     <div>
       <pre><code class="language-js" data-src="src-two"></code></pre>
-      <p><button class="run" onclick="runJS(this, 'out-two', 'src-two')">Run</button> <button class="run reset" onclick="reset(this, 'out-two,out-twohand')">Reset</button></p>
-      <pre class="out tr" id="out-two"> </pre>
-      <p><code>yield</code> gives one element and suspends the function. <code>next()</code> resumes it after that <code>yield</code>.</p>
+      <p><button class="run" onclick="runJS(this, 'out-two', 'src-two')">Run</button> <button class="run reset" onclick="reset(this, 'out-two')">Reset</button></p>
     </div>
-    <div class="fragment" data-fragment-index="0">
-      <pre class="small"><code class="language-js" data-src="src-twohand"></code></pre>
-      <p><button class="run" onclick="runJS(this, 'out-twohand', 'src-twohand')">Run</button> <button class="run reset" onclick="reset(this, 'out-two,out-twohand')">Reset</button></p>
-      <pre class="out tr" id="out-twohand"> </pre>
+    <div>
+      <p class="ask">What do the three calls of <code>next</code> answer?</p>
+      <p class="fragment" data-fragment-index="0"><code>yield</code> gives one element and suspends the function. The next call of <code>next</code> resumes it after that <code>yield</code>.</p>
+      <p class="fragment" data-fragment-index="1">The answer has two fields: <code>value</code>, the element, and <code>done</code>, which is true when the function has ended.</p>
     </div>
   </div>
-  <div class="box fragment" data-fragment-index="1">From inside, a generator is an <span class="hl">object</span>: its local variables, and a position in its code.</div>
-  <aside class="notes">The one slide on generators. Say that Python and C# have generators of the same kind, written with yield; it is not on the slide. function* makes a generator; calling two() runs nothing and returns an object with next. next() answers with two fields, value and done. Both run here and print the same: the two elements, then the third call's done. From outside, a generator is an iterator; the slide shows the inside. pc is the program counter of session 4's machine, kept in a field. This is what compilers of generators to older JavaScript produce (regenerator), and what C# does for iterator blocks. The question left open for session 6: is that object something we have seen before? It is the rest of the computation.</aside>
+  <pre class="out tr" id="out-two"> </pre>
+  <div class="box fragment" data-fragment-index="2">A generator is an <span class="hl">iterator</span> that we write as a function: the language remembers where it stopped.</div>
+  <aside class="notes">Two slides on generators. Say that Python and C# have generators of the same kind, written with yield; it is not on the slide. function* makes a generator; calling two() runs nothing and returns an object with next. Ask for the three answers, then Run. The first call runs the function up to the first yield, the second from there to the second yield, the third to the end of the function: there is no element, value is undefined and done is true. A for … of loop calls next until done is true. From outside, a generator is an iterator; the next slide shows the inside.</aside>
+</section>
+
+<section>
+  <h2>The object the compiler makes of a generator</h2>
+  <script class="src" type="text/plain" id="src-twohand">
+    const two = () => {
+      let pc = 0;  // where next() resumes
+      const next = () => {
+        switch (pc) {
+          case 0: pc = 1; return { value: 'h', done: false };  // yield 'h'
+          case 1: pc = 2; return { value: 'i', done: false };  // yield 'i'
+          default: return { value: undefined, done: true };    // the end
+        }
+      };
+      return { next };
+    };
+
+    const g = two();
+    console.log(g.next(), g.next(), g.next());
+  </script>
+  <div class="cols narrow-left">
+    <div>
+      <pre><code class="language-js">function* two() {
+  yield 'h';
+  yield 'i';
+}</code></pre>
+      <p class="fragment" data-fragment-index="0">Each <code>yield</code> is one <code>case</code>: it writes in <code>pc</code> where to resume, and returns the element.</p>
+      <p class="fragment" data-fragment-index="1">After the last <code>yield</code>, <code>done</code> is true.</p>
+    </div>
+    <div>
+      <pre class="small"><code class="language-js" data-src="src-twohand"></code></pre>
+      <p><button class="run" onclick="runJS(this, 'out-twohand', 'src-twohand')">Run</button> <button class="run reset" onclick="reset(this, 'out-twohand')">Reset</button></p>
+    </div>
+  </div>
+  <pre class="out tr" id="out-twohand"> </pre>
+  <div class="box fragment" data-fragment-index="2">From inside, a generator is an <span class="hl">object</span>: its local variables, and a position in its code.</div>
+  <aside class="notes">The same function two, written by hand as the object that a compiler makes of it; the last two lines are those of the slide before, and Run prints the same three answers. Read the three cases against the generator on the left: a yield is a case that writes in pc the number of the case to resume at, and returns the element with done false; the end of the function is the default case, done true. next() starts with switch (pc): the function goes on where it stopped. pc is the program counter of session 4's machine, kept in a variable of the closure; a local variable of the generator would be one more variable beside pc. This is what compilers of generators to older JavaScript produce (regenerator), and what C# does for iterator blocks. The question left open for session 6: is that object something we have seen before? It is the rest of the computation.</aside>
 </section>
 
 <!-- 24 -->
@@ -1489,7 +1512,8 @@ or not None</pre>
   // runJS(button, out, needs): runs the JavaScript AS SHOWN in the listed code blocks (ids of their
   // <script class="src">, comma-separated, in order) in a fresh scope; every console.log is a line of output.
   const shownSrc = id => { const c = document.querySelector('code[data-src="' + id + '"]'); return c ? c.textContent : dedent(document.getElementById(id).textContent); };
-  const fmt = v => typeof v === 'string' ? v : v === undefined ? 'undefined' : typeof v === 'function' ? '[function]' : JSON.stringify(v).replace(/"([A-Za-z_]\w*)":/g, '$1: ').replace(/,/g, ', ').replace(/\{/g, '{ ').replace(/\}/g, ' }');
+  // a field whose value is undefined is printed, as node prints it: JSON alone would leave it out
+  const fmt = v => typeof v === 'string' ? v : v === undefined ? 'undefined' : typeof v === 'function' ? '[function]' : JSON.stringify(v, (k, x) => x === undefined ? '\u0000undefined' : x).replace(/"\\u0000undefined"/g, 'undefined').replace(/"([A-Za-z_]\w*)":/g, '$1: ').replace(/,/g, ', ').replace(/\{/g, '{ ').replace(/\}/g, ' }');
   const runJS = (btn, out, ids) => {
     const lines = [], log = (...xs) => lines.push(xs.map(fmt).join(' '));
     try { new Function('console', ids.split(',').map(shownSrc).join('\n'))({ log }); }
