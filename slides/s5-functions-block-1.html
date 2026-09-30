@@ -755,18 +755,17 @@ html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 
 .reveal .cols.narrow-left { grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr); }
 .reveal .cols + pre.out.tr { margin: 18px 0 22px 0; }
 .reveal pre a.srclink.low { top: auto; bottom: 7px; }
-/* block 2, the primes: a table that reads the notation, and the lists that the sieve receives */
+/* block 2, the primes: a table that reads the notation; then the list [2 ..] at five moments, one row
+   for each take k primes: a prime kept, a number built and taken out, and the rest, not yet built (hatched) */
 .reveal table.reads td:first-child, .reveal table.reads th:first-child { width: 25%; }
 .reveal table.reads td:nth-child(2), .reveal table.reads th:nth-child(2) { width: 42%; }
-.reveal table.sieve { border-collapse: collapse; margin: 6px 0 26px 0; width: auto; }
-.reveal table.sieve td { border: 0; padding: 9px 0; width: 50px; text-align: center; font-family: "Fira Mono", monospace; font-size: 28px; }
-.reveal table.sieve td.s { width: 170px; text-align: left; }
-.reveal table.sieve td.p span { display: inline-block; min-width: 46px; line-height: 46px; border-radius: 23px; background: var(--accent); color: #fff; font-weight: 500; }
+.reveal table.sieve { border-collapse: collapse; margin: 6px 0 22px 0; width: auto; table-layout: fixed; }
+.reveal table.sieve td { border: 0; padding: 7px 0; width: 48px; text-align: center; font-family: "Fira Mono", monospace; font-size: 28px; }
+.reveal table.sieve td.s { width: 290px; text-align: left; font-size: 30px; }
+.reveal table.sieve td.p span { display: inline-block; min-width: 44px; line-height: 44px; border-radius: 22px; background: var(--accent); color: #fff; font-weight: 500; }
 .reveal table.sieve td.x { text-decoration: line-through; text-decoration-color: var(--accent); text-decoration-thickness: 3px; }
-.reveal table.sieve ~ pre.out { margin-bottom: 24px; }
-/* a number that nobody has read yet: shown from the start, hatched on its click, as the rest of a lazy list */
-.reveal .slides section table.sieve td.fragment.lz { opacity: 1; visibility: inherit; transition: none; }
-.reveal .slides section table.sieve td.fragment.lz.visible { background: repeating-linear-gradient(45deg, #DDE3E5 0 5px, #F3F5F6 5px 12px); }
+.reveal table.sieve td.lz { background: repeating-linear-gradient(45deg, #DDE3E5 0 5px, #F3F5F6 5px 12px); }
+.reveal pre.out + p.ask { margin-top: 22px; }
 </style>
 </head>
 <body>
