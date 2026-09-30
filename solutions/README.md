@@ -18,6 +18,9 @@ handout PDF under `handouts/`.
 | `s4/index.html` | lab 4, the warm-up and both parts explained — [read it as a page](https://leon-gondelman.github.io/pp26/solutions/s4/index.html) |
 | `s4/ocaml/lambda.ml` | lab 4, every hole filled, commented; `main.ml` beside it with all 31 checks |
 | `s4/s4-warmup-solutions.pdf` | the warm-up sheet, worked |
+| `s5/s5-warmup-solutions.pdf` | the warm-up sheet, worked, with its homework |
+| `s5/ocaml/warmup.ml` | the warm-up's exercises at the keyboard, solved |
+| `s5/ocaml/queue.ml` | the homework: lab 2's queue, with its reversal kept |
 
 The code files are drop-in replacements for the ones with holes in them, and
 they carry more commentary than a solution normally would: the interesting
