@@ -1,0 +1,1598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PP26 Session 5</title>
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+<script src="demos5/pyrun.js"></script>
+<script src="demos5/ropeviz.js"></script>
+<script src="demos5/lanes.js"></script>
+<script src="demos5/seqviz.js"></script>
+<style>
+/*!
+* reveal.js 5.1.0
+* https://revealjs.com
+* MIT licensed
+*
+* Copyright (C) 2011-2024 Hakim El Hattab, https://hakim.se
+*/.reveal .r-stretch,.reveal .stretch{max-width:none;max-height:none}.reveal pre.r-stretch code,.reveal pre.stretch code{height:100%;max-height:100%;box-sizing:border-box}.reveal .r-fit-text{display:inline-block;white-space:nowrap}.reveal .r-stack{display:grid;grid-template-rows:100%}.reveal .r-stack>*{grid-area:1/1;margin:auto}.reveal .r-hstack,.reveal .r-vstack{display:flex}.reveal .r-hstack img,.reveal .r-hstack video,.reveal .r-vstack img,.reveal .r-vstack video{min-width:0;min-height:0;object-fit:contain}.reveal .r-vstack{flex-direction:column;align-items:center;justify-content:center}.reveal .r-hstack{flex-direction:row;align-items:center;justify-content:center}.reveal .items-stretch{align-items:stretch}.reveal .items-start{align-items:flex-start}.reveal .items-center{align-items:center}.reveal .items-end{align-items:flex-end}.reveal .justify-between{justify-content:space-between}.reveal .justify-around{justify-content:space-around}.reveal .justify-start{justify-content:flex-start}.reveal .justify-center{justify-content:center}.reveal .justify-end{justify-content:flex-end}html.reveal-full-page{width:100%;height:100%;height:100vh;height:calc(var(--vh,1vh) * 100);height:100svh;overflow:hidden}.reveal-viewport{height:100%;overflow:hidden;position:relative;line-height:1;margin:0;background-color:#fff;color:#000;--r-controls-spacing:12px}.reveal-viewport:fullscreen{top:0!important;left:0!important;width:100%!important;height:100%!important;transform:none!important}.reveal .fragment{transition:all .2s ease}.reveal .fragment:not(.custom){opacity:0;visibility:hidden;will-change:opacity}.reveal .fragment.visible{opacity:1;visibility:inherit}.reveal .fragment.disabled{transition:none}.reveal .fragment.grow{opacity:1;visibility:inherit}.reveal .fragment.grow.visible{transform:scale(1.3)}.reveal .fragment.shrink{opacity:1;visibility:inherit}.reveal .fragment.shrink.visible{transform:scale(.7)}.reveal .fragment.zoom-in{transform:scale(.1)}.reveal .fragment.zoom-in.visible{transform:none}.reveal .fragment.fade-out{opacity:1;visibility:inherit}.reveal .fragment.fade-out.visible{opacity:0;visibility:hidden}.reveal .fragment.semi-fade-out{opacity:1;visibility:inherit}.reveal .fragment.semi-fade-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.strike{opacity:1;visibility:inherit}.reveal .fragment.strike.visible{text-decoration:line-through}.reveal .fragment.fade-up{transform:translate(0,40px)}.reveal .fragment.fade-up.visible{transform:translate(0,0)}.reveal .fragment.fade-down{transform:translate(0,-40px)}.reveal .fragment.fade-down.visible{transform:translate(0,0)}.reveal .fragment.fade-right{transform:translate(-40px,0)}.reveal .fragment.fade-right.visible{transform:translate(0,0)}.reveal .fragment.fade-left{transform:translate(40px,0)}.reveal .fragment.fade-left.visible{transform:translate(0,0)}.reveal .fragment.current-visible,.reveal .fragment.fade-in-then-out{opacity:0;visibility:hidden}.reveal .fragment.current-visible.current-fragment,.reveal .fragment.fade-in-then-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.fade-in-then-semi-out{opacity:0;visibility:hidden}.reveal .fragment.fade-in-then-semi-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.fade-in-then-semi-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.highlight-blue,.reveal .fragment.highlight-current-blue,.reveal .fragment.highlight-current-green,.reveal .fragment.highlight-current-red,.reveal .fragment.highlight-green,.reveal .fragment.highlight-red{opacity:1;visibility:inherit}.reveal .fragment.highlight-red.visible{color:#ff2c2d}.reveal .fragment.highlight-green.visible{color:#17ff2e}.reveal .fragment.highlight-blue.visible{color:#1b91ff}.reveal .fragment.highlight-current-red.current-fragment{color:#ff2c2d}.reveal .fragment.highlight-current-green.current-fragment{color:#17ff2e}.reveal .fragment.highlight-current-blue.current-fragment{color:#1b91ff}.reveal:after{content:"";font-style:italic}.reveal iframe{z-index:1}.reveal a{position:relative}@keyframes bounce-right{0%,10%,25%,40%,50%{transform:translateX(0)}20%{transform:translateX(10px)}30%{transform:translateX(-5px)}}@keyframes bounce-left{0%,10%,25%,40%,50%{transform:translateX(0)}20%{transform:translateX(-10px)}30%{transform:translateX(5px)}}@keyframes bounce-down{0%,10%,25%,40%,50%{transform:translateY(0)}20%{transform:translateY(10px)}30%{transform:translateY(-5px)}}.reveal .controls{display:none;position:absolute;top:auto;bottom:var(--r-controls-spacing);right:var(--r-controls-spacing);left:auto;z-index:11;color:#000;pointer-events:none;font-size:10px}.reveal .controls button{position:absolute;padding:0;background-color:transparent;border:0;outline:0;cursor:pointer;color:currentColor;transform:scale(.9999);transition:color .2s ease,opacity .2s ease,transform .2s ease;z-index:2;pointer-events:auto;font-size:inherit;visibility:hidden;opacity:0;-webkit-appearance:none;-webkit-tap-highlight-color:transparent}.reveal .controls .controls-arrow:after,.reveal .controls .controls-arrow:before{content:"";position:absolute;top:0;left:0;width:2.6em;height:.5em;border-radius:.25em;background-color:currentColor;transition:all .15s ease,background-color .8s ease;transform-origin:.2em 50%;will-change:transform}.reveal .controls .controls-arrow{position:relative;width:3.6em;height:3.6em}.reveal .controls .controls-arrow:before{transform:translateX(.5em) translateY(1.55em) rotate(45deg)}.reveal .controls .controls-arrow:after{transform:translateX(.5em) translateY(1.55em) rotate(-45deg)}.reveal .controls .controls-arrow:hover:before{transform:translateX(.5em) translateY(1.55em) rotate(40deg)}.reveal .controls .controls-arrow:hover:after{transform:translateX(.5em) translateY(1.55em) rotate(-40deg)}.reveal .controls .controls-arrow:active:before{transform:translateX(.5em) translateY(1.55em) rotate(36deg)}.reveal .controls .controls-arrow:active:after{transform:translateX(.5em) translateY(1.55em) rotate(-36deg)}.reveal .controls .navigate-left{right:6.4em;bottom:3.2em;transform:translateX(-10px)}.reveal .controls .navigate-left.highlight{animation:bounce-left 2s 50 both ease-out}.reveal .controls .navigate-right{right:0;bottom:3.2em;transform:translateX(10px)}.reveal .controls .navigate-right .controls-arrow{transform:rotate(180deg)}.reveal .controls .navigate-right.highlight{animation:bounce-right 2s 50 both ease-out}.reveal .controls .navigate-up{right:3.2em;bottom:6.4em;transform:translateY(-10px)}.reveal .controls .navigate-up .controls-arrow{transform:rotate(90deg)}.reveal .controls .navigate-down{right:3.2em;bottom:-1.4em;padding-bottom:1.4em;transform:translateY(10px)}.reveal .controls .navigate-down .controls-arrow{transform:rotate(-90deg)}.reveal .controls .navigate-down.highlight{animation:bounce-down 2s 50 both ease-out}.reveal .controls[data-controls-back-arrows=faded] .navigate-up.enabled{opacity:.3}.reveal .controls[data-controls-back-arrows=faded] .navigate-up.enabled:hover{opacity:1}.reveal .controls[data-controls-back-arrows=hidden] .navigate-up.enabled{opacity:0;visibility:hidden}.reveal .controls .enabled{visibility:visible;opacity:.9;cursor:pointer;transform:none}.reveal .controls .enabled.fragmented{opacity:.5}.reveal .controls .enabled.fragmented:hover,.reveal .controls .enabled:hover{opacity:1}.reveal:not(.rtl) .controls[data-controls-back-arrows=faded] .navigate-left.enabled{opacity:.3}.reveal:not(.rtl) .controls[data-controls-back-arrows=faded] .navigate-left.enabled:hover{opacity:1}.reveal:not(.rtl) .controls[data-controls-back-arrows=hidden] .navigate-left.enabled{opacity:0;visibility:hidden}.reveal.rtl .controls[data-controls-back-arrows=faded] .navigate-right.enabled{opacity:.3}.reveal.rtl .controls[data-controls-back-arrows=faded] .navigate-right.enabled:hover{opacity:1}.reveal.rtl .controls[data-controls-back-arrows=hidden] .navigate-right.enabled{opacity:0;visibility:hidden}.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-down,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-up{display:none}.reveal:not(.has-vertical-slides) .controls .navigate-left,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-left{bottom:1.4em;right:5.5em}.reveal:not(.has-vertical-slides) .controls .navigate-right,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-right{bottom:1.4em;right:.5em}.reveal:not(.has-horizontal-slides) .controls .navigate-up{right:1.4em;bottom:5em}.reveal:not(.has-horizontal-slides) .controls .navigate-down{right:1.4em;bottom:.5em}.reveal.has-dark-background .controls{color:#fff}.reveal.has-light-background .controls{color:#000}.reveal.no-hover .controls .controls-arrow:active:before,.reveal.no-hover .controls .controls-arrow:hover:before{transform:translateX(.5em) translateY(1.55em) rotate(45deg)}.reveal.no-hover .controls .controls-arrow:active:after,.reveal.no-hover .controls .controls-arrow:hover:after{transform:translateX(.5em) translateY(1.55em) rotate(-45deg)}@media screen and (min-width:500px){.reveal-viewport{--r-controls-spacing:0.8em}.reveal .controls[data-controls-layout=edges]{top:0;right:0;bottom:0;left:0}.reveal .controls[data-controls-layout=edges] .navigate-down,.reveal .controls[data-controls-layout=edges] .navigate-left,.reveal .controls[data-controls-layout=edges] .navigate-right,.reveal .controls[data-controls-layout=edges] .navigate-up{bottom:auto;right:auto}.reveal .controls[data-controls-layout=edges] .navigate-left{top:50%;left:var(--r-controls-spacing);margin-top:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-right{top:50%;right:var(--r-controls-spacing);margin-top:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-up{top:var(--r-controls-spacing);left:50%;margin-left:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-down{bottom:calc(var(--r-controls-spacing) - 1.4em + .3em);left:50%;margin-left:-1.8em}}.reveal .progress{position:absolute;display:none;height:3px;width:100%;bottom:0;left:0;z-index:10;background-color:rgba(0,0,0,.2);color:#fff}.reveal .progress:after{content:"";display:block;position:absolute;height:10px;width:100%;top:-10px}.reveal .progress span{display:block;height:100%;width:100%;background-color:currentColor;transition:transform .8s cubic-bezier(.26,.86,.44,.985);transform-origin:0 0;transform:scaleX(0)}.reveal .slide-number{position:absolute;display:block;right:8px;bottom:8px;z-index:31;font-family:Helvetica,sans-serif;font-size:12px;line-height:1;color:#fff;background-color:rgba(0,0,0,.4);padding:5px}.reveal .slide-number a{color:currentColor}.reveal .slide-number-delimiter{margin:0 3px}.reveal{position:relative;width:100%;height:100%;overflow:hidden;touch-action:pinch-zoom}.reveal.embedded{touch-action:pan-y}.reveal.embedded.is-vertical-slide{touch-action:none}.reveal .slides{position:absolute;width:100%;height:100%;top:0;right:0;bottom:0;left:0;margin:auto;pointer-events:none;overflow:visible;z-index:1;text-align:center;perspective:600px;perspective-origin:50% 40%}.reveal .slides>section{perspective:600px}.reveal .slides>section,.reveal .slides>section>section{display:none;position:absolute;width:100%;pointer-events:auto;z-index:10;transform-style:flat;transition:transform-origin .8s cubic-bezier(.26,.86,.44,.985),transform .8s cubic-bezier(.26,.86,.44,.985),visibility .8s cubic-bezier(.26,.86,.44,.985),opacity .8s cubic-bezier(.26,.86,.44,.985)}.reveal[data-transition-speed=fast] .slides section{transition-duration:.4s}.reveal[data-transition-speed=slow] .slides section{transition-duration:1.2s}.reveal .slides section[data-transition-speed=fast]{transition-duration:.4s}.reveal .slides section[data-transition-speed=slow]{transition-duration:1.2s}.reveal .slides>section.stack{padding-top:0;padding-bottom:0;pointer-events:none;height:100%}.reveal .slides>section.present,.reveal .slides>section>section.present{display:block;z-index:11;opacity:1}.reveal .slides>section:empty,.reveal .slides>section>section:empty,.reveal .slides>section>section[data-background-interactive],.reveal .slides>section[data-background-interactive]{pointer-events:none}.reveal.center,.reveal.center .slides,.reveal.center .slides section{min-height:0!important}.reveal .slides>section:not(.present),.reveal .slides>section>section:not(.present){pointer-events:none}.reveal.overview .slides>section,.reveal.overview .slides>section>section{pointer-events:auto}.reveal .slides>section.future,.reveal .slides>section.future>section,.reveal .slides>section.past,.reveal .slides>section.past>section,.reveal .slides>section>section.future,.reveal .slides>section>section.past{opacity:0}.reveal .slides>section[data-transition=slide].past,.reveal .slides>section[data-transition~=slide-out].past,.reveal.slide .slides>section:not([data-transition]).past{transform:translate(-150%,0)}.reveal .slides>section[data-transition=slide].future,.reveal .slides>section[data-transition~=slide-in].future,.reveal.slide .slides>section:not([data-transition]).future{transform:translate(150%,0)}.reveal .slides>section>section[data-transition=slide].past,.reveal .slides>section>section[data-transition~=slide-out].past,.reveal.slide .slides>section>section:not([data-transition]).past{transform:translate(0,-150%)}.reveal .slides>section>section[data-transition=slide].future,.reveal .slides>section>section[data-transition~=slide-in].future,.reveal.slide .slides>section>section:not([data-transition]).future{transform:translate(0,150%)}.reveal .slides>section[data-transition=linear].past,.reveal .slides>section[data-transition~=linear-out].past,.reveal.linear .slides>section:not([data-transition]).past{transform:translate(-150%,0)}.reveal .slides>section[data-transition=linear].future,.reveal .slides>section[data-transition~=linear-in].future,.reveal.linear .slides>section:not([data-transition]).future{transform:translate(150%,0)}.reveal .slides>section>section[data-transition=linear].past,.reveal .slides>section>section[data-transition~=linear-out].past,.reveal.linear .slides>section>section:not([data-transition]).past{transform:translate(0,-150%)}.reveal .slides>section>section[data-transition=linear].future,.reveal .slides>section>section[data-transition~=linear-in].future,.reveal.linear .slides>section>section:not([data-transition]).future{transform:translate(0,150%)}.reveal .slides section[data-transition=default].stack,.reveal.default .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=default].past,.reveal .slides>section[data-transition~=default-out].past,.reveal.default .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=default].future,.reveal .slides>section[data-transition~=default-in].future,.reveal.default .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=default].past,.reveal .slides>section>section[data-transition~=default-out].past,.reveal.default .slides>section>section:not([data-transition]).past{transform:translate3d(0,-300px,0) rotateX(70deg) translate3d(0,-300px,0)}.reveal .slides>section>section[data-transition=default].future,.reveal .slides>section>section[data-transition~=default-in].future,.reveal.default .slides>section>section:not([data-transition]).future{transform:translate3d(0,300px,0) rotateX(-70deg) translate3d(0,300px,0)}.reveal .slides section[data-transition=convex].stack,.reveal.convex .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=convex].past,.reveal .slides>section[data-transition~=convex-out].past,.reveal.convex .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=convex].future,.reveal .slides>section[data-transition~=convex-in].future,.reveal.convex .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=convex].past,.reveal .slides>section>section[data-transition~=convex-out].past,.reveal.convex .slides>section>section:not([data-transition]).past{transform:translate3d(0,-300px,0) rotateX(70deg) translate3d(0,-300px,0)}.reveal .slides>section>section[data-transition=convex].future,.reveal .slides>section>section[data-transition~=convex-in].future,.reveal.convex .slides>section>section:not([data-transition]).future{transform:translate3d(0,300px,0) rotateX(-70deg) translate3d(0,300px,0)}.reveal .slides section[data-transition=concave].stack,.reveal.concave .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=concave].past,.reveal .slides>section[data-transition~=concave-out].past,.reveal.concave .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=concave].future,.reveal .slides>section[data-transition~=concave-in].future,.reveal.concave .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(-90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=concave].past,.reveal .slides>section>section[data-transition~=concave-out].past,.reveal.concave .slides>section>section:not([data-transition]).past{transform:translate3d(0,-80%,0) rotateX(-70deg) translate3d(0,-80%,0)}.reveal .slides>section>section[data-transition=concave].future,.reveal .slides>section>section[data-transition~=concave-in].future,.reveal.concave .slides>section>section:not([data-transition]).future{transform:translate3d(0,80%,0) rotateX(70deg) translate3d(0,80%,0)}.reveal .slides section[data-transition=zoom],.reveal.zoom .slides section:not([data-transition]){transition-timing-function:ease}.reveal .slides>section[data-transition=zoom].past,.reveal .slides>section[data-transition~=zoom-out].past,.reveal.zoom .slides>section:not([data-transition]).past{visibility:hidden;transform:scale(16)}.reveal .slides>section[data-transition=zoom].future,.reveal .slides>section[data-transition~=zoom-in].future,.reveal.zoom .slides>section:not([data-transition]).future{visibility:hidden;transform:scale(.2)}.reveal .slides>section>section[data-transition=zoom].past,.reveal .slides>section>section[data-transition~=zoom-out].past,.reveal.zoom .slides>section>section:not([data-transition]).past{transform:scale(16)}.reveal .slides>section>section[data-transition=zoom].future,.reveal .slides>section>section[data-transition~=zoom-in].future,.reveal.zoom .slides>section>section:not([data-transition]).future{transform:scale(.2)}.reveal.cube .slides{perspective:1300px}.reveal.cube .slides section{padding:30px;min-height:700px;backface-visibility:hidden;box-sizing:border-box;transform-style:preserve-3d}.reveal.center.cube .slides section{min-height:0}.reveal.cube .slides section:not(.stack):before{content:"";position:absolute;display:block;width:100%;height:100%;left:0;top:0;background:rgba(0,0,0,.1);border-radius:4px;transform:translateZ(-20px)}.reveal.cube .slides section:not(.stack):after{content:"";position:absolute;display:block;width:90%;height:30px;left:5%;bottom:0;background:0 0;z-index:1;border-radius:4px;box-shadow:0 95px 25px rgba(0,0,0,.2);transform:translateZ(-90px) rotateX(65deg)}.reveal.cube .slides>section.stack{padding:0;background:0 0}.reveal.cube .slides>section.past{transform-origin:100% 0;transform:translate3d(-100%,0,0) rotateY(-90deg)}.reveal.cube .slides>section.future{transform-origin:0 0;transform:translate3d(100%,0,0) rotateY(90deg)}.reveal.cube .slides>section>section.past{transform-origin:0 100%;transform:translate3d(0,-100%,0) rotateX(90deg)}.reveal.cube .slides>section>section.future{transform-origin:0 0;transform:translate3d(0,100%,0) rotateX(-90deg)}.reveal.page .slides{perspective-origin:0 50%;perspective:3000px}.reveal.page .slides section{padding:30px;min-height:700px;box-sizing:border-box;transform-style:preserve-3d}.reveal.page .slides section.past{z-index:12}.reveal.page .slides section:not(.stack):before{content:"";position:absolute;display:block;width:100%;height:100%;left:0;top:0;background:rgba(0,0,0,.1);transform:translateZ(-20px)}.reveal.page .slides section:not(.stack):after{content:"";position:absolute;display:block;width:90%;height:30px;left:5%;bottom:0;background:0 0;z-index:1;border-radius:4px;box-shadow:0 95px 25px rgba(0,0,0,.2);-webkit-transform:translateZ(-90px) rotateX(65deg)}.reveal.page .slides>section.stack{padding:0;background:0 0}.reveal.page .slides>section.past{transform-origin:0 0;transform:translate3d(-40%,0,0) rotateY(-80deg)}.reveal.page .slides>section.future{transform-origin:100% 0;transform:translate3d(0,0,0)}.reveal.page .slides>section>section.past{transform-origin:0 0;transform:translate3d(0,-40%,0) rotateX(80deg)}.reveal.page .slides>section>section.future{transform-origin:0 100%;transform:translate3d(0,0,0)}.reveal .slides section[data-transition=fade],.reveal.fade .slides section:not([data-transition]),.reveal.fade .slides>section>section:not([data-transition]){transform:none;transition:opacity .5s}.reveal.fade.overview .slides section,.reveal.fade.overview .slides>section>section{transition:none}.reveal .slides section[data-transition=none],.reveal.none .slides section:not([data-transition]){transform:none;transition:none}.reveal .pause-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;visibility:hidden;opacity:0;z-index:100;transition:all 1s ease}.reveal .pause-overlay .resume-button{position:absolute;bottom:20px;right:20px;color:#ccc;border-radius:2px;padding:6px 14px;border:2px solid #ccc;font-size:16px;background:0 0;cursor:pointer}.reveal .pause-overlay .resume-button:hover{color:#fff;border-color:#fff}.reveal.paused .pause-overlay{visibility:visible;opacity:1}.reveal .no-transition,.reveal .no-transition *,.reveal .slides.disable-slide-transitions section{transition:none!important}.reveal .slides.disable-slide-transitions section{transform:none!important}.reveal .backgrounds{position:absolute;width:100%;height:100%;top:0;left:0;perspective:600px}.reveal .slide-background{display:none;position:absolute;width:100%;height:100%;opacity:0;visibility:hidden;overflow:hidden;background-color:rgba(0,0,0,0);transition:all .8s cubic-bezier(.26,.86,.44,.985)}.reveal .slide-background-content{position:absolute;width:100%;height:100%;background-position:50% 50%;background-repeat:no-repeat;background-size:cover}.reveal .slide-background.stack{display:block}.reveal .slide-background.present{opacity:1;visibility:visible;z-index:2}.print-pdf .reveal .slide-background{opacity:1!important;visibility:visible!important}.reveal .slide-background video{position:absolute;width:100%;height:100%;max-width:none;max-height:none;top:0;left:0;object-fit:cover}.reveal .slide-background[data-background-size=contain] video{object-fit:contain}.reveal>.backgrounds .slide-background[data-background-transition=none],.reveal[data-background-transition=none]>.backgrounds .slide-background:not([data-background-transition]){transition:none}.reveal>.backgrounds .slide-background[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background:not([data-background-transition]){opacity:1}.reveal>.backgrounds .slide-background.past[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background.past:not([data-background-transition]){transform:translate(-100%,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background.future:not([data-background-transition]){transform:translate(100%,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){transform:translate(0,-100%)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){transform:translate(0,100%)}.reveal>.backgrounds .slide-background.past[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(0,-100%,0) rotateX(90deg) translate3d(0,-100%,0)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(0,100%,0) rotateX(-90deg) translate3d(0,100%,0)}.reveal>.backgrounds .slide-background.past[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(-100%,0,0) rotateY(90deg) translate3d(-100%,0,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(100%,0,0) rotateY(-90deg) translate3d(100%,0,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(0,-100%,0) rotateX(-90deg) translate3d(0,-100%,0)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(0,100%,0) rotateX(90deg) translate3d(0,100%,0)}.reveal>.backgrounds .slide-background[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background:not([data-background-transition]){transition-timing-function:ease}.reveal>.backgrounds .slide-background.past[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(16)}.reveal>.backgrounds .slide-background.future[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(.2)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(16)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(.2)}.reveal[data-transition-speed=fast]>.backgrounds .slide-background{transition-duration:.4s}.reveal[data-transition-speed=slow]>.backgrounds .slide-background{transition-duration:1.2s}.reveal [data-auto-animate-target^=unmatched]{will-change:opacity}.reveal section[data-auto-animate]:not(.stack):not([data-auto-animate=running]) [data-auto-animate-target^=unmatched]{opacity:0}.reveal.overview{perspective-origin:50% 50%;perspective:700px}.reveal.overview .slides{-moz-transform-style:preserve-3d}.reveal.overview .slides section{height:100%;top:0!important;opacity:1!important;overflow:hidden;visibility:visible!important;cursor:pointer;box-sizing:border-box}.reveal.overview .slides section.present,.reveal.overview .slides section:hover{outline:10px solid rgba(150,150,150,.4);outline-offset:10px}.reveal.overview .slides section .fragment{opacity:1;transition:none}.reveal.overview .slides section:after,.reveal.overview .slides section:before{display:none!important}.reveal.overview .slides>section.stack{padding:0;top:0!important;background:0 0;outline:0;overflow:visible}.reveal.overview .backgrounds{perspective:inherit;-moz-transform-style:preserve-3d}.reveal.overview .backgrounds .slide-background{opacity:1;visibility:visible;outline:10px solid rgba(150,150,150,.1);outline-offset:10px}.reveal.overview .backgrounds .slide-background.stack{overflow:visible}.reveal.overview .slides section,.reveal.overview-deactivating .slides section{transition:none}.reveal.overview .backgrounds .slide-background,.reveal.overview-deactivating .backgrounds .slide-background{transition:none}.reveal.rtl .slides,.reveal.rtl .slides h1,.reveal.rtl .slides h2,.reveal.rtl .slides h3,.reveal.rtl .slides h4,.reveal.rtl .slides h5,.reveal.rtl .slides h6{direction:rtl;font-family:sans-serif}.reveal.rtl code,.reveal.rtl pre{direction:ltr}.reveal.rtl ol,.reveal.rtl ul{text-align:right}.reveal.rtl .progress span{transform-origin:100% 0}.reveal.has-parallax-background .backgrounds{transition:all .8s ease}.reveal.has-parallax-background[data-transition-speed=fast] .backgrounds{transition-duration:.4s}.reveal.has-parallax-background[data-transition-speed=slow] .backgrounds{transition-duration:1.2s}.reveal>.overlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1000;background:rgba(0,0,0,.95);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:all .3s ease}.reveal>.overlay .spinner{position:absolute;display:block;top:50%;left:50%;width:32px;height:32px;margin:-16px 0 0 -16px;z-index:10;background-image:url(data:image/gif;base64,R0lGODlhIAAgAPMAAJmZmf%2F%2F%2F6%2Bvr8nJybW1tcDAwOjo6Nvb26ioqKOjo7Ozs%2FLy8vz8%2FAAAAAAAAAAAACH%2FC05FVFNDQVBFMi4wAwEAAAAh%2FhpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh%2BQQJCgAAACwAAAAAIAAgAAAE5xDISWlhperN52JLhSSdRgwVo1ICQZRUsiwHpTJT4iowNS8vyW2icCF6k8HMMBkCEDskxTBDAZwuAkkqIfxIQyhBQBFvAQSDITM5VDW6XNE4KagNh6Bgwe60smQUB3d4Rz1ZBApnFASDd0hihh12BkE9kjAJVlycXIg7CQIFA6SlnJ87paqbSKiKoqusnbMdmDC2tXQlkUhziYtyWTxIfy6BE8WJt5YJvpJivxNaGmLHT0VnOgSYf0dZXS7APdpB309RnHOG5gDqXGLDaC457D1zZ%2FV%2FnmOM82XiHRLYKhKP1oZmADdEAAAh%2BQQJCgAAACwAAAAAIAAgAAAE6hDISWlZpOrNp1lGNRSdRpDUolIGw5RUYhhHukqFu8DsrEyqnWThGvAmhVlteBvojpTDDBUEIFwMFBRAmBkSgOrBFZogCASwBDEY%2FCZSg7GSE0gSCjQBMVG023xWBhklAnoEdhQEfyNqMIcKjhRsjEdnezB%2BA4k8gTwJhFuiW4dokXiloUepBAp5qaKpp6%2BHo7aWW54wl7obvEe0kRuoplCGepwSx2jJvqHEmGt6whJpGpfJCHmOoNHKaHx61WiSR92E4lbFoq%2BB6QDtuetcaBPnW6%2BO7wDHpIiK9SaVK5GgV543tzjgGcghAgAh%2BQQJCgAAACwAAAAAIAAgAAAE7hDISSkxpOrN5zFHNWRdhSiVoVLHspRUMoyUakyEe8PTPCATW9A14E0UvuAKMNAZKYUZCiBMuBakSQKG8G2FzUWox2AUtAQFcBKlVQoLgQReZhQlCIJesQXI5B0CBnUMOxMCenoCfTCEWBsJColTMANldx15BGs8B5wlCZ9Po6OJkwmRpnqkqnuSrayqfKmqpLajoiW5HJq7FL1Gr2mMMcKUMIiJgIemy7xZtJsTmsM4xHiKv5KMCXqfyUCJEonXPN2rAOIAmsfB3uPoAK%2B%2BG%2Bw48edZPK%2BM6hLJpQg484enXIdQFSS1u6UhksENEQAAIfkECQoAAAAsAAAAACAAIAAABOcQyEmpGKLqzWcZRVUQnZYg1aBSh2GUVEIQ2aQOE%2BG%2BcD4ntpWkZQj1JIiZIogDFFyHI0UxQwFugMSOFIPJftfVAEoZLBbcLEFhlQiqGp1Vd140AUklUN3eCA51C1EWMzMCezCBBmkxVIVHBWd3HHl9JQOIJSdSnJ0TDKChCwUJjoWMPaGqDKannasMo6WnM562R5YluZRwur0wpgqZE7NKUm%2BFNRPIhjBJxKZteWuIBMN4zRMIVIhffcgojwCF117i4nlLnY5ztRLsnOk%2BaV%2BoJY7V7m76PdkS4trKcdg0Zc0tTcKkRAAAIfkECQoAAAAsAAAAACAAIAAABO4QyEkpKqjqzScpRaVkXZWQEximw1BSCUEIlDohrft6cpKCk5xid5MNJTaAIkekKGQkWyKHkvhKsR7ARmitkAYDYRIbUQRQjWBwJRzChi9CRlBcY1UN4g0%2FVNB0AlcvcAYHRyZPdEQFYV8ccwR5HWxEJ02YmRMLnJ1xCYp0Y5idpQuhopmmC2KgojKasUQDk5BNAwwMOh2RtRq5uQuPZKGIJQIGwAwGf6I0JXMpC8C7kXWDBINFMxS4DKMAWVWAGYsAdNqW5uaRxkSKJOZKaU3tPOBZ4DuK2LATgJhkPJMgTwKCdFjyPHEnKxFCDhEAACH5BAkKAAAALAAAAAAgACAAAATzEMhJaVKp6s2nIkolIJ2WkBShpkVRWqqQrhLSEu9MZJKK9y1ZrqYK9WiClmvoUaF8gIQSNeF1Er4MNFn4SRSDARWroAIETg1iVwuHjYB1kYc1mwruwXKC9gmsJXliGxc%2BXiUCby9ydh1sOSdMkpMTBpaXBzsfhoc5l58Gm5yToAaZhaOUqjkDgCWNHAULCwOLaTmzswadEqggQwgHuQsHIoZCHQMMQgQGubVEcxOPFAcMDAYUA85eWARmfSRQCdcMe0zeP1AAygwLlJtPNAAL19DARdPzBOWSm1brJBi45soRAWQAAkrQIykShQ9wVhHCwCQCACH5BAkKAAAALAAAAAAgACAAAATrEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiRMDjI0Fd30%2FiI2UA5GSS5UDj2l6NoqgOgN4gksEBgYFf0FDqKgHnyZ9OX8HrgYHdHpcHQULXAS2qKpENRg7eAMLC7kTBaixUYFkKAzWAAnLC7FLVxLWDBLKCwaKTULgEwbLA4hJtOkSBNqITT3xEgfLpBtzE%2FjiuL04RGEBgwWhShRgQExHBAAh%2BQQJCgAAACwAAAAAIAAgAAAE7xDISWlSqerNpyJKhWRdlSAVoVLCWk6JKlAqAavhO9UkUHsqlE6CwO1cRdCQ8iEIfzFVTzLdRAmZX3I2SfZiCqGk5dTESJeaOAlClzsJsqwiJwiqnFrb2nS9kmIcgEsjQydLiIlHehhpejaIjzh9eomSjZR%2BipslWIRLAgMDOR2DOqKogTB9pCUJBagDBXR6XB0EBkIIsaRsGGMMAxoDBgYHTKJiUYEGDAzHC9EACcUGkIgFzgwZ0QsSBcXHiQvOwgDdEwfFs0sDzt4S6BK4xYjkDOzn0unFeBzOBijIm1Dgmg5YFQwsCMjp1oJ8LyIAACH5BAkKAAAALAAAAAAgACAAAATwEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiUd6GGl6NoiPOH16iZKNlH6KmyWFOggHhEEvAwwMA0N9GBsEC6amhnVcEwavDAazGwIDaH1ipaYLBUTCGgQDA8NdHz0FpqgTBwsLqAbWAAnIA4FWKdMLGdYGEgraigbT0OITBcg5QwPT4xLrROZL6AuQAPUS7bxLpoWidY0JtxLHKhwwMJBTHgPKdEQAACH5BAkKAAAALAAAAAAgACAAAATrEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiUd6GAULDJCRiXo1CpGXDJOUjY%2BYip9DhToJA4RBLwMLCwVDfRgbBAaqqoZ1XBMHswsHtxtFaH1iqaoGNgAIxRpbFAgfPQSqpbgGBqUD1wBXeCYp1AYZ19JJOYgH1KwA4UBvQwXUBxPqVD9L3sbp2BNk2xvvFPJd%2BMFCN6HAAIKgNggY0KtEBAAh%2BQQJCgAAACwAAAAAIAAgAAAE6BDISWlSqerNpyJKhWRdlSAVoVLCWk6JKlAqAavhO9UkUHsqlE6CwO1cRdCQ8iEIfzFVTzLdRAmZX3I2SfYIDMaAFdTESJeaEDAIMxYFqrOUaNW4E4ObYcCXaiBVEgULe0NJaxxtYksjh2NLkZISgDgJhHthkpU4mW6blRiYmZOlh4JWkDqILwUGBnE6TYEbCgevr0N1gH4At7gHiRpFaLNrrq8HNgAJA70AWxQIH1%2BvsYMDAzZQPC9VCNkDWUhGkuE5PxJNwiUK4UfLzOlD4WvzAHaoG9nxPi5d%2BjYUqfAhhykOFwJWiAAAIfkECQoAAAAsAAAAACAAIAAABPAQyElpUqnqzaciSoVkXVUMFaFSwlpOCcMYlErAavhOMnNLNo8KsZsMZItJEIDIFSkLGQoQTNhIsFehRww2CQLKF0tYGKYSg%2BygsZIuNqJksKgbfgIGepNo2cIUB3V1B3IvNiBYNQaDSTtfhhx0CwVPI0UJe0%2Bbm4g5VgcGoqOcnjmjqDSdnhgEoamcsZuXO1aWQy8KAwOAuTYYGwi7w5h%2BKr0SJ8MFihpNbx%2B4Erq7BYBuzsdiH1jCAzoSfl0rVirNbRXlBBlLX%2BBP0XJLAPGzTkAuAOqb0WT5AH7OcdCm5B8TgRwSRKIHQtaLCwg1RAAAOwAAAAAAAAAAAA%3D%3D);visibility:visible;opacity:.6;transition:all .3s ease}.reveal>.overlay header{position:absolute;left:0;top:0;width:100%;padding:5px;z-index:2;box-sizing:border-box}.reveal>.overlay header a{display:inline-block;width:40px;height:40px;line-height:36px;padding:0 10px;float:right;opacity:.6;box-sizing:border-box}.reveal>.overlay header a:hover{opacity:1}.reveal>.overlay header a .icon{display:inline-block;width:20px;height:20px;background-position:50% 50%;background-size:100%;background-repeat:no-repeat}.reveal>.overlay header a.close .icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABkklEQVRYR8WX4VHDMAxG6wnoJrABZQPYBCaBTWAD2g1gE5gg6OOsXuxIlr40d81dfrSJ9V4c2VLK7spHuTJ/5wpM07QXuXc5X0opX2tEJcadjHuV80li/FgxTIEK/5QBCICBD6xEhSMGHgQPgBgLiYVAB1dpSqKDawxTohFw4JSEA3clzgIBPCURwE2JucBR7rhPJJv5OpJwDX+SfDjgx1wACQeJG1aChP9K/IMmdZ8DtESV1WyP3Bt4MwM6sj4NMxMYiqUWHQu4KYA/SYkIjOsm3BXYWMKFDwU2khjCQ4ELJUJ4SmClRArOCmSXGuKma0fYD5CbzHxFpCSGAhfAVSSUGDUk2BWZaff2g6GE15BsBQ9nwmpIGDiyHQddwNTMKkbZaf9fajXQca1EX44puJZUsnY0ObGmITE3GVLCbEhQUjGVt146j6oasWN+49Vph2w1pZ5EansNZqKBm1txbU57iRRcZ86RWMDdWtBJUHBHwoQPi1GV+JCbntmvok7iTX4/Up9mgyTc/FJYDTcndgH/AA5A/CHsyEkVAAAAAElFTkSuQmCC)}.reveal>.overlay header a.external .icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAcElEQVRYR+2WSQoAIQwEzf8f7XiOMkUQxUPlGkM3hVmiQfQR9GYnH1SsAQlI4DiBqkCMoNb9y2e90IAEJPAcgdznU9+engMaeJ7Azh5Y1U67gAho4DqBqmB1buAf0MB1AlVBek83ZPkmJMGc1wAR+AAqod/B97TRpQAAAABJRU5ErkJggg==)}.reveal>.overlay .viewport{position:absolute;display:flex;top:50px;right:0;bottom:0;left:0}.reveal>.overlay.overlay-preview .viewport iframe{width:100%;height:100%;max-width:100%;max-height:100%;border:0;opacity:0;visibility:hidden;transition:all .3s ease}.reveal>.overlay.overlay-preview.loaded .viewport iframe{opacity:1;visibility:visible}.reveal>.overlay.overlay-preview.loaded .viewport-inner{position:absolute;z-index:-1;left:0;top:45%;width:100%;text-align:center;letter-spacing:normal}.reveal>.overlay.overlay-preview .x-frame-error{opacity:0;transition:opacity .3s ease .3s}.reveal>.overlay.overlay-preview.loaded .x-frame-error{opacity:1}.reveal>.overlay.overlay-preview.loaded .spinner{opacity:0;visibility:hidden;transform:scale(.2)}.reveal>.overlay.overlay-help .viewport{overflow:auto;color:#fff}.reveal>.overlay.overlay-help .viewport .viewport-inner{width:600px;margin:auto;padding:20px 20px 80px 20px;text-align:center;letter-spacing:normal}.reveal>.overlay.overlay-help .viewport .viewport-inner .title{font-size:20px}.reveal>.overlay.overlay-help .viewport .viewport-inner table{border:1px solid #fff;border-collapse:collapse;font-size:16px}.reveal>.overlay.overlay-help .viewport .viewport-inner table td,.reveal>.overlay.overlay-help .viewport .viewport-inner table th{width:200px;padding:14px;border:1px solid #fff;vertical-align:middle}.reveal>.overlay.overlay-help .viewport .viewport-inner table th{padding-top:20px;padding-bottom:20px}.reveal .playback{position:absolute;left:15px;bottom:20px;z-index:30;cursor:pointer;transition:all .4s ease;-webkit-tap-highlight-color:transparent}.reveal.overview .playback{opacity:0;visibility:hidden}.reveal .hljs{min-height:100%}.reveal .hljs table{margin:initial}.reveal .hljs-ln-code,.reveal .hljs-ln-numbers{padding:0;border:0}.reveal .hljs-ln-numbers{opacity:.6;padding-right:.75em;text-align:right;vertical-align:top}.reveal .hljs.has-highlights tr:not(.highlight-line){opacity:.4}.reveal .hljs.has-highlights.fragment{transition:all .2s ease}.reveal .hljs:not(:first-child).fragment{position:absolute;top:0;left:0;width:100%;box-sizing:border-box}.reveal pre[data-auto-animate-target]{overflow:hidden}.reveal pre[data-auto-animate-target] code{height:100%}.reveal .roll{display:inline-block;line-height:1.2;overflow:hidden;vertical-align:top;perspective:400px;perspective-origin:50% 50%}.reveal .roll:hover{background:0 0;text-shadow:none}.reveal .roll span{display:block;position:relative;padding:0 2px;pointer-events:none;transition:all .4s ease;transform-origin:50% 0;transform-style:preserve-3d;backface-visibility:hidden}.reveal .roll:hover span{background:rgba(0,0,0,.5);transform:translate3d(0,0,-45px) rotateX(90deg)}.reveal .roll span:after{content:attr(data-title);display:block;position:absolute;left:0;top:0;padding:0 2px;backface-visibility:hidden;transform-origin:50% 0;transform:translate3d(0,110%,0) rotateX(-90deg)}.reveal aside.notes{display:none}.reveal .speaker-notes{display:none;position:absolute;width:33.3333333333%;height:100%;top:0;left:100%;padding:14px 18px 14px 18px;z-index:1;font-size:18px;line-height:1.4;border:1px solid rgba(0,0,0,.05);color:#222;background-color:#f5f5f5;overflow:auto;box-sizing:border-box;text-align:left;font-family:Helvetica,sans-serif;-webkit-overflow-scrolling:touch}.reveal .speaker-notes .notes-placeholder{color:#ccc;font-style:italic}.reveal .speaker-notes:focus{outline:0}.reveal .speaker-notes:before{content:"Speaker notes";display:block;margin-bottom:10px;opacity:.5}.reveal.show-notes{max-width:75%;overflow:visible}.reveal.show-notes .speaker-notes{display:block}@media screen and (min-width:1600px){.reveal .speaker-notes{font-size:20px}}@media screen and (max-width:1024px){.reveal.show-notes{border-left:0;max-width:none;max-height:70%;max-height:70vh;overflow:visible}.reveal.show-notes .speaker-notes{top:100%;left:0;width:100%;height:30vh;border:0}}@media screen and (max-width:600px){.reveal.show-notes{max-height:60%;max-height:60vh}.reveal.show-notes .speaker-notes{top:100%;height:40vh}.reveal .speaker-notes{font-size:14px}}.reveal .jump-to-slide{position:absolute;top:15px;left:15px;z-index:30;font-size:32px;-webkit-tap-highlight-color:transparent}.reveal .jump-to-slide-input{background:0 0;padding:8px;font-size:inherit;color:currentColor;border:0}.reveal .jump-to-slide-input::placeholder{color:currentColor;opacity:.5}.reveal.has-dark-background .jump-to-slide-input{color:#fff}.reveal.has-light-background .jump-to-slide-input{color:#222}.reveal .jump-to-slide-input:focus{outline:0}.zoomed .reveal *,.zoomed .reveal :after,.zoomed .reveal :before{backface-visibility:visible!important}.zoomed .reveal .controls,.zoomed .reveal .progress{opacity:0}.zoomed .reveal .roll span{background:0 0}.zoomed .reveal .roll span:after{visibility:hidden}.reveal-viewport.loading-scroll-mode{visibility:hidden}.reveal-viewport.reveal-scroll{margin:0 auto;overflow:auto;overflow-x:hidden;overflow-y:auto;z-index:1;--r-scrollbar-width:7px;--r-scrollbar-trigger-size:5px;--r-controls-spacing:8px}@media screen and (max-width:500px){.reveal-viewport.reveal-scroll{--r-scrollbar-width:3px;--r-scrollbar-trigger-size:3px}}.reveal-viewport.reveal-scroll .backgrounds,.reveal-viewport.reveal-scroll .controls,.reveal-viewport.reveal-scroll .playback,.reveal-viewport.reveal-scroll .progress,.reveal-viewport.reveal-scroll .slide-number,.reveal-viewport.reveal-scroll .speaker-notes{display:none!important}.reveal-viewport.reveal-scroll .overlay,.reveal-viewport.reveal-scroll .pause-overlay{position:fixed}.reveal-viewport.reveal-scroll .reveal{overflow:visible;touch-action:manipulation}.reveal-viewport.reveal-scroll .slides{position:static;pointer-events:initial;left:auto;top:auto;width:100%!important;margin:0;padding:0;overflow:visible;display:block;perspective:none;perspective-origin:50% 50%}.reveal-viewport.reveal-scroll .scroll-page{position:relative;width:100%;height:calc(var(--page-height) + var(--page-scroll-padding));z-index:1;overflow:visible}.reveal-viewport.reveal-scroll .scroll-page-sticky{position:sticky;height:var(--page-height);top:0}.reveal-viewport.reveal-scroll .scroll-page-content{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden}.reveal-viewport.reveal-scroll .scroll-page section{visibility:visible!important;display:block!important;position:absolute!important;width:var(--slide-width)!important;height:var(--slide-height)!important;top:50%!important;left:50%!important;opacity:1!important;transform:scale(var(--slide-scale)) translate(-50%,-50%)!important;transform-style:flat!important;transform-origin:0 0!important}.reveal-viewport.reveal-scroll .slide-background{display:block!important;position:absolute;top:0;left:0;width:100%;height:100%;z-index:auto!important;visibility:visible;opacity:1;touch-action:manipulation}.reveal-viewport.reveal-scroll[data-scrollbar=auto]::-webkit-scrollbar,.reveal-viewport.reveal-scroll[data-scrollbar=true]::-webkit-scrollbar{display:none}.reveal-viewport.reveal-scroll[data-scrollbar=auto],.reveal-viewport.reveal-scroll[data-scrollbar=true]{scrollbar-width:none}.reveal-viewport.has-dark-background,.reveal.has-dark-background{--r-overlay-element-bg-color:240,240,240;--r-overlay-element-fg-color:0,0,0}.reveal-viewport.has-light-background,.reveal.has-light-background{--r-overlay-element-bg-color:0,0,0;--r-overlay-element-fg-color:240,240,240}.reveal-viewport.reveal-scroll .scrollbar{position:sticky;top:50%;z-index:20;opacity:0;transition:all .3s ease}.reveal-viewport.reveal-scroll .scrollbar.visible,.reveal-viewport.reveal-scroll .scrollbar:hover{opacity:1}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-inner{position:absolute;width:var(--r-scrollbar-width);height:calc(var(--viewport-height) - var(--r-controls-spacing) * 2);right:var(--r-controls-spacing);top:0;transform:translateY(-50%);border-radius:var(--r-scrollbar-width);z-index:10}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-playhead{position:absolute;width:var(--r-scrollbar-width);height:var(--r-scrollbar-width);top:0;left:0;border-radius:var(--r-scrollbar-width);background-color:rgba(var(--r-overlay-element-bg-color),1);z-index:11;transition:background-color .2s ease}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide{position:absolute;width:100%;background-color:rgba(var(--r-overlay-element-bg-color),.2);box-shadow:0 0 0 1px rgba(var(--r-overlay-element-fg-color),.1);border-radius:var(--r-scrollbar-width);transition:background-color .2s ease}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide:after{content:"";position:absolute;width:200%;height:100%;top:0;left:-50%;background:rgba(0,0,0,0);z-index:-1}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active,.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide:hover{background-color:rgba(var(--r-overlay-element-bg-color),.4)}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-trigger{position:absolute;width:100%;transition:background-color .2s ease}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active.has-triggers{background-color:rgba(var(--r-overlay-element-bg-color),.4);z-index:10}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger:after{content:"";position:absolute;width:var(--r-scrollbar-trigger-size);height:var(--r-scrollbar-trigger-size);border-radius:20px;top:50%;left:50%;transform:translate(-50%,-50%);background-color:rgba(var(--r-overlay-element-bg-color),1);transition:transform .2s ease,opacity .2s ease;opacity:.4}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger.active:after,.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger.active~.scrollbar-trigger:after{opacity:1}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger~.scrollbar-trigger.active:after{transform:translate(calc(var(--r-scrollbar-width) * -2),0);background-color:rgba(var(--r-overlay-element-bg-color),1)}html.reveal-print *{-webkit-print-color-adjust:exact}html.reveal-print{width:100%;height:100%;overflow:visible}html.reveal-print body{margin:0 auto!important;border:0;padding:0;float:none!important;overflow:visible}html.reveal-print .nestedarrow,html.reveal-print .reveal .controls,html.reveal-print .reveal .playback,html.reveal-print .reveal .progress,html.reveal-print .reveal.overview,html.reveal-print .state-background{display:none!important}html.reveal-print .reveal pre code{overflow:hidden!important}html.reveal-print .reveal{width:auto!important;height:auto!important;overflow:hidden!important}html.reveal-print .reveal .slides{position:static;width:100%!important;height:auto!important;zoom:1!important;pointer-events:initial;left:auto;top:auto;margin:0!important;padding:0!important;overflow:visible;display:block;perspective:none;perspective-origin:50% 50%}html.reveal-print .reveal .slides .pdf-page{position:relative;overflow:hidden;z-index:1;page-break-after:always}html.reveal-print .reveal .slides .pdf-page:last-of-type{page-break-after:avoid}html.reveal-print .reveal .slides section{visibility:visible!important;display:block!important;position:absolute!important;margin:0!important;padding:0!important;box-sizing:border-box!important;min-height:1px;opacity:1!important;transform-style:flat!important;transform:none!important}html.reveal-print .reveal section.stack{position:relative!important;margin:0!important;padding:0!important;page-break-after:avoid!important;height:auto!important;min-height:auto!important}html.reveal-print .reveal img{box-shadow:none}html.reveal-print .reveal .backgrounds{display:none}html.reveal-print .reveal .slide-background{display:block!important;position:absolute;top:0;left:0;width:100%;height:100%;z-index:auto!important}html.reveal-print .reveal.show-notes{max-width:none;max-height:none}html.reveal-print .reveal .speaker-notes-pdf{display:block;width:100%;height:auto;max-height:none;top:auto;right:auto;bottom:auto;left:auto;z-index:100}html.reveal-print .reveal .speaker-notes-pdf[data-layout=separate-page]{position:relative;color:inherit;background-color:transparent;padding:20px;page-break-after:always;border:0}html.reveal-print .reveal .slide-number-pdf{display:block;position:absolute;font-size:14px;visibility:visible}html.reveal-print .aria-status{display:none}@media print{html:not(.print-pdf){overflow:visible;width:auto;height:auto}html:not(.print-pdf) body{margin:0;padding:0;overflow:visible}html:not(.print-pdf) .reveal{background:#fff;font-size:20pt}html:not(.print-pdf) .reveal .backgrounds,html:not(.print-pdf) .reveal .controls,html:not(.print-pdf) .reveal .progress,html:not(.print-pdf) .reveal .slide-number,html:not(.print-pdf) .reveal .state-background{display:none!important}html:not(.print-pdf) .reveal li,html:not(.print-pdf) .reveal p,html:not(.print-pdf) .reveal td{font-size:20pt!important;color:#000}html:not(.print-pdf) .reveal h1,html:not(.print-pdf) .reveal h2,html:not(.print-pdf) .reveal h3,html:not(.print-pdf) .reveal h4,html:not(.print-pdf) .reveal h5,html:not(.print-pdf) .reveal h6{color:#000!important;height:auto;line-height:normal;text-align:left;letter-spacing:normal}html:not(.print-pdf) .reveal h1{font-size:28pt!important}html:not(.print-pdf) .reveal h2{font-size:24pt!important}html:not(.print-pdf) .reveal h3{font-size:22pt!important}html:not(.print-pdf) .reveal h4{font-size:22pt!important;font-variant:small-caps}html:not(.print-pdf) .reveal h5{font-size:21pt!important}html:not(.print-pdf) .reveal h6{font-size:20pt!important;font-style:italic}html:not(.print-pdf) .reveal a:link,html:not(.print-pdf) .reveal a:visited{color:#000!important;font-weight:700;text-decoration:underline}html:not(.print-pdf) .reveal div,html:not(.print-pdf) .reveal ol,html:not(.print-pdf) .reveal p,html:not(.print-pdf) .reveal ul{visibility:visible;position:static;width:auto;height:auto;display:block;overflow:visible;margin:0;text-align:left!important}html:not(.print-pdf) .reveal pre,html:not(.print-pdf) .reveal table{margin-left:0;margin-right:0}html:not(.print-pdf) .reveal pre code{padding:20px}html:not(.print-pdf) .reveal blockquote{margin:20px 0}html:not(.print-pdf) .reveal .slides{position:static!important;width:auto!important;height:auto!important;left:0!important;top:0!important;margin-left:0!important;margin-top:0!important;padding:0!important;zoom:1!important;transform:none!important;overflow:visible!important;display:block!important;text-align:left!important;perspective:none;perspective-origin:50% 50%}html:not(.print-pdf) .reveal .slides section{visibility:visible!important;position:static!important;width:auto!important;height:auto!important;display:block!important;overflow:visible!important;left:0!important;top:0!important;margin-left:0!important;margin-top:0!important;padding:60px 20px!important;z-index:auto!important;opacity:1!important;page-break-after:always!important;transform-style:flat!important;transform:none!important;transition:none!important}html:not(.print-pdf) .reveal .slides section.stack{padding:0!important}html:not(.print-pdf) .reveal .slides section:last-of-type{page-break-after:avoid!important}html:not(.print-pdf) .reveal .slides section .fragment{opacity:1!important;visibility:visible!important;transform:none!important}html:not(.print-pdf) .reveal .r-fit-text{white-space:normal!important}html:not(.print-pdf) .reveal section img{display:block;margin:15px 0;background:#fff;border:1px solid #666;box-shadow:none}html:not(.print-pdf) .reveal section small{font-size:.8em}html:not(.print-pdf) .reveal .hljs{max-height:100%;white-space:pre-wrap;word-wrap:break-word;word-break:break-word;font-size:15pt}html:not(.print-pdf) .reveal .hljs .hljs-ln-numbers{white-space:nowrap}html:not(.print-pdf) .reveal .hljs td{font-size:inherit!important;color:inherit!important}}
+/* ---------- metropolis-like theme, 16:9, large type ---------- */
+:root {
+  --bg: #FAFAFA; --fg: #23373B; --muted: #6F7F84; --accent: #EB811B; --green: #14B03D;
+  --band: #23373B; --band-fg: #FAFAFA; --code-bg: #EEF1F2; --rule: #C9D1D4; --box: #FFF4EA;
+}
+html, body { background: var(--bg); color: var(--fg); margin: 0; }
+.reveal { font-family: "Fira Sans", "Helvetica Neue", Arial, sans-serif; font-weight: 300; font-size: 38px; line-height: 1.35; color: var(--fg); }
+.reveal .slides { text-align: left; }
+.reveal .slides section { padding: 0 90px 0 90px; box-sizing: border-box; height: 100%; }
+.reveal strong, .reveal b { font-weight: 500; }
+.reveal em { font-style: italic; }
+.reveal h1, .reveal h2, .reveal h3 { font-family: "Fira Sans", sans-serif; font-weight: 400; letter-spacing: -0.01em; text-transform: none; text-shadow: none; }
+.reveal h2 { font-size: 54px; line-height: 1.15; margin: 0 -90px 38px -90px; padding: 26px 90px 22px 90px; background: var(--band); color: var(--band-fg); }
+.reveal h3 { font-size: 40px; color: var(--fg); margin: 0 0 16px 0; }
+.reveal p { margin: 0 0 26px 0; }
+.reveal ul, .reveal ol { margin: 0 0 28px 0; padding-left: 1.1em; }
+.reveal li { margin: 0 0 10px 0; }
+.reveal li li { font-size: 0.92em; }
+.reveal a { color: var(--accent); }
+.reveal .muted { color: var(--muted); }
+.reveal .accent { color: var(--accent); }
+.reveal .small { font-size: 0.78em; }
+.reveal .progress { color: var(--accent); height: 6px; }
+.reveal .slide-number { font-family: "Fira Mono", monospace; font-size: 20px; color: var(--muted); background: transparent; right: 24px; bottom: 16px; }
+.reveal .controls { color: var(--accent); }
+
+/* title slide */
+.reveal section.title { background: var(--band); color: var(--band-fg); padding: 90px 110px; }
+.reveal section.title .eyebrow { font-family: "Fira Mono", monospace; font-size: 26px; color: var(--accent); letter-spacing: .06em; margin-bottom: 40px; }
+.reveal section.title h1 { font-size: 78px; font-weight: 300; color: var(--band-fg); margin: 0 0 14px 0; line-height: 1.1; }
+.reveal section.title .sub { font-size: 40px; font-weight: 300; color: #CFD8DB; margin-bottom: 70px; }
+.reveal section.title .meta { font-size: 26px; color: #9FB0B5; }
+.reveal section.title .rule { width: 120px; height: 5px; background: var(--accent); margin: 34px 0 34px 0; }
+
+/* callout box, like a metropolis alert block */
+.reveal .box { border-left: 8px solid var(--accent); background: var(--box); padding: 20px 28px; margin: 34px 0 0 0; font-weight: 400; font-size: 0.8em; }
+.reveal .box.small { font-size: 0.8em; }
+.reveal table.counts td:last-child { text-align: right; padding-right: 0; }
+.reveal .cols p { text-align: left; }
+.reveal mjx-container[display="true"] { margin: 6px 0 !important; }
+
+/* tables: horizontal rules only */
+.reveal table { border-collapse: collapse; margin: 0 0 28px 0; font-size: 0.86em; width: 100%; }
+.reveal table th { font-weight: 500; text-align: left; border-bottom: 3px solid var(--fg); padding: 10px 18px 12px 0; }
+.reveal table td { border-bottom: 1px solid var(--rule); padding: 11px 18px 11px 0; vertical-align: top; }
+.reveal table tr:last-child td { border-bottom: 0; }
+.reveal table td.s { font-family: "Fira Mono", monospace; font-size: 0.85em; color: var(--muted); white-space: nowrap; }
+
+/* code */
+.reveal code { font-family: "Fira Mono", "Menlo", monospace; font-size: 0.9em; }
+.reveal :not(pre) > code { background: var(--code-bg); color: #2A6F97; padding: 1px 9px 2px 9px; border-radius: 5px; white-space: nowrap; }
+.reveal .box :not(pre) > code, .reveal td :not(pre) > code { background: rgba(35, 55, 59, 0.07); }
+.reveal h2 code { background: transparent; color: inherit; padding: 0; }
+.reveal .stepper code, .reveal .anim code, .reveal .fold code { background: transparent; color: inherit; padding: 0; }
+.reveal pre { font-family: "Fira Mono", monospace; font-size: 32px; line-height: 1.55; width: 100%; box-sizing: border-box; margin: 8px 0 32px 0; box-shadow: none; overflow: visible; }
+.reveal pre code { display: block; font-size: 1em; line-height: 1.6; background: var(--code-bg); color: var(--fg); padding: 24px 34px; border-radius: 4px; max-height: none; overflow-x: auto; overflow-y: visible; white-space: pre; }
+.reveal pre code .cm { color: var(--muted); font-style: italic; }
+.reveal pre code .kw { color: #2A6F97; }
+.reveal pre code .cons { color: var(--accent); }
+/* highlight.js mapping */
+.hljs-keyword, .hljs-built_in { color: #2A6F97; }
+.hljs-type { color: var(--accent); }
+.hljs-string { color: var(--green); }
+.hljs-comment { color: var(--muted); font-style: italic; }
+.hljs-number, .hljs-literal { color: #7A3E9D; }
+
+/* two columns */
+.reveal .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 50px; }
+.reveal .cols > * { min-width: 0; }
+
+/* speaker notes are hidden in the deck */
+.reveal aside.notes { display: none; }
+
+/* print */
+@media print { .reveal h2 { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+
+/* part dividers: the title theme, one size down */
+.reveal section.part { background: var(--band); color: var(--band-fg); padding: 120px 110px; }
+.reveal section.part .eyebrow { font-family: "Fira Mono", monospace; font-size: 26px; color: var(--accent); letter-spacing: .06em; margin-bottom: 36px; }
+.reveal section.part h1 { font-size: 72px; font-weight: 300; color: var(--band-fg); margin: 0 0 16px 0; line-height: 1.1; }
+.reveal section.part .sub { font-size: 38px; font-weight: 300; color: #CFD8DB; }
+/* live demo */
+.reveal button.run { font-family: "Fira Sans", sans-serif; font-size: 26px; font-weight: 500; color: #fff; background: var(--accent); border: 0; border-radius: 4px; padding: 6px 22px; cursor: pointer; }
+.reveal button.run:hover { filter: brightness(1.08); }
+.reveal pre.out { font-size: 30px; line-height: 1.5; background: #1E2A2E; color: #F2B04C; padding: 18px 28px; border-radius: 4px; margin: 0 0 22px 0; min-height: 1.6em; white-space: pre; box-sizing: border-box; max-width: 100%; overflow-x: auto; }
+.reveal .cols h3 { font-size: 32px; color: var(--muted); margin: 0 0 8px 0; }
+.reveal .cols pre { font-size: 23px; margin: 6px 0 18px 0; }
+.reveal .cols pre code { padding: 18px 24px; }
+.reveal .cols p { font-size: 0.88em; margin-bottom: 12px; }
+.reveal .cols li { font-size: 0.88em; }
+.reveal script.src { display: none; }
+
+.reveal .cols pre.out { font-size: 26px; }
+.reveal .slides section .fragment.visible { opacity: 1; visibility: inherit; }
+/* a current-visible fragment (the carousel panels) shows only while it is the current one */
+.reveal .slides section .fragment.current-visible.visible:not(.current-fragment) { opacity: 0; visibility: hidden; }
+/* footline (current part) and the T overlay */
+.reveal .toc { position: absolute; inset: 0; background: rgba(35, 55, 59, 0.94); color: var(--band-fg); z-index: 40; display: flex; align-items: center; justify-content: center; }
+.reveal .toc[hidden] { display: none; }
+.reveal .toc-inner { min-width: 700px; }
+.reveal .toc-title { font-size: 26px; color: var(--accent); font-family: "Fira Mono", monospace; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 26px; }
+.reveal .toc-title .muted { color: #9FB0B5; text-transform: none; letter-spacing: 0; }
+.reveal .toc ol { list-style: none; padding: 0; margin: 0; counter-reset: part; }
+.reveal .toc li { font-size: 34px; padding: 12px 18px; border-radius: 4px; cursor: pointer; counter-increment: part; }
+.reveal .toc li::before { content: counter(part) "  "; font-family: "Fira Mono", monospace; color: var(--accent); font-size: 26px; }
+.reveal .toc li:hover { background: rgba(255,255,255,0.08); }
+.reveal .toc li .muted { color: #9FB0B5; font-size: 26px; margin-left: 12px; }
+/* the one focus of a slide */
+.reveal .hl { color: var(--accent); font-weight: 500; font-style: normal; }
+.reveal .lang { color: #2A6F97; font-weight: 500; }
+.reveal h2 .hl { color: var(--accent); }
+/* footnote pinned above the footline */
+.reveal .fn { position: absolute; left: 90px; right: 90px; bottom: 72px; margin: 0; font-size: 28px; line-height: 1.35; color: var(--fg); }
+.reveal sup { font-size: 0.8em; font-weight: 500; color: var(--accent); }
+.reveal table.names td:first-child { width: 56%; }
+/* transcripts (compiler output shown verbatim) and the kinds × operations matrix */
+.reveal pre.out.tr { font-size: 24px; line-height: 1.45; margin: 0; padding: 12px 24px; }
+.reveal pre.mid { font-size: 26px; }
+.reveal table.defaults td:first-child, .reveal table.defaults th:first-child { width: 28%; }
+.reveal table.defaults td:nth-child(2), .reveal table.defaults th:nth-child(2) { width: 22%; }
+.reveal table.dual td:first-child, .reveal table.dual th:first-child { width: 30%; }
+.reveal table td pre.out.tr { margin: 4px 0; font-size: 22px; }
+.reveal table.matrix th, .reveal table.matrix td { text-align: center; }
+.reveal table.matrix th:first-child, .reveal table.matrix td:first-child { text-align: left; }
+.reveal table.matrix .ext { color: var(--muted); font-weight: 500; }
+.reveal table.matrix { margin-bottom: 14px; }
+/* carousel: one language at a time */
+.reveal .car-tabs { display: flex; gap: 8px; margin: 0 0 14px 0; }
+.reveal .car-tabs span { font-size: 26px; font-weight: 500; color: var(--muted); padding: 4px 18px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; }
+.reveal .car-tabs span.on { color: var(--accent); border-color: var(--accent); }
+.reveal .car-panels { position: relative; min-height: 300px; }
+.reveal .car-panel { position: absolute; inset: 0; }
+.reveal .car-panel pre { margin: 0 0 14px 0; }
+.reveal .car-panel p { font-size: 0.88em; margin: 0; }
+.reveal table.ways td { border-bottom: 0; padding-top: 6px; padding-bottom: 10px; }
+.reveal table.ways td.s { font-weight: 300; width: 14%; }
+.reveal table.ways td.s.hl { color: var(--accent); font-weight: 400; }
+/* matrix animation */
+.reveal table.matrix td.cell { color: transparent; position: relative; transition: background .3s, color .3s; border-radius: 4px; }
+.reveal table.matrix td.cell::after { content: '–'; color: var(--rule); position: absolute; left: 0; right: 18px; text-align: center; }
+.reveal table.matrix td.cell.on::after { content: none; }
+.reveal table.matrix td.cell.on.w1 { color: #2A6F97; background: #E3EEF5; }
+.reveal table.matrix td.cell.on.w2 { color: var(--accent); background: var(--box); }
+.reveal table.matrix th.hd, .reveal table.matrix td.rl { transition: background .3s, color .3s; border-radius: 4px; }
+.reveal table.matrix th.hd.on.w1 { color: #2A6F97; background: #E3EEF5; }
+.reveal table.matrix td.rl.on.w2 { color: var(--accent); background: var(--box); }
+.reveal table.matrix td.cell.on, .reveal .w1, .reveal .w2 { font-weight: 500; }
+.reveal .w1 { color: #2A6F97; }
+.reveal .w2 { color: var(--accent); }
+/* text styles offered by the in-browser editor (deck/liveedit.json) */
+.reveal .c-blue { color: #2A6F97; }
+.reveal .c-green { color: var(--green); }
+.reveal .sz-s { font-size: 0.85em; }
+.reveal .sz-l { font-size: 1.15em; }
+
+/* ---------- session 4 additions ---------- */
+/* the spine table: who decides the next step */
+.reveal table.spine td.s { width: 12%; }
+.reveal table.spine tr.now td { color: var(--accent); font-weight: 500; background: var(--box); }
+.reveal table.spine tr.dim td { color: var(--muted); }
+/* the roadmap: three columns */
+.reveal .cols3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+.reveal .cols3 > * { min-width: 0; }
+.reveal .cols3 h3 { font-size: 34px; color: var(--accent); margin-bottom: 10px; }
+.reveal .cols3 p, .reveal .cols3 li { font-size: 0.82em; }
+.reveal .cols3 { gap: 22px; }
+.reveal .cols3 pre { font-size: 24px; margin: 6px 0 14px 0; }
+.reveal .cols3 pre code { padding: 14px 14px; }
+.reveal .cols pre.out.tr { font-size: 21px; }
+/* live / recorded labels on output boxes */
+.reveal pre.out { position: relative; }
+.reveal pre.out[data-label]::after { content: attr(data-label); position: absolute; top: 6px; right: 12px; font-family: "Fira Sans", sans-serif; font-size: 20px; color: #9FB0B5; }
+.reveal pre.out.rec::after { content: 'recorded'; position: absolute; top: 6px; right: 12px; font-family: "Fira Sans", sans-serif; font-size: 20px; color: #9FB0B5; }
+/* the λ stepper */
+.reveal .stepper { margin: 0 0 14px 0; }
+.reveal .stepper .st-term { font-family: "Fira Mono", monospace; font-size: 36px; background: var(--code-bg); padding: 16px 26px; border-radius: 4px; min-height: 1.6em; overflow-x: auto; white-space: nowrap; }
+.reveal .stepper .st-n { color: var(--muted); font-size: 24px; margin-right: 10px; }
+.reveal .stepper .st-trace { font-family: "Fira Mono", monospace; font-size: 27px; line-height: 1.45; color: var(--fg); margin: 8px 0 8px 0; min-height: 6.2em; white-space: pre; overflow-x: auto; }
+.reveal .stepper .st-ctl { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; font-size: 24px; }
+.reveal .stepper .st-ctl label { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
+.reveal .stepper .st-ctl input { width: 22px; height: 22px; }
+.reveal .stepper button.run { font-size: 22px; padding: 4px 16px; }
+.reveal .cols .stepper .st-term { font-size: 28px; padding: 12px 18px; }
+.reveal .cols .stepper .st-trace { font-size: 22px; min-height: 5.6em; }
+.reveal .cols .stepper .st-ctl { font-size: 23px; gap: 14px; }
+.reveal .cols .stepper .st-ctl input { width: 20px; height: 20px; }
+.reveal .cols .stepper button.run { font-size: 22px; padding: 3px 12px; }
+.reveal .stepper.narrow .st-trace { min-height: 3em; }
+/* animations */
+.reveal .anim .ct-cols, .reveal .anim .ts-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; min-height: 330px; align-items: start; }
+.reveal .anim .ct-h { font-size: 30px; color: var(--fg); font-weight: 500; margin-bottom: 10px; }
+.reveal .anim .frame { font-family: "Fira Mono", monospace; font-size: 29px; color: var(--fg); background: var(--code-bg); border-left: 8px solid var(--rule); padding: 8px 16px; margin: 0 0 6px 0; }
+.reveal .anim .frame.top { border-left-color: var(--accent); }
+.reveal .anim .frame.empty { color: var(--fg); font-style: italic; border-left-color: transparent; background: transparent; }
+.reveal .anim .frame .s { color: #2A6F97; margin-right: 14px; }
+.reveal .anim .ct-term code { font-size: 32px; display: block; background: var(--code-bg); padding: 16px 22px; border-radius: 4px; white-space: nowrap; overflow-x: auto; }
+.reveal .anim .ct-term b, .reveal .fold .fd-expr b { color: var(--accent); font-weight: 500; }
+.reveal .an-ctl { display: flex; gap: 16px; align-items: center; font-size: 26px; color: var(--muted); margin-top: 12px; }
+.reveal .an-what, .reveal .fd-what { color: var(--accent); font-weight: 500; font-size: 28px; }
+.reveal .anim button.run, .reveal .fold button.run { font-size: 22px; padding: 4px 16px; }
+.reveal .ts-svg { width: 100%; height: auto; }
+.reveal .ts-svg .edge { stroke: var(--rule); stroke-width: 3; }
+.reveal .ts-svg .node circle { fill: #fff; stroke: var(--fg); stroke-width: 3; }
+.reveal .ts-svg .node text { font-family: "Fira Mono", monospace; font-size: 20px; text-anchor: middle; fill: var(--fg); }
+.reveal .ts-svg .node.onstack circle { stroke: #2A6F97; stroke-width: 5; }
+.reveal .ts-svg .node.done circle { fill: var(--code-bg); stroke: var(--rule); }
+.reveal .ts-svg .node.done text { fill: var(--muted); }
+.reveal .ts-svg .node.cur circle { fill: var(--box); stroke: var(--accent); stroke-width: 5; }
+.reveal .ts-svg .node.cur text { fill: var(--accent); }
+.reveal .ts-count { font-family: "Fira Mono", monospace; font-size: 30px; margin-top: 14px; }
+/* fold animation */
+.reveal .fold { margin: 0 0 12px 0; }
+.reveal .fold .fd-list { font-family: "Fira Mono", monospace; font-size: 34px; margin-bottom: 10px; }
+.reveal .fold .fd-list .used { color: var(--rule); }
+.reveal .fold .fd-expr { font-family: "Fira Mono", monospace; font-size: 34px; background: var(--code-bg); padding: 14px 24px; border-radius: 4px; min-height: 1.6em; white-space: nowrap; overflow-x: auto; }
+.reveal .fold .fd-side { margin: 10px 0 6px 0; min-height: 2.6em; }
+.reveal .fold .fd-side .frame { font-size: 22px; padding: 5px 12px; margin-bottom: 4px; }
+.reveal .fold .fd-hist { font-family: "Fira Mono", monospace; font-size: 24px; color: var(--fg); }
+.reveal .fold .fd-ctl { display: flex; gap: 16px; align-items: center; font-size: 26px; color: var(--muted); }
+.reveal .cols .fold .fd-list, .reveal .cols .fold .fd-expr { font-size: 25px; }
+.reveal .cols .fold .fd-expr { padding: 10px 18px; }
+.reveal .cols .fold .fd-side, .reveal .cols .fold .fd-ctl { font-size: 22px; }
+/* the today slide and small tables */
+.reveal table.small { font-size: 0.78em; }
+.reveal pre.tight { margin-bottom: 10px; }
+.reveal p.tight { margin-bottom: 8px; }
+.reveal table.strat td:first-child { width: 22%; font-weight: 500; }
+/* a quotation, and a list with air between the items */
+.reveal blockquote.quote { border-left: 8px solid var(--rule); background: transparent; box-shadow: none; width: auto; margin: 4px 0 24px 0; padding: 8px 28px; font-style: italic; font-size: 0.92em; line-height: 1.4; }
+.reveal ul.spaced li { margin-bottom: 18px; }
+.reveal table.answers { font-size: 0.8em; }
+.reveal table.answers td:first-child, .reveal table.answers th:first-child { width: 38%; }
+.reveal table.answers td:nth-child(2), .reveal table.answers th:nth-child(2) { width: 34%; }
+.reveal table.answers td:last-child, .reveal table.answers th:last-child { width: 28%; color: var(--accent); font-weight: 500; padding-right: 0; }
+.reveal table.answers td:last-child .muted { color: var(--muted); font-weight: 300; }
+.reveal table.contrast td:first-child { width: 24%; color: var(--fg); font-weight: 300; }
+.reveal table.contrast td:nth-child(2) { width: 38%; }
+.reveal table.contrast td:last-child { width: 38%; color: var(--fg); font-weight: 300; }
+.reveal table.contrast { margin-bottom: 10px; }
+.reveal table.two td:last-child, .reveal table.contrast td { color: var(--fg); font-weight: 300; }
+.reveal table.two td:last-child { color: var(--accent); font-weight: 500; width: 16%; }
+.reveal table.two td:first-child { width: 84%; }
+.reveal table.contrast tr.ours td { background: var(--box); }
+.reveal table.contrast tr.ours td:first-child b { color: var(--accent); }
+.reveal table.two { margin-bottom: 12px; }
+.reveal table.contrast td:first-child { width: 22%; }
+.reveal table.contrast td:nth-child(2), .reveal table.contrast td:last-child { width: 39%; }
+.reveal .cols pre.run { font-size: 21px; margin: 14px 0 0 0; }
+.reveal .cols pre.run code { padding: 12px 18px; line-height: 1.5; }
+/* the Turing machine */
+.reveal .turing { margin: 6px 0 0 0; }
+.reveal .tm-svg { width: 100%; max-width: 680px; height: auto; display: block; margin: 0 auto; }
+.reveal .turing .an-ctl { justify-content: center; }
+.reveal .tm-svg .cell { fill: #fff; stroke: var(--fg); stroke-width: 3; }
+.reveal .tm-svg .cell.head { fill: var(--box); stroke: var(--accent); stroke-width: 5; }
+.reveal .tm-svg .sym { font-family: "Fira Mono", monospace; font-size: 40px; text-anchor: middle; fill: var(--fg); }
+.reveal .tm-svg .sym.blank { fill: var(--rule); }
+.reveal .tm-svg .marker { fill: var(--accent); }
+.reveal .tm-svg .state { font-family: "Fira Mono", monospace; font-size: 26px; text-anchor: middle; fill: var(--accent); font-weight: 500; }
+.reveal table.rules tr.on td { background: var(--box); color: var(--accent); font-weight: 500; }
+.reveal table.rules tr.next td { border-bottom-color: var(--accent); }
+.reveal .turing .an-ctl { margin-top: 4px; }
+/* the spine's topic column; the today slide */
+.reveal table.spine td.t, .reveal table.spine th.t { width: 22%; color: var(--muted); font-weight: 300; }
+.reveal table.spine tr.now td.t { color: var(--accent); font-weight: 500; }
+.reveal .today > div { background: var(--code-bg); border-radius: 6px; padding: 18px 28px 6px 28px; }
+.reveal .today h3, .reveal .today-h { font-size: 34px; color: var(--accent); margin: 0 0 10px 0; }
+.reveal .today p { font-size: 0.85em; }
+.reveal .today-h { margin-top: 14px; }
+.reveal ul.row4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; list-style: none; padding: 0; margin: 0; }
+.reveal ul.row4 li { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 150px; font-size: 0.72em; line-height: 1.3; background: var(--code-bg); border: 3px solid var(--rule); border-radius: 6px; padding: 14px 20px; margin: 0; }
+/* a row of named tiles */
+.reveal ul.tiles { display: flex; justify-content: center; align-items: center; gap: 0; list-style: none; padding: 0; margin: 6px 0 0 0; }
+.reveal ul.tiles li { width: 150px; height: 150px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 0.66em; font-weight: 400; text-align: center; background: var(--code-bg); border: 3px solid var(--rule); border-radius: 8px; padding: 8px; margin: 0; line-height: 1.2; color: var(--muted); }
+.reveal ul.tiles li + li::before { content: '→'; position: absolute; margin-left: -42px; color: var(--rule); font-size: 30px; }
+.reveal ul.tiles li + li { margin-left: 52px; }
+.reveal ul.tiles li.now { color: var(--fg); font-weight: 500; }
+.reveal .tiles-cap { font-size: 0.7em; color: var(--muted); margin: 22px 0 8px 0; text-align: center; }
+.reveal .anim .ct-ctl { display: block; }
+.reveal .anim .ct-ctl .an-what { margin-top: 10px; }
+.reveal ul.obs li { font-size: 0.86em; margin-bottom: 8px; }
+.reveal ul.obs pre.ex { font-size: 22px; margin: 8px 0 4px 0; }
+.reveal ul.obs pre.ex code { padding: 12px 20px; line-height: 1.5; }
+.reveal .car-panels.obs { min-height: 250px; margin-top: 10px; }
+.reveal .car-panels.obs p { font-size: 1em; margin-bottom: 14px; }
+.reveal .car-panels.obs pre.ex { font-size: 24px; margin: 0; }
+.reveal .car-panels.obs pre.ex code { padding: 14px 22px; }
+/* the big fold picture */
+.reveal .foldviz .fv-svg { width: 100%; max-width: 1060px; height: auto; display: block; margin: 0 auto; }
+.reveal .fv-svg .fv-title { font-family: "Fira Mono", monospace; font-size: 34px; text-anchor: middle; fill: var(--fg); }
+.reveal .fv-svg .fv-expr { font-family: "Fira Mono", monospace; font-size: 30px; text-anchor: middle; fill: var(--fg); }
+.reveal .fv-svg .fv-el rect { fill: #fff; stroke: var(--fg); stroke-width: 3; }
+.reveal .fv-svg .fv-el text { font-family: "Fira Mono", monospace; font-size: 40px; text-anchor: middle; fill: var(--fg); }
+.reveal .fv-svg .fv-el.on rect { fill: var(--code-bg); stroke: var(--rule); }
+.reveal .fv-svg .fv-el.on text { fill: var(--muted); }
+.reveal .fv-svg .fv-f { opacity: 0.18; transition: opacity .5s; }
+.reveal .fv-svg .fv-f circle { fill: #fff; stroke: #2A6F97; stroke-width: 4; }
+.reveal .fv-svg .fv-f text { font-family: "Fira Mono", monospace; font-size: 42px; font-style: italic; text-anchor: middle; fill: #2A6F97; }
+.reveal .fv-svg .fv-f.on { opacity: 1; }
+.reveal .fv-svg .fv-f.pending circle { stroke: var(--accent); stroke-dasharray: 10 8; }
+.reveal .fv-svg .fv-f.pending text { fill: var(--accent); }
+.reveal .fv-svg .fv-v { opacity: 0; transition: opacity .5s; }
+.reveal .fv-svg .fv-v.on { opacity: 1; }
+.reveal .fv-svg .fv-v rect { fill: var(--box); stroke: var(--accent); stroke-width: 4; }
+.reveal .fv-svg .fv-v text { font-family: "Fira Mono", monospace; font-size: 40px; font-weight: 500; text-anchor: middle; fill: var(--accent); }
+.reveal .fv-svg .fv-arr { stroke: var(--fg); stroke-width: 4; fill: none; opacity: 0; transition: stroke-dashoffset .7s ease-out, opacity .2s; }
+.reveal .fv-svg .fv-arr.on { opacity: 1; stroke-dashoffset: 0 !important; }
+.reveal .fv-svg .fv-head { fill: var(--fg); }
+.reveal .fv-ctl { display: grid; grid-template-columns: auto 1fr auto; gap: 30px; align-items: center; font-size: 24px; }
+.reveal .fv-sw span { cursor: pointer; padding: 4px 14px; border-radius: 4px; border: 2px solid var(--rule); margin-right: 6px; color: var(--fg); font-family: "Fira Mono", monospace; font-size: 24px; }
+.reveal .fv-sw span.on { color: var(--accent); border-color: var(--accent); }
+.reveal .fv-what { text-align: right; }
+/* the fold tree picture */
+.reveal .fv-svg .fv-n circle { fill: #fff; stroke: var(--fg); stroke-width: 3; transition: fill .4s, stroke .4s; }
+.reveal .fv-svg .fv-n text { font-family: "Fira Mono", monospace; font-size: 38px; text-anchor: middle; fill: var(--fg); transition: fill .4s, opacity .4s; }
+.reveal .fv-svg .fv-n .fv-val { font-size: 26px; font-weight: 500; text-anchor: start; fill: #2A6F97; }
+.reveal .fv-svg .fv-n.cons.on circle { fill: var(--code-bg); stroke: var(--rule); }
+.reveal .fv-svg .fv-n.cons.on text { fill: var(--rule); }
+.reveal .fv-svg .fv-n.leaf.el.on text { fill: var(--rule); }
+.reveal .fv-svg .fv-n.nil.on text { fill: var(--rule); }
+.reveal .fv-svg .fv-n.fn, .reveal .fv-svg .fv-n.zed, .reveal .fv-svg .fv-e[data-id^="r"], .reveal .fv-svg .fv-n.leaf[data-id^="y"] { opacity: 0; transition: opacity .4s; }
+.reveal .fv-svg .fv-n.fn.on, .reveal .fv-svg .fv-n.zed.on, .reveal .fv-svg .fv-e.on, .reveal .fv-svg .fv-n.leaf[data-id^="y"].on { opacity: 1; }
+.reveal .fv-svg .fv-n.fn circle { stroke: var(--accent); stroke-width: 4; }
+.reveal .fv-svg .fv-n.fn text:first-of-type { fill: var(--accent); font-style: italic; }
+.reveal .fv-svg .fv-n.fn.known circle { fill: var(--box); }
+.reveal .fv-svg .fv-n.zed text { fill: var(--accent); font-size: 30px; }
+.reveal .fv-svg .fv-n.leaf[data-id^="y"] text { fill: var(--fg); }
+.reveal .fv-svg .fv-e { stroke: var(--fg); stroke-width: 3; }
+.reveal .fv-svg .fv-e[data-id^="l"] { opacity: 1; }
+.reveal .fv-svg .fv-big { stroke: var(--fg); stroke-width: 4; }
+/* the language's name in the corner of a code box */
+.reveal pre { position: relative; }
+.reveal pre[data-lang]::after { content: attr(data-lang); position: absolute; top: 4px; right: 12px; font-family: "Fira Sans", sans-serif; font-variant: small-caps; font-weight: 400; font-size: 20px; letter-spacing: .04em; color: #9FB0B5; pointer-events: none; }
+.reveal table.concl { font-size: 0.7em; margin-bottom: 14px; }
+.reveal table.concl td:nth-child(2), .reveal table.concl th:nth-child(2) { width: 30%; font-weight: 400; }
+.reveal table.concl td.s { width: 5%; color: var(--accent); font-weight: 500; }
+.reveal ul.tiles li.now { border-color: var(--accent); background: var(--box); }
+.reveal section.part .sub2 { font-size: 26px; color: #9FB0B5; }
+.reveal ol.qs4 { padding-left: 1.3em; }
+.reveal ol.qs4 li { font-size: 0.86em; margin-bottom: 10px; }
+.reveal ol.qs4 li::marker { color: var(--accent); font-weight: 500; }
+.reveal ol.sites { margin: 18px 0 0 0; padding-left: 1.4em; }
+.reveal ol.sites li { font-size: 0.82em; margin-bottom: 8px; }
+.reveal ol.sites li::marker { color: var(--accent); font-weight: 500; }
+.reveal .cols > .big p, .reveal .cols > .big li { font-size: 1em; }
+.reveal .cols .stepper.big .st-term { font-size: 30px; }
+.reveal .cols .stepper.big .st-trace { font-size: 21px; }
+.reveal .cols .stepper.big .st-ctl { font-size: 23px; }
+.reveal pre.lines { font-size: 23px; margin: 0 0 8px 0; }
+.reveal pre.lines code { padding: 12px 20px; line-height: 1.5; }
+.reveal .cols .anim .ts-cols { gap: 20px; min-height: 0; }
+.reveal .cols .anim .frame { font-size: 24px; padding: 6px 12px; }
+.reveal .cols .anim .ct-h { font-size: 26px; }
+.reveal .cols .ts-count { font-size: 26px; }
+.reveal .cols .an-ctl { font-size: 22px; gap: 10px; }
+.reveal .cols .an-what { font-size: 24px; }
+/* code with a highlighted current line */
+.reveal pre.code-lines { font-size: 21px; margin: 0 0 4px 0; }
+.reveal pre.code-lines code { padding: 8px 20px; line-height: 1.45; }
+.reveal pre.code-lines [data-line] { display: inline-block; width: 100%; border-radius: 3px; transition: background .25s; }
+.reveal pre.code-lines [data-line].on { background: var(--box); box-shadow: -8px 0 0 var(--accent); }
+.reveal .treestack .ts-cols { min-height: 0; grid-template-columns: 380px minmax(0, 1fr); gap: 50px; align-items: start; }
+.reveal .treestack .ts-svg { max-width: 380px; }
+.reveal table.conv { margin: 4px 0 8px 0; }
+.reveal table.conv td { padding-top: 7px; padding-bottom: 7px; }
+.reveal table.conv td.s { font-size: 0.95em; color: var(--fg); }
+.reveal table.conv td:first-child { width: 48%; }
+.reveal p.aside { font-size: 0.86em; color: var(--fg); }
+/* captions and notes in prose are never grey */
+.reveal p.muted, .reveal p.small.muted, .reveal .tiles-cap { color: var(--fg); }
+.reveal .cols.rules mjx-container[display="true"] { margin: 22px 0 !important; }
+.reveal .cols.rules h3 { margin-bottom: 18px; }
+.reveal .cols.rules > div { display: flex; flex-direction: column; }
+.reveal .cols.rules p { margin-top: auto; padding-top: 14px; }
+/* slide 6: buttons under the term, the trace below them */
+.reveal .stepper.big { display: flex; flex-direction: column; }
+.reveal .stepper.big .st-term { order: 1; }
+.reveal .stepper.big .st-ctl { order: 2; margin: 10px 0 6px 0; }
+.reveal .stepper.big .st-trace { order: 3; min-height: 3em; }
+/* the Turing slide and the conclusion, after the wider spacing */
+.reveal .tm-svg { max-width: 560px !important; }
+.reveal .turing .an-ctl { margin-top: 0; }
+.reveal table.concl { font-size: 0.66em; }
+.reveal table.concl td { padding-top: 8px; padding-bottom: 8px; }
+.reveal .rules .rule { position: relative; }
+.reveal .rules .rn { position: absolute; right: 0; top: 50%; transform: translateY(-50%); font-variant: small-caps; font-size: 26px; letter-spacing: .04em; color: var(--fg); }
+.reveal .cols.rules mjx-container[display="true"] { margin: 18px 0 !important; text-align: left !important; }
+.reveal .cols.rules { gap: 110px; }
+.reveal .cols.rules .rn { right: 8px; }
+/* ---------- session 5: the rope, drawn ---------- */
+.reveal .ropeviz { margin: 0; }
+.reveal .rv-svg { width: 100%; height: auto; display: block; }
+.reveal .rv-svg .rv-e { stroke: var(--fg); stroke-width: 3; }
+.reveal .rv-svg .rv-n circle, .reveal .rv-svg .rv-n rect { fill: #fff; stroke: var(--fg); stroke-width: 3; }
+.reveal .rv-svg .rv-n text { font-family: "Fira Mono", monospace; text-anchor: middle; fill: var(--fg); }
+.reveal .rv-svg .rv-cat text { font-size: 22px; }
+.reveal .rv-svg .rv-leaf text { font-size: 34px; }
+.reveal .rv-svg .rv-n text.rv-val { font-size: 28px; fill: #2A6F97; font-weight: 500; }
+.reveal .rv-svg .rv-cat text.rv-val { text-anchor: start; }
+.reveal .rv-svg .rv-n.done rect { fill: var(--code-bg); }
+.reveal .rv-svg .rv-n.cur rect, .reveal .rv-svg .rv-n.cur circle { fill: var(--box); stroke: var(--accent); stroke-width: 6; }
+.reveal .rv-svg .rv-n.hit rect { fill: var(--accent); stroke: var(--accent); }
+.reveal .rv-svg .rv-n.hit text { fill: #fff; }
+.reveal .rv-svg .rv-n.skipped rect { stroke-dasharray: 8 7; }
+.reveal .rv-svg .rv-n.known rect, .reveal .rv-svg .rv-n.known circle { stroke: #2A6F97; stroke-width: 5; }
+.reveal .rv-svg .rv-n.bad rect { fill: var(--accent); stroke: var(--accent); }
+.reveal .rv-svg .rv-n.bad text { fill: #fff; }
+.reveal .rv-svg .rv-n.new circle, .reveal .rv-svg .rv-n.new rect { fill: var(--box); stroke: var(--accent); stroke-width: 6; }
+.reveal .rv-svg .rv-n.new text { fill: var(--accent); font-weight: 500; }
+.reveal .rv-svg .rv-n.shared circle, .reveal .rv-svg .rv-n.shared rect { fill: #E3EEF5; stroke: #2A6F97; }
+.reveal .rv-svg .rv-n.out circle, .reveal .rv-svg .rv-n.out rect { stroke-dasharray: 8 7; }
+.reveal .rv-svg .rv-e.out { stroke-dasharray: 8 7; }
+.reveal .rv-svg .rv-f rect { fill: #fff; stroke: var(--fg); stroke-width: 3; }
+.reveal .rv-svg .rv-f text { font-family: "Fira Mono", monospace; font-size: 30px; text-anchor: middle; fill: var(--fg); }
+.reveal .rv-svg .rv-f.done rect { fill: var(--code-bg); }
+.reveal .rv-svg .rv-f.cur rect { fill: var(--box); stroke: var(--accent); stroke-width: 6; }
+.reveal .rv-svg .rv-f.bad rect { fill: var(--accent); stroke: var(--accent); }
+.reveal .rv-svg .rv-f.bad text { fill: #fff; }
+.reveal .ropeviz .rv-ctl { color: var(--fg); justify-content: space-between; margin-top: 6px; }
+.reveal .ropeviz .rv-count { font-size: 27px; color: var(--fg); }
+.reveal .ropeviz .rv-what { margin-top: 8px; min-height: 1.4em; }
+/* a value drawn as a box of named parts: a closure, an object */
+.reveal .vbox { border: 3px solid var(--fg); border-radius: 6px; background: #fff; margin: 0 0 18px 0; font-size: 28px; }
+.reveal .vbox .vb-h { font-weight: 500; padding: 8px 18px; border-bottom: 3px solid var(--fg); background: var(--code-bg); }
+.reveal .vbox .vb-r { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 0; border-bottom: 1px solid var(--rule); }
+.reveal .vbox .vb-r:last-child { border-bottom: 0; }
+.reveal .vbox .vb-r > span { padding: 8px 18px; }
+.reveal .vbox .vb-r > span:first-child { border-right: 1px solid var(--rule); }
+.reveal .vbox code { font-size: 0.92em; }
+/* variables as cells, functions pointing at them */
+.reveal .cells { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 50px; margin: 0 0 8px 0; }
+.reveal .cells svg { width: 100%; height: auto; display: block; }
+.reveal .cells .cl-cap { font-size: 28px; margin: 0 0 6px 0; }
+.reveal .cells svg rect.cell { fill: #fff; stroke: var(--fg); stroke-width: 3; }
+.reveal .cells svg rect.fnbox { fill: var(--code-bg); stroke: var(--fg); stroke-width: 3; }
+.reveal .cells svg text { font-family: "Fira Mono", monospace; font-size: 27px; fill: var(--fg); text-anchor: middle; }
+.reveal .cells svg line { stroke: var(--accent); stroke-width: 4; }
+.reveal .cells svg path.head { fill: var(--accent); }
+/* the question slides: the question, then the answer in its place */
+.reveal p.ask { font-size: 1.05em; font-weight: 400; border-left: 8px solid #2A6F97; background: #E3EEF5; padding: 16px 28px; margin: 0 0 22px 0; }
+.reveal .cols p.ask { font-size: 0.92em; }
+.reveal table.today3 td.s { width: 9%; }
+.reveal table.today3 td:nth-child(2) { width: 47%; font-weight: 500; }
+.reveal table.who td.s { width: 20%; }
+.reveal table.who td { font-size: 0.95em; }
+.reveal table.meijer th, .reveal table.meijer td { width: 37%; }
+.reveal table.meijer th:first-child, .reveal table.meijer td:first-child { width: 26%; }
+.reveal table.meijer td.empty { background: repeating-linear-gradient(135deg, transparent 0 14px, var(--code-bg) 14px 28px); }
+.reveal .cols pre.small, .reveal pre.small { font-size: 21px; }
+.reveal .cols pre.small code { padding: 14px 20px; line-height: 1.5; }
+/* who calls whom */
+.reveal svg.callsvg { width: 100%; height: auto; display: block; }
+.reveal svg.callsvg rect.who { fill: var(--code-bg); stroke: var(--fg); stroke-width: 3; }
+.reveal svg.callsvg text { font-family: "Fira Sans", sans-serif; font-size: 32px; text-anchor: middle; fill: var(--fg); }
+.reveal svg.callsvg text.lbl { font-size: 28px; fill: var(--accent); font-weight: 500; }
+.reveal svg.callsvg text.lbl.l { text-anchor: start; }
+.reveal svg.callsvg line { stroke: var(--accent); stroke-width: 4; }
+.reveal svg.callsvg path.head { fill: var(--accent); }
+.reveal table.map2 td:first-child, .reveal table.map2 th:first-child { width: 42%; white-space: nowrap; }
+.reveal table.lang3 td.s { width: 34%; }
+.reveal .cols pre.out + p { margin-top: 14px; }
+/* a copy of a node, and its edges */
+.reveal .rv-svg .rv-e.rv-new { stroke: var(--accent); stroke-width: 4; }
+.reveal .rv-svg text.rv-root { font-family: "Fira Sans", sans-serif; font-size: 27px; text-anchor: middle; fill: var(--fg); }
+.reveal .rv-svg text.rv-root.new { fill: var(--accent); font-weight: 500; }
+/* two lanes and the control between them */
+.reveal .ln-svg { width: 100%; height: auto; display: block; }
+.reveal .ln-svg .ln-who { fill: var(--code-bg); stroke: var(--fg); stroke-width: 3; }
+.reveal .ln-svg .ln-name { font-family: "Fira Sans", sans-serif; font-size: 30px; text-anchor: middle; fill: var(--fg); }
+.reveal .ln-svg .ln-seg { stroke: var(--fg); stroke-width: 3; }
+.reveal .ln-svg .ln-seg.idle { stroke: var(--rule); }
+.reveal .ln-svg .ln-seg.has { stroke: var(--fg); stroke-width: 9; }
+.reveal .ln-svg .ln-seg.wait { stroke: var(--fg); stroke-dasharray: 5 9; }
+.reveal .ln-svg .ln-arrow { stroke: var(--fg); stroke-width: 3; }
+.reveal .ln-svg .ln-arrow.cur { stroke: var(--accent); stroke-width: 4; }
+.reveal .ln-svg .ln-head { fill: context-stroke; }
+.reveal .ln-svg .ln-label { font-family: "Fira Mono", monospace; font-size: 27px; text-anchor: middle; fill: var(--fg); }
+.reveal .ln-svg .ln-label.cur { fill: var(--accent); font-weight: 500; }
+.reveal .ln-svg .ln-gap { font-size: 30px; text-anchor: middle; fill: var(--fg); }
+.reveal .ln-svg .ln-stop { stroke: var(--fg); stroke-width: 5; }
+.reveal .lanes .ln-ctl { margin-top: 6px; }
+.reveal .lanes .ln-what { margin-top: 8px; min-height: 1.4em; }
+.reveal .lanes-key { font-size: 27px; margin: 0 0 10px 0; }
+.reveal .lanes-key b { font-weight: 500; }
+/* one element in the place of another: the children lie on top of each other, and a fragment
+   with class "out" leaves when the fragment of the same index arrives */
+.reveal .stack { display: grid; margin: 0 0 22px 0; }
+.reveal .stack > * { grid-area: 1 / 1; align-self: start; margin-top: 0; margin-bottom: 0; }
+.reveal .slides section .stack > .fragment.out { opacity: 1; visibility: inherit; }
+.reveal .slides section .stack > .fragment.out.visible { opacity: 0; visibility: hidden; }
+html.print-pdf .reveal .stack, html.reveal-print .reveal .stack { display: block; }
+html.print-pdf .reveal .stack > *, html.reveal-print .reveal .stack > * { margin-bottom: 18px; }
+html.print-pdf .reveal .slides section .stack > .fragment.out.visible, html.reveal-print .reveal .slides section .stack > .fragment.out.visible { opacity: 1; visibility: inherit; }
+.reveal p.ask, .reveal .cols p.ask { font-size: 0.92em; }
+.reveal table.s4 td:first-child { width: 62%; }
+.reveal table.s4 td:last-child { font-weight: 500; }
+.reveal pre.code24 { font-size: 24px; }
+.reveal .cols .cl-cap, .reveal p.cl-cap { font-size: 28px; margin: 0 0 6px 0; }
+.reveal table.kinds td.s { width: 9%; }
+.reveal table.kinds td:nth-child(2) { width: 26%; }
+.reveal table.kinds td:nth-child(3) { width: 15%; }
+.reveal table.today3 th { font-weight: 500; }
+/* nothing small: status lines, row labels */
+.reveal .cols .ropeviz .an-what, .reveal .cols .lanes .an-what { font-size: 27px; }
+.reveal table.small td.s, .reveal table.concl td.s, .reveal table.today3 td.s, .reveal table.kinds td.s, .reveal table.meijer td.s { font-size: 27px; }
+.reveal table.concl { font-size: 27px; }
+.reveal table.today3 td:nth-child(2) { width: 58%; }
+.reveal .cols + p.ask, .reveal .cols + .stack { margin-top: 18px; }
+/* session 4 recalled: three sentences on the left, one box on the right whose code changes */
+.reveal .recall { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: 50px; align-items: start; margin-top: 26px; }
+.reveal .recall > * { min-width: 0; margin: 0; }
+.reveal .recall ul { list-style: none; padding: 0; }
+.reveal .recall li { font-size: 0.88em; margin: 0 0 22px 0; padding: 14px 22px; border-left: 8px solid var(--rule); transition: background .2s, border-color .2s; }
+.reveal .recall li.lit { border-left-color: var(--accent); background: var(--box); }
+.reveal .recall .stack pre { font-size: 26px; margin: 0; }
+.reveal .recall .stack pre code { min-height: 336px; box-sizing: border-box; padding: 22px 28px; }
+.reveal .recall .stack .cl-cap { margin: 0 0 8px 0; }
+html.print-pdf .reveal .recall .stack pre, html.reveal-print .reveal .recall .stack pre { font-size: 19px; }
+html.print-pdf .reveal .recall .stack pre code, html.reveal-print .reveal .recall .stack pre code { min-height: 0; padding: 10px 20px; line-height: 1.4; }
+html.print-pdf .reveal .recall .stack > *, html.reveal-print .reveal .recall .stack > * { margin-bottom: 10px; }
+/* a row label is smaller than the text of its row: it sits on the same line of text, not at the top of the cell */
+.reveal table td.s { vertical-align: baseline; }
+.reveal table td.s ~ td { vertical-align: baseline; }
+/* in the editor every fragment is shown at once; the children of a stack lie on top of each other,
+   so there they keep their steps: the arrows go through them one by one */
+/* one takes the place of the other at once: no fade, during which both would show */
+.reveal .slides section .stack .fragment { transition: none; }
+html.liveedit .reveal .slides section .stack .fragment:not(.visible) { opacity: 0 !important; visibility: hidden !important; }
+html.liveedit .reveal .slides section .stack > .fragment.out:not(.visible) { opacity: 1 !important; visibility: inherit !important; }
+html.liveedit .reveal .slides section .stack > .fragment.out.visible { opacity: 0 !important; visibility: hidden !important; }
+/* output boxes: a dark grey, not black; no "recorded" label (a box under a Run button is live, any other is a run made beforehand) */
+.reveal pre.out { background: #3A3F42; }
+.reveal pre.out.rec::after { content: none; }
+/* a slide with few elements: they are spread over the height */
+.reveal section.airy pre.mid { margin-bottom: 44px; }
+.reveal section.airy .cols pre { margin-bottom: 26px; }
+.reveal section.airy .cols + p { margin-top: 64px; }
+.reveal table.concl td:nth-child(2), .reveal table.concl th:nth-child(2) { width: 46%; }
+/* Today's two lines on the warm-up and the lab; the roadmap of a block; the lab slide */
+.reveal p.today-line { margin: 0 0 14px 0; font-size: 0.86em; }
+.reveal table.road td.s { width: 4%; color: var(--accent); font-weight: 500; font-size: 27px; }
+.reveal table.road td:nth-child(2) { width: 23%; }
+.reveal table.road td { padding-top: 10px; padding-bottom: 10px; }
+.reveal .labcols { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 44px; align-items: start; margin-bottom: 22px; }
+.reveal .labcols img { width: 100%; margin: 0; border: 1px solid var(--rule); display: block; }
+.reveal table.labtab td:first-child, .reveal table.labtab th:first-child { width: 40%; white-space: nowrap; }
+.reveal table.labtab { margin-bottom: 0; }
+.reveal .labcols p { font-size: 0.88em; margin-bottom: 16px; }
+.reveal .cells.one { grid-template-columns: minmax(0, 1fr); gap: 0; }
+.reveal ul.why { margin: 14px 0 18px 0; }
+.reveal ul.why li { font-size: 0.88em; margin-bottom: 8px; }
+/* an output that was recorded, not computed in the page: dark blue; an output computed in the page stays dark grey */
+.reveal pre.out.rec { background: #1D3B5A; }
+/* block 2: a conclusion with two columns of answers; a roadmap whose second column holds a question */
+.reveal table.concl.c4 td:nth-child(2), .reveal table.concl.c4 th:nth-child(2) { width: 27%; }
+.reveal table.concl.c4 td:nth-child(3), .reveal table.concl.c4 th:nth-child(3) { width: 38%; }
+.reveal .box .aka { font-size: 27px; font-weight: 300; }
+/* a question that closes a slide, under its box */
+.reveal .box + p.ask { margin-top: 10px; margin-bottom: 0; }
+.reveal ul.why { margin: 6px 0 2px 0; }
+/* a second box under a box */
+.reveal .box + .box { margin-top: 14px; }
+/* drawings of block 2: cells, thunks, readers */
+.reveal .drawing { margin: 0 0 18px 0; }
+.reveal svg.draw { width: 100%; height: auto; display: block; }
+.reveal svg.draw rect.cell { fill: #fff; stroke: var(--fg); stroke-width: 3; }
+.reveal svg.draw rect.cell.new { stroke: var(--accent); stroke-width: 4; }
+.reveal svg.draw rect.thunk { fill: #23373B; stroke: #23373B; stroke-width: 3; }
+.reveal svg.draw text { font-family: "Fira Mono", monospace; font-size: 32px; fill: var(--fg); text-anchor: middle; }
+.reveal svg.draw text.tk { fill: #fff; font-size: 29px; }
+.reveal svg.draw text.cap, .reveal svg.draw text.leg { font-family: "Fira Sans", sans-serif; font-size: 30px; text-anchor: start; }
+.reveal svg.draw text.call, .reveal svg.draw text.sum { font-size: 29px; fill: var(--accent); }
+.reveal svg.draw text.ptr { font-size: 29px; }
+.reveal svg.draw line { stroke: var(--accent); stroke-width: 4; }
+.reveal svg.draw path.head, .reveal svg.draw circle.dot { fill: var(--accent); }
+.reveal table.lazy3 td.s { width: 12%; }
+.reveal table.lazy3 td:nth-child(2), .reveal table.lazy3 th:nth-child(2) { width: 44%; }
+/* block 2's animations (demos/seqviz.js) */
+.reveal .seqviz { --ink: #23373B; --line: #8A999E; --soft: #EEF1F2; --blue: #2A6F97; --blue-soft: #E6F0F6; --warm: #FFF4EA; }
+.reveal .seqviz .sq-svg { width: 100%; height: auto; display: block; }
+.reveal .seqviz .sq-it { transition: transform .7s cubic-bezier(.22, .8, .3, 1), opacity .45s ease; }
+.reveal .seqviz.quick .sq-it { transition: none; }
+.reveal .seqviz .sq-it .sq-shape { fill: #fff; stroke: var(--ink); stroke-width: 2.5; transition: fill .4s ease, stroke .4s ease, stroke-width .3s ease; }
+.reveal .seqviz .sq-it text { font-family: "Fira Mono", monospace; font-size: 32px; text-anchor: middle; fill: var(--ink); transition: fill .4s ease; }
+.reveal .seqviz .sq-it line { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; transition: stroke .4s ease, opacity .4s ease; }
+.reveal .seqviz .sq-head { fill: context-stroke; }
+.reveal .seqviz .sq-hatch-bg { fill: #F3F5F6; }
+.reveal .seqviz .sq-hatch-fg { fill: #DDE3E5; }
+/* trees */
+.reveal .seqviz .sq-node .sq-halo { fill: var(--accent); opacity: 0; transition: opacity .4s ease; }
+.reveal .seqviz .sq-node.cur .sq-halo { opacity: .22; }
+.reveal .seqviz .sq-node text { font-size: 34px; }
+.reveal .seqviz .sq-node.fn .sq-shape { stroke: var(--accent); stroke-width: 3.5; }
+.reveal .seqviz .sq-node.fn text { fill: var(--accent); font-style: italic; }
+.reveal .seqviz .sq-node.fn.pending .sq-shape { stroke-dasharray: 7 7; fill: #fff; }
+.reveal .seqviz .sq-node.fn.cur .sq-shape, .reveal .seqviz .sq-node.fn.done .sq-shape { fill: var(--warm); }
+.reveal .seqviz .sq-node.op .sq-shape { stroke: var(--blue); fill: var(--blue-soft); }
+.reveal .seqviz .sq-node.op text { fill: var(--blue); }
+.reveal .seqviz .sq-node.used .sq-shape { stroke: var(--rule); }
+.reveal .seqviz .sq-node.used text, .reveal .seqviz .sq-leaf.used text { fill: var(--rule); }
+.reveal .seqviz .sq-leaf .sq-shape { fill: var(--soft); stroke: none; }
+.reveal .seqviz .sq-leaf.used .sq-shape { fill: #F6F7F8; }
+.reveal .seqviz .sq-leaf.bare .sq-shape { fill: none; }
+.reveal .seqviz .sq-leaf.seed .sq-shape { fill: var(--warm); }
+.reveal .seqviz .sq-leaf.seed text { fill: var(--accent); font-size: 28px; }
+.reveal .seqviz .sq-leaf.hit .sq-shape { fill: var(--accent); }
+.reveal .seqviz .sq-leaf.hit text { fill: #fff; }
+.reveal .seqviz .sq-edge.used line { stroke: var(--rule); }
+.reveal .seqviz .sq-edge.dash line { stroke-dasharray: 3 9; }
+.reveal .seqviz .sq-badge { stroke-width: 2.5; transition: opacity .4s ease; }
+.reveal .seqviz .sq-badge.yes { fill: var(--accent); stroke: var(--accent); }
+.reveal .seqviz .sq-badge.no { fill: #fff; stroke: var(--line); }
+.reveal .seqviz .sq-it text.sq-badge-t { font-size: 27px; font-style: normal; font-weight: 500; transition: opacity .4s ease; }
+.reveal .seqviz .sq-it text.sq-badge-t.yes { fill: #fff; }
+.reveal .seqviz .sq-it text.sq-badge-t.no { fill: var(--ink); }
+/* a computation not yet run */
+.reveal .seqviz .sq-seal .sq-shape { stroke: var(--line); stroke-width: 2.5; stroke-dasharray: 9 7; }
+.reveal .seqviz .sq-seal text { font-size: 29px; paint-order: stroke; stroke: #F3F5F6; stroke-width: 9px; stroke-linejoin: round; }
+.reveal .seqviz .sq-seal text.sq-sub { font-family: "Fira Sans", sans-serif; font-size: 27px; font-style: italic; fill: var(--line); }
+.reveal .seqviz .sq-seal.opening .sq-shape { stroke: var(--accent); stroke-width: 4; }
+.reveal .seqviz .sq-seal.called .sq-shape { fill: #fff; stroke: var(--rule); }
+.reveal .seqviz .sq-seal.called text { fill: var(--line); stroke: #fff; }
+.reveal .seqviz .sq-seal.never .sq-shape { stroke: var(--ink); stroke-dasharray: none; }
+.reveal .seqviz .sq-seal.kept .sq-shape { fill: var(--blue-soft); stroke: var(--blue); stroke-dasharray: none; stroke-width: 3; }
+.reveal .seqviz .sq-seal.kept text { stroke: var(--blue-soft); fill: var(--blue); font-size: 34px; }
+.reveal .seqviz .sq-seal.kept.cur .sq-shape { stroke: var(--accent); stroke-width: 4.5; }
+/* cells, cards, chips */
+.reveal .seqviz .sq-pair .sq-div { stroke: var(--ink); stroke-width: 2; }
+.reveal .seqviz .sq-pair .sq-dot { fill: var(--ink); }
+.reveal .seqviz .sq-pair.new .sq-shape { stroke: var(--accent); stroke-width: 4; fill: var(--warm); }
+.reveal .seqviz .sq-pair.new .sq-div { stroke: var(--accent); }
+.reveal .seqviz .sq-pair.read .sq-shape { stroke: var(--blue); stroke-width: 4; fill: var(--blue-soft); }
+.reveal .seqviz .sq-card .sq-shape { stroke: none; fill: #fff; }
+.reveal .seqviz .sq-card text { font-size: 30px; }
+.reveal .seqviz .sq-card.cur .sq-shape { stroke: var(--accent); stroke-width: 4; fill: var(--warm); }
+.reveal .seqviz .sq-card.done .sq-shape { stroke: var(--blue); stroke-width: 3; fill: var(--blue-soft); }
+.reveal .seqviz .sq-chip .sq-shape { stroke-width: 2.5; }
+.reveal .seqviz .sq-chip text { font-size: 28px; }
+.reveal .seqviz .sq-chip.ask .sq-shape { fill: #fff; stroke: var(--accent); stroke-dasharray: 6 5; }
+.reveal .seqviz .sq-chip.ask text { fill: var(--accent); }
+.reveal .seqviz .sq-chip.val .sq-shape { fill: var(--blue-soft); stroke: var(--blue); }
+.reveal .seqviz .sq-chip.val text { fill: var(--blue); font-weight: 500; }
+.reveal .seqviz .sq-chip.val.new .sq-shape { fill: var(--warm); stroke: var(--accent); stroke-width: 4; }
+.reveal .seqviz .sq-chip.val.new text { fill: var(--accent); }
+.reveal .seqviz .sq-chip.big text { font-size: 34px; }
+.reveal .seqviz .sq-chip.tag .sq-shape { fill: none; stroke: none; }
+.reveal .seqviz .sq-chip.tag text { fill: var(--line); font-size: 27px; }
+.reveal .seqviz .sq-chip.dead { opacity: .0 !important; }
+/* edges with a role */
+.reveal .seqviz .sq-edge.ptr line { stroke: var(--ink); stroke-width: 2.5; }
+.reveal .seqviz .sq-edge.made line { stroke: var(--accent); stroke-width: 3; }
+.reveal .seqviz .sq-edge.lane line { stroke-width: 2.5; stroke-dasharray: 2 9; }
+.reveal .seqviz .sq-edge.lane.val line { stroke: var(--blue); }
+.reveal .seqviz .sq-edge.lane.ask line { stroke: var(--accent); }
+.reveal .seqviz .sq-edge.wire line { stroke: var(--blue); stroke-width: 3; }
+.reveal .seqviz .sq-edge.rule line { stroke: var(--rule); stroke-width: 2; }
+/* words */
+.reveal .seqviz .sq-label.cap text { font-family: "Fira Sans", sans-serif; font-size: 28px; font-weight: 500; fill: var(--line); text-anchor: start; letter-spacing: .02em; }
+.reveal .seqviz .sq-label.cap.mono text { font-family: "Fira Mono", monospace; font-weight: 400; fill: var(--ink); }
+.reveal .seqviz .sq-label.cap.mid text { text-anchor: middle; }
+.reveal .seqviz .sq-label.cap.val text { fill: var(--blue); }
+.reveal .seqviz .sq-label.cap.ask text { fill: var(--accent); }
+.reveal .seqviz .sq-label.note text { font-family: "Fira Sans", sans-serif; font-size: 28px; font-style: italic; fill: var(--blue); }
+.reveal .seqviz .sq-label.start text { text-anchor: start; }
+.reveal .seqviz .sq-label.reader text { fill: var(--blue); font-size: 29px; }
+/* under the drawing */
+.reveal .seqviz .sq-ctl { color: var(--fg); justify-content: space-between; margin-top: 2px; }
+.reveal .seqviz .sq-count { font-size: 27px; color: var(--fg); }
+.reveal .seqviz .sq-count b { color: var(--accent); font-weight: 500; font-family: "Fira Mono", monospace; font-size: 30px; margin-left: 6px; }
+.reveal .seqviz .sq-count .sq-sep { display: inline-block; width: 38px; }
+.reveal .seqviz .sq-what { margin-top: 6px; min-height: 1.4em; }
+.reveal .cols.tightcode pre { margin-bottom: 8px; }
+.reveal .cols.tightcode { margin-bottom: 0; }
+.reveal .seqviz .sq-label.cap.end text { text-anchor: end; }
+.reveal .seqviz .sq-expr { font-family: "Fira Mono", monospace; font-size: 30px; line-height: 1.4; background: var(--code-bg); border-radius: 4px; padding: 16px 24px; margin: 0 0 6px 0; white-space: nowrap; color: var(--fg); }
+.reveal .seqviz .sq-expr b { color: var(--accent); font-weight: 500; }
+.reveal .seqviz .sq-expr .sq-eq { display: inline-block; width: 1.6em; color: var(--accent); }
+.reveal table.orders td:nth-child(3), .reveal table.orders th:nth-child(3) { width: 9%; }
+.reveal table.orders td:nth-child(1) { width: 14%; }
+.reveal table.orders td:nth-child(2) { width: 43%; }
+/* block 3: cards of code in a drawing; the spine; a stack and frames side by side */
+.reveal .seqviz.sq-sumk .sq-card text { font-size: 29px; }
+.reveal .seqviz.sq-sumk .sq-card .sq-shape { stroke: var(--ink); stroke-width: 2.5; }
+.reveal .seqviz.sq-sumk .sq-card.cur .sq-shape { stroke: var(--accent); stroke-width: 4; }
+.reveal .seqviz.sq-sumk .sq-card.done .sq-shape { stroke: var(--rule); fill: #F6F7F8; }
+.reveal .seqviz.sq-sumk .sq-card.done text { fill: var(--line); }
+.reveal .seqviz.sq-iterk .sq-node.cur .sq-shape { fill: var(--warm); }
+.reveal .seqviz.sq-iterk .sq-node.fn text { font-style: normal; }
+.reveal .seqviz.sq-iterk .sq-leaf text { font-size: 28px; }
+.reveal .seqviz.sq-iterk .sq-seal.kept text { font-size: 30px; }
+.reveal .seqviz.sq-iterk .sq-seal.kept text.sq-sub { fill: var(--blue); font-size: 27px; }
+.reveal table.spine td.s { width: 12%; }
+.reveal table.spine tr.now td { color: var(--accent); font-weight: 500; background: var(--box); }
+.reveal table.spine td.t, .reveal table.spine th.t { width: 22%; }
+.reveal .held { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 50px; align-items: start; margin: 0 0 8px 0; }
+.reveal .held > * { min-width: 0; }
+.reveal .held .ct-h { font-size: 30px; font-weight: 500; margin-bottom: 10px; }
+.reveal .held .frame { font-family: "Fira Mono", monospace; font-size: 29px; background: var(--code-bg); border-left: 8px solid var(--rule); padding: 10px 18px; margin: 0 0 8px 0; }
+.reveal .held .frame.top { border-left-color: var(--accent); }
+.reveal .held .frame span { font-family: "Fira Sans", sans-serif; font-size: 27px; margin-left: 18px; }
+.reveal table.fk td.s { width: 24%; font-size: 27px; color: var(--accent); font-weight: 500; }
+.reveal table.fk td, .reveal table.fk th { width: 38%; }
+.reveal table.ways3 td.s { width: 11%; }
+.reveal table.ways3 td:nth-child(2) { width: 52%; }
+</style>
+</head>
+<body>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 -->
+<section class="title" data-background-color="#23373B">
+  <div class="eyebrow">PROGRAMMING PARADIGMS · SESSION 5 · BLOCK 2</div>
+  <h1>Functions as values: iterators, streams, continuations</h1>
+  <div class="sub"><b>Block 2</b> — Thunks and streams: when is a value computed?</div>
+  <div class="rule"></div>
+  <div class="meta">SW7 · Aalborg University Copenhagen · Autumn 2026</div>
+  <aside class="notes">Block 1 handed over one step of a traversal. This block hands over a computation not yet run. Session 4 showed the language deciding when an argument is evaluated; here the program decides, with a function.</aside>
+</section>
+
+<!-- roadmap -->
+<section>
+  <h2>Block 2: the three parts</h2>
+  <p>In a strict language a value is computed where it is written. In this block we put a <span class="hl">function</span> in its place.</p>
+  <table class="road">
+    <tr class="fragment" data-fragment-index="0"><td class="s">1</td><td><b>Thunks</b><br>when?</td><td>We choose when the value is computed: when we call the function.</td></tr>
+    <tr class="fragment" data-fragment-index="1"><td class="s">2</td><td><b>Sequences</b><br>how far?</td><td>We put the function inside a data structure. We choose how far a sequence is computed, and it can be without end.</td></tr>
+    <tr class="fragment" data-fragment-index="2"><td class="s">3</td><td><b>Memoisation</b><br>how many times?</td><td>We keep the result of the function. We choose that the value is computed at most once.</td></tr>
+  </table>
+  <aside class="notes">One minute. The sentence at the top is the message of the block; the three parts are three choices that the function gives us. In each part we first make the choice ourselves, in OCaml, and then look at Haskell, where the language has made it for every value. Session 4's table of strategies comes back twice: call-by-name in part 1, call-by-need in part 3.</aside>
+</section>
+
+<!-- part 1 -->
+<section class="part" data-background-color="#23373B">
+  <div class="eyebrow">PART 1</div>
+  <h1>Thunks</h1>
+  <div class="sub">How does a strict language wait?</div>
+</section>
+
+<!-- my_if -->
+<section>
+  <h2>Session 4: <code>if</code> written as a function</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let my_if c t e = if c then t else e
+
+let rec fact n =
+  my_if (n = 0) 1 (n * fact (n - 1))</code></pre>
+      <p><code>fact 5</code> never returns. OCaml computes the two branches before it calls <code>my_if</code>.</p>
+    </div>
+    <div class="fragment" data-fragment-index="0">
+      <pre><code class="language-ocaml">let my_if c t e = if c then t () else e ()
+
+let rec fact n =
+  my_if (n = 0) (fun () -> 1)
+    (fun () -> n * fact (n - 1))</code></pre>
+      <p><code>fact 5</code> is 120. <code>my_if</code> calls one of the two functions.</p>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="1">A function that holds a computation and waits for its call is a <span class="hl">thunk</span>. In OCaml we write it <code>fun () -> e</code>.</div>
+  <aside class="notes">Session 4, block 2, "if under call-by-value": demos my_if.ml and my_if2.ml of session 4. The right-hand code is on slide 2 of block 1, as the third of session 4's questions. A thunk is a closure: fun () -> n * fact (n - 1) carries n. Nothing new is needed from the language. The word comes from the compilers of Algol 60, which passed every argument in this way.</aside>
+</section>
+
+<!-- a thunk called twice -->
+<section>
+  <h2>A thunk, called twice</h2>
+  <script class="src" type="text/plain" id="src-thunk">
+    const t = () => {
+      console.log("computing");
+      return 6 * 7;
+    };
+
+    console.log("the thunk is made");
+    const a = t();
+    const b = t();
+    console.log(a, b);
+  </script>
+  <div class="cols">
+    <div>
+      <pre><code class="language-js" data-src="src-thunk"></code></pre>
+      <p><button class="run" onclick="runJS(this, 'out-thunk', 'src-thunk')">Run</button> <button class="run reset" onclick="reset(this, 'out-thunk')">Reset</button></p>
+      <pre class="out" id="out-thunk"> </pre>
+    </div>
+    <div>
+      <div class="stack">
+      <div class="fragment out" data-fragment-index="3">
+      <p class="ask">What does the program print, and in which order?</p>
+      <ul class="why">
+        <li class="fragment" data-fragment-index="0">When the thunk is made, its body is not run.</li>
+        <li class="fragment" data-fragment-index="1">At every call the body is run again.</li>
+      </ul>
+      </div>
+      <div class="fragment" data-fragment-index="3">
+        <p class="cl-cap">The same program in OCaml</p>
+        <pre><code class="language-ocaml">let t = fun () ->
+  print_endline "computing";
+  6 * 7
+
+let () = print_endline "the thunk is made"
+let a = t ()
+let b = t ()</code></pre>
+      </div>
+      </div>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="2">A thunk computes <span class="hl">at every call</span>. It is session 4's <b>call-by-name</b>, written by the program.</div>
+  <aside class="notes">Let the room answer, then Run: the thunk is made, computing, computing, 42 42 (demos/thunk.js; the OCaml program is in demos/stream.ml and prints the same). Two clicks for the two facts, one for the box, and the last click shows the OCaml in the place of the question. That the work is done again at every call is the subject of part 3. Session 4's table: call-by-name, the argument evaluated at each use.</aside>
+</section>
+
+<!-- two folds -->
+<section>
+  <h2>A left fold and a right fold: who holds the rest of the list?</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let rec fold_left f acc xs =
+  match xs with
+  | [] -> acc
+  | x :: xs -> fold_left f (f acc x) xs</code></pre>
+      <p>Our function receives the accumulator and <b>one element</b>. The rest of the list, <code>xs</code>, stays with the fold.</p>
+    </div>
+    <div class="fragment" data-fragment-index="0">
+      <pre><code class="language-ocaml">let rec fold_right f xs z =
+  match xs with
+  | [] -> z
+  | x :: xs -> f x (fold_right f xs z)</code></pre>
+      <p>Our function receives one element and <b>the fold of the rest</b>, as its second argument.</p>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="1">With a left fold, the rest never reaches our function. Only with a <span class="hl">right fold</span> can our function decide what becomes of the rest.</div>
+  <aside class="notes">Session 4's two folds, read for one thing: what our function is given. In the left fold the recursive call is the last thing the fold does, with the rest of the list as its own argument; f sees acc and x and returns. In the right fold the recursive call is an argument of f. This is why the slides that follow use the right fold, and why block 1's exists, written with the left fold, could not stop. It is also true in Haskell: foldl on a list without end never returns, as the slide on Haskell shows.</aside>
+</section>
+
+<!-- exists as a left fold -->
+<section>
+  <h2>Block 1's <code>exists</code>, with the left fold</h2>
+  <pre class="mid tight"><code class="language-ocaml">let exists p l = fold_left (fun found x -> found || p x) false l
+
+exists (fun c -> c = '\n') text</code></pre>
+  <div id="sq-left"></div>
+  <aside class="notes">Block 1 wrote it with fold, which is session 4's fold_left. Step or Run; six steps. The pill under the cells is the accumulator that the fold carries from call to call. The blue line is the rest of the list: it is the fold's, and f is never given it. After the newline f is called twice more and has nothing to do. Recorded in block 1 from demos/lists.ml: visited=5.</aside>
+</section>
+
+<!-- exists as a right fold -->
+<section>
+  <h2><code>exists</code>, with the right fold</h2>
+  <pre class="mid tight"><code class="language-ocaml">let exists p l = fold_right (fun x rest -> p x || rest) l false
+
+exists (fun c -> c = '\n') text</code></pre>
+  <div id="sq-right"></div>
+  <aside class="notes">Step or Run; twelve steps, in two phases. First the fold goes down the list: to call f on h it needs the rest, and so on to the end; f is not called once. Then f is called from the last character to the first, each time with the rest already computed. Recorded from demos/delay.ml: visited=5. The sentence to leave: our function is given the rest as a value, and OCaml computes an argument before the call. The rest reaches our function, and too late.</aside>
+</section>
+
+<!-- the fold that stops -->
+<section>
+  <h2>The right fold, with the rest as a thunk</h2>
+  <div class="cols tightcode">
+    <div>
+      <pre><code class="language-ocaml">let rec fold_right f xs z = match xs with
+  | [] -> z
+  | x :: xs ->
+      f x (fun () -> fold_right f xs z)</code></pre>
+    </div>
+    <div>
+      <pre><code class="language-ocaml">let exists p l =
+  fold_right
+    (fun x rest -> p x || rest ())
+    l false</code></pre>
+    </div>
+  </div>
+  <div id="sq-thunk"></div>
+  <aside class="notes">Two changes: fun () -> in the last case of the fold, rest () in our function. Step or Run; six steps. The dark box is the rest of the fold, not run. At h and at i our function calls it; at the newline p x is true, || does not compute its right side, and the box is never opened: y and o are not read. Recorded from demos/delay.ml: visited=3. This is a second way to stop, beside fold_until.</aside>
+</section>
+
+<!-- a list without end -->
+<section>
+  <h2>The list of <span class="hl">all</span> the natural numbers</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let rec from n = n :: from (n + 1)
+
+let rec take n l =
+  if n = 0 then []
+  else match l with
+    | [] -> []
+    | x :: rest -> x :: take (n - 1) rest
+
+take 5 (from 0)</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="0">Stack overflow during evaluation</pre>
+    </div>
+    <div class="fragment" data-fragment-index="1">
+      <pre><code class="language-haskell">from n = n : from (n + 1)
+
+take n l =
+  if n == 0 then []
+  else case l of
+    [] -> []
+    x : rest -> x : take (n - 1) rest
+
+take 5 (from 0)</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="2">[0,1,2,3,4]</pre>
+    </div>
+  </div>
+  <p class="ask fragment" data-fragment-index="3">The two programs are the same, line for line. Why does Haskell give an answer, and OCaml none?</p>
+  <aside class="notes">The hook of the part on Haskell. from n is the list of all the numbers from n on; take n l is the list of the first n elements of l. Ask what OCaml answers to the last line, and let the room commit; then the recorded error: OCaml computes the argument, from 0, before it calls take, and from 0 has no end. Click: the same two definitions in Haskell. : is Haskell's ::, == its =, case ... of its match ... with. Ask again before the output. Recorded from demos/take.ml and demos/Take.hs. The slide ends on the question; the next slide answers it, cell by cell.</aside>
+</section>
+
+<!-- a list built when it is read -->
+<section>
+  <h2>A list built <span class="hl">lazily</span>: when it is read</h2>
+  <pre class="mid tight"><code class="language-haskell">take 5 (from 0)              -- Haskell also writes from 0 as [0 ..]</code></pre>
+  <div id="sq-lazylist"></div>
+  <div class="box fragment">Haskell builds a cell of the list when a function <span class="hl">reads</span> it, and not before. <code>take 5</code> reads five cells, so five cells are built.</div>
+  <aside class="notes">The answer to the question of the slide before. Step or Run; six steps. The hatched box is the rest of the list, a computation not yet run: first the whole list, from 0, then from 1, and so on. Each element that take reads turns one step of it into a cell. Haskell does not compute the argument before the call: take receives from 0 not yet run, and its case l of is what reads the first cell. A cell that is built stays built: another reader of the same list finds it. With other readers: from 0 !! 1000000 builds a million and one cells; takeWhile (&lt; 60) (map (^ 2) (from 0)) builds nine, since the cell with 64 is read, fails the test, and stops it (demos/Inf.hs).</aside>
+</section>
+
+<!-- primes -->
+<section>
+  <h2>The list of all the prime numbers</h2>
+  <pre class="mid"><code class="language-haskell">primes = sieve [2 ..]
+  where sieve (p : xs) = p : sieve [x | x &lt;- xs, x `mod` p /= 0]</code></pre>
+  <p><code>[2 ..]</code> is <code>from 2</code>. The first number of the list is prime. We keep it, we take its multiples out of the rest, and we do the same with what is left.</p>
+  <pre class="out tr rec mid fragment" data-fragment-index="0">take 10 primes = [2,3,5,7,11,13,17,19,23,29]</pre>
+  <p class="ask fragment" data-fragment-index="1">The sieve is applied to a list without end, and it calls itself on a list without end. Why does the program end?</p>
+  <aside class="notes">Two lines for all the prime numbers: the sieve of session 1's spirit, one problem written as what it is. [x | x <- xs, ...] is the list of the x of xs that pass the test. Recorded from demos/Inf.hs. The answer is the slide before: nothing is built before it is read, and take 10 reads ten cells of primes. Let the room say it. This sieve is slow, each number is tested against every prime before it; it is here for what it says, not for its speed.</aside>
+</section>
+
+<!-- lazy evaluation -->
+<section>
+  <h2>Lazy evaluation, in Haskell</h2>
+  <p>In Haskell no argument is computed before the call. It is computed when the function uses it, and at most once: session 4's <b>call-by-need</b>.</p>
+  <table class="small lazy3">
+    <tr><th></th><th>in OCaml, we write</th><th>in Haskell</th></tr>
+    <tr class="fragment" data-fragment-index="0"><td class="s">Block 1</td><td>another fold, to stop before the end of a list</td><td>the fold stops by itself</td></tr>
+    <tr class="fragment" data-fragment-index="1"><td class="s">Block 2</td><td>a thunk for each value that must wait</td><td>every value waits, and is computed once</td></tr>
+    <tr class="fragment" data-fragment-index="2"><td class="s">Block 3</td><td>two functions, for a search that can fail</td><td>the list of all the solutions, of which we read the first</td></tr>
+  </table>
+  <div class="box fragment" data-fragment-index="3">In session 4 the language chose when an argument is computed. In session 5 <span class="hl">the program chooses</span>, with a function.</div>
+  <aside class="notes">One minute. This is where Haskell stands in the three blocks; the next slide shows the first row, and parts 2 and 3 the second. The third row is for block 3: a search with backtracking hands over what to do on success and what to do on failure; in a lazy language it returns the list of its solutions, which is computed as far as it is read (Wadler 1985, "How to replace failure by a list of successes"). Say it in one sentence here and come back to it in block 3.</aside>
+</section>
+
+<!-- Haskell -->
+<section>
+  <h2>The two folds, on a list without end</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-haskell">foldr (\x rest -> x > 2 || rest)
+      False [0 ..]</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="0">True</pre>
+      <p class="fragment" data-fragment-index="0">Our function is given the rest, not computed. At 3 it answers, and the cells after 3 are never built.</p>
+    </div>
+    <div class="fragment" data-fragment-index="1">
+      <pre><code class="language-haskell">foldl (\found x -> found || x > 2)
+      False [0 ..]</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="2">the program does not end</pre>
+      <p class="fragment" data-fragment-index="2"><code>foldl</code> gives the rest of the list to itself. It answers at the end of the list, and the list has no end.</p>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="3">Laziness delays what a function <b>is given</b>. In Haskell as in OCaml, only with the <span class="hl">right fold</span> is our function given the rest.</div>
+  <aside class="notes">Ask for the answer of each fold before showing it. Recorded from demos/Folds.hs and demos/Inf.hs: the right fold answers True. The left fold was run and stopped by hand after a minute. This closes the slide on the two folds: who holds the rest decides who can stop, in a lazy language too. It also answers the question of block 1's roadmap, where the problem of stopping was stated "in a strict language": in a lazy language the right fold stops by itself.</aside>
+</section>
+
+<!-- part 2 -->
+<section class="part" data-background-color="#23373B">
+  <div class="eyebrow">PART 2</div>
+  <h1>Sequences</h1>
+  <div class="sub">How do we postpone the next element?</div>
+</section>
+
+<!-- the type -->
+<section>
+  <h2>From a list to a sequence</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">type 'a list =
+  | []
+  | (::) of 'a * 'a list</code></pre>
+      <p>The rest of a list is a list: a <b>value</b>. It is computed before we read the first element.</p>
+    </div>
+    <div class="fragment" data-fragment-index="0">
+      <pre><code class="language-ocaml">type 'a node =
+  | Nil
+  | Cons of 'a * 'a seq
+
+and 'a seq = unit -> 'a node</code></pre>
+      <p>The rest of a sequence is a <b>thunk</b>. It is computed when we call it.</p>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="1">A <span class="hl">sequence</span> <span class="aka">(also called a stream)</span><sup>*</sup> is a thunk that gives one element and the rest of the sequence.</div>
+  <p class="fn fragment" data-fragment-index="1"><sup>*</sup> Okasaki 1998, chapter 4; CS3110, section 8.4. OCaml's library has this type as <code>Seq.t</code>.</p>
+  <aside class="notes">The only difference between the two types is unit ->. Two types that refer to each other, hence "and". The names are the library's: Seq.t, Nil, Cons. We write the type ourselves in the lecture and in the lab, and use the library on the last slide of this part. It is a type with a parameter, 'a, written by us: session 11 explains how the compiler finds the types of the functions we write on it.</aside>
+</section>
+
+<!-- nats and take -->
+<section>
+  <h2><code>nats</code> and <code>take</code></h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let rec nats n : int seq =
+  fun () -> Cons (n, nats (n + 1))
+
+let rec take n (s : 'a seq) =
+  if n = 0 then []
+  else match s () with
+    | Nil -> []
+    | Cons (x, rest) ->
+        x :: take (n - 1) rest</code></pre>
+    </div>
+    <div>
+      <p><code>nats 0</code> is the sequence of all the natural numbers.</p>
+      <p class="ask">What does <code>take 5 (nats 0)</code> compute, and how many elements of <code>nats 0</code>?</p>
+      <pre class="out tr rec fragment" data-fragment-index="0">[0; 1; 2; 3; 4]   produced=5</pre>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="1">A sequence without end is a <span class="hl">value</span>: we can name it, pass it and keep it. Five of its elements are computed, because we ask for five.</div>
+  <aside class="notes">Recorded from demos/stream.ml, where nats counts the elements it produces. nats 0 returns at once: the recursive call nats (n + 1) is under fun () ->, so it is not run. With a list, let rec nats n = n :: nats (n + 1) never returns.</aside>
+</section>
+
+<!-- drawing: a list and a sequence -->
+<section>
+  <h2>A list and a sequence, drawn</h2>
+  <div id="sq-cells"></div>
+  <div class="box fragment">After three calls, three cells are built. The rest, <code>nats 3</code>, is a thunk that <span class="hl">nobody has called</span>.</div>
+  <aside class="notes">Step three times, or Run: they are the calls that take 3 (nats 0) makes. A cell comes out of the thunk that builds it, with the next thunk. The thunks stay dark after the call: calling nats 0 again builds another cell with 0. A value that is kept after the first call is part 3's subject.</aside>
+</section>
+
+<!-- map and filter -->
+<section>
+  <h2><code>map</code> and <code>filter</code> on a sequence</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let rec map f (s : 'a seq) : 'b seq =
+  fun () -> match s () with
+    | Nil -> Nil
+    | Cons (x, rest) ->
+        Cons (f x, map f rest)</code></pre>
+      <p class="fragment" data-fragment-index="0"><code>map f s</code> returns at once: its body is under <code>fun () -></code>.</p>
+    </div>
+    <div>
+      <pre><code class="language-ocaml">let rec filter p (s : 'a seq) : 'a seq =
+  fun () -> match s () with
+    | Nil -> Nil
+    | Cons (x, rest) ->
+        if p x
+        then Cons (x, filter p rest)
+        else filter p rest ()</code></pre>
+      <p class="fragment" data-fragment-index="1">When <code>x</code> does not pass, <code>filter</code> asks for the next element itself.</p>
+    </div>
+  </div>
+  <aside class="notes">Read map aloud. Both are the functions of block 1 on lists, with the type of sequences in the place of the list. In filter, the last line calls the sequence filter p rest: it goes on until an element passes. A question for the room if there is time: what does filter do on nats with a predicate that is never true? It never returns; the lab asks it.</aside>
+</section>
+
+<!-- how far -->
+<section>
+  <h2>How far is a sequence computed?</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let even n = n mod 2 = 0
+let square n = n * n
+
+let squares =
+  map square (filter even (nats 0))</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="0">produced=0</pre>
+      <pre class="fragment" data-fragment-index="1"><code class="language-ocaml">take 5 squares</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="2">[0; 4; 16; 36; 64]   produced=9</pre>
+    </div>
+    <div>
+      <p class="ask">How many elements has <code>nats 0</code> produced when <code>squares</code> is defined? And after <code>take 5</code>?</p>
+      <p class="fragment" data-fragment-index="2">Nine numbers, from 0 to 8. Five of them are even.</p>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="3">Making a sequence computes nothing. The consumer decides <span class="hl">how far</span> it is computed.</div>
+  <aside class="notes">Recorded from demos/pipeline.ml. Two numbers from the room before the first click. The next slide runs take 5 squares step by step. In Haskell the same line is take 5 (map square (filter even [0 ..])), on an ordinary list. Session 6 builds its event loop on values of this kind: producers that run one step when asked.</aside>
+</section>
+
+<!-- pipeline -->
+<section>
+  <h2><code>take 5 squares</code>, step by step</h2>
+  <div id="sq-pipe"></div>
+  <aside class="notes">The line of code is the slide before's take 5 squares, with squares written out. It is rewritten at every step: what the program has become, with the part that changed in orange. It starts as take 5 (...(nats 0)), becomes 0 :: take 4 (...(nats 1)), and ends as the list [0; 4; 16; 36; 64]. Every line is equal to the one before. The drawing has its four parts in the order of the code, from left to right: take, map, filter, nats. Read the first steps aloud with the definitions in mind. take 5 s calls s (): that is the dashed pill, a call, going to the right. The sequence of map calls that of filter, which calls nats 0. nats 0 () returns a cell, Cons (0, nats 1): the blue pill, going to the left, and the box on the right now reads nats 1. When even is false, filter does not return: it calls the rest itself, as its last line says. When an element reaches take, take keeps it and goes on as take 4: the box on the left counts down, as take (n - 1) rest does. Step for the first two elements, then Run. The counter ends on 9. What to leave: a call goes from the consumer to the producer, a cell comes back, and nothing runs that was not asked for. Session 6: an event loop runs producers of this kind, one step when asked.</aside>
+</section>
+
+<!-- stopping by not asking -->
+<section>
+  <h2>Stopping, by not asking</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let rec exists p (s : 'a seq) =
+  match s () with
+  | Nil -> false
+  | Cons (x, rest) ->
+      p x || exists p rest</code></pre>
+    </div>
+    <div>
+      <p>The text of block 1, <code>hi\nyo</code>, as a sequence of characters:</p>
+      <pre><code class="language-ocaml">exists (fun c -> c = '\n') text</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="0">found=true asked=3</pre>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="1">With a sequence <span class="hl">we pull</span>. To stop, we do not ask for the next element.</div>
+  <aside class="notes">Recorded from demos/stream.ml. Block 1, part 3, needed fold_until because the list pushed its elements into our function. Here exists is written by us, the consumer, and it asks for an element only when it needs one: no flag, and no other interface.</aside>
+</section>
+
+<!-- Seq -->
+<section>
+  <h2>The library: <code>Seq</code></h2>
+  <pre class="mid"><code class="language-ocaml">Seq.ints 0
+|> Seq.filter (fun n -> n mod 2 = 0)
+|> Seq.map (fun n -> n * n)
+|> Seq.take 5
+|> List.of_seq</code></pre>
+  <pre class="out tr rec mid fragment" data-fragment-index="0">[0; 4; 16; 36; 64]</pre>
+  <p class="fragment" data-fragment-index="1"><code>Seq.t</code> is the type that we wrote, and <code>Seq.ints 0</code> is our <code>nats 0</code>. <code>x |> f</code> is <code>f x</code>.</p>
+  <aside class="notes">Recorded from demos/stream.ml. Thirty seconds: the functions we wrote exist, under the same names. Java's Stream, Python's itertools and Rust's iterators offer the same operations; they are mutable iterators, not persistent sequences.</aside>
+</section>
+
+<!-- part 3 -->
+<section class="part" data-background-color="#23373B">
+  <div class="eyebrow">PART 3</div>
+  <h1>Memoisation</h1>
+  <div class="sub">Can a value be computed at most once?</div>
+</section>
+
+<!-- Q4: ticks -->
+<section>
+  <h2>A thunk and a lazy value, each asked twice</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let ticks = ref 0
+
+let t = fun () -> incr ticks; 6 * 7
+
+let a = t ()
+let b = t ()</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="0">a=42 b=42 ticks=2</pre>
+    </div>
+    <div>
+      <pre><code class="language-ocaml">let ticks = ref 0
+
+let l = lazy (incr ticks; 6 * 7)
+
+let a = Lazy.force l
+let b = Lazy.force l</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="1">a=42 b=42 ticks=1</pre>
+    </div>
+  </div>
+  <p class="ask">What is <code>!ticks</code> at the end of each program?</p>
+  <div class="box fragment" data-fragment-index="2">A thunk <b>delays</b>. A lazy value delays and <span class="hl">remembers</span>: it is session 4's <b>call-by-need</b>.</div>
+  <aside class="notes">Question 4. Two numbers from the room; the usual answers are 1 and 1, or 2 and 2. Recorded from demos/stream.ml: 2, then 1. From here on we say lazy, and no longer delayed: lazy is delay with memoisation. The next slide shows how lazy is made.</aside>
+</section>
+
+<!-- ticks drawn -->
+<section>
+  <h2>A thunk and a lazy value, drawn</h2>
+  <div id="sq-twice"></div>
+  <aside class="notes">Four steps: a and b for the thunk, a and b for the lazy value, in turn. The thunk stays what it is, and its body runs at every call. The lazy value is replaced by 42 at the first force; the second force reads it. The next slide writes this replacement in OCaml.</aside>
+</section>
+
+<!-- lazy by hand -->
+<section>
+  <h2><code>lazy</code>, made by hand</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">type 'a state =
+  | Delayed of (unit -> 'a)
+  | Value of 'a
+
+let delay f = ref (Delayed f)
+
+let force s = match !s with
+  | Value v -> v
+  | Delayed f ->
+      let v = f () in
+      s := Value v;
+      v</code></pre>
+    </div>
+    <div>
+      <p>A lazy value is a reference that holds a thunk, and after the first <code>force</code> the value.</p>
+      <pre class="fragment" data-fragment-index="0"><code class="language-ocaml">let s = delay (fun () ->
+  incr ticks; 6 * 7)
+
+let a = force s
+let b = force s</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="0">a=42 b=42 ticks=1</pre>
+    </div>
+  </div>
+  <div class="stack">
+    <div class="fragment out" data-fragment-index="2"><div class="box fragment" data-fragment-index="1">With <code>delay</code> we write the <code>fun () -></code> ourselves. <code>lazy e</code> is a <span class="hl">keyword</span>: a function would receive <code>e</code> already computed.</div></div>
+    <div class="box fragment" data-fragment-index="2">With a table in the place of the reference, we keep one result for each argument. This is the <span class="hl">memoisation</span> of a function: see the appendix.</div>
+  </div>
+  <aside class="notes">Recorded from demos/delay.ml. This is block 1's counter again: a closure and a state of its own, here the state says whether the work is done. OCaml's runtime does the same replacement inside the memory block of the lazy value. If the computation raises an exception, every later Lazy.force raises it again without running it; the force of this slide keeps nothing in that case and runs f again (run: two forces of a computation that fails, ticks=2 by hand, ticks=1 with lazy). From the next slide on we use the library: lazy and Lazy.force. Last click: the box changes, to one sentence on the memoisation of a function, which sends to the appendix at the end of the deck; the appendix is not presented.</aside>
+</section>
+
+<!-- fibs -->
+<section>
+  <h2>The Fibonacci numbers, as a list without end</h2>
+  <pre class="mid"><code class="language-haskell">fibs = 0 : 1 : zipWith (+) fibs (tail fibs)</code></pre>
+  <div id="sq-fibs"></div>
+  <div class="box fragment">The list is read at two places, one cell apart, and their sum is its next cell. Each cell is computed <span class="hl">once</span>, and read twice.</div>
+  <aside class="notes">Session 1 showed this line among the five answers and promised it for session 5. : is Haskell's ::, and zipWith (+) adds two lists element by element. Step or Run; six steps, one per new cell. The two readers move one cell to the right each time, and the cells they read are already there. The dark box is the rest of the list, not yet computed. The second counter says how many additions the same list costs when nothing is kept; the next slide gives the two numbers for 25 cells. Recorded from demos/Fibs.hs: take 10 fibs is [0,1,1,2,3,5,8,13,21,34]. Last year's lab builds this definition step by step (ones, nats, odds, then fibs); it is given as an exercise.</aside>
+</section>
+
+<!-- fibs counted -->
+<section>
+  <h2><code>fibs</code>: how many additions?</h2>
+  <pre class="mid"><code class="language-ocaml">and 'a seq = 'a node Lazy.t
+let rec fibs =
+  lazy (Cons (0, lazy (Cons (1, zip_with ( + ) fibs (tail fibs)))))</code></pre>
+  <p class="ask">The same list in OCaml. To compute its first 25 numbers, how many additions are needed?</p>
+  <table class="small fragment" data-fragment-index="0">
+    <tr><th>the rest of the sequence is</th><th>additions</th></tr>
+    <tr><td>a thunk, in OCaml</td><td>196 392</td></tr>
+    <tr><td>a <code>lazy</code> value, in OCaml</td><td>23</td></tr>
+    <tr><td>a list, in Haskell</td><td>23</td></tr>
+  </table>
+  <div class="box fragment" data-fragment-index="1">With thunks, <code>fibs</code> and <code>tail fibs</code> compute the same numbers again. With <code>lazy</code> they <span class="hl">share</span> them. In Haskell every value is a lazy value.</div>
+  <aside class="notes">The expected answer is 23: one addition for each number after the first two. Recorded from demos/stream.ml, where the additions are counted: 196 392 with fun () ->, 23 with lazy. Haskell's 23 is what call-by-need gives; it was not counted by a program. The OCaml on the slide is the version with lazy: the rest of the sequence is a lazy value in the place of a thunk, and the drawing of the slide before is the same. In demos/stream.ml its constructors are named LNil and LCons, beside the sequences of part 2; demos/fibs_lazy.ml is the program of the slide alone, with the type, zip_with and tail, which force their arguments with Lazy.force where part 2 called them. What is shared is a value that has a name: fibs is one list, read at two places. Two calls of a function with the same argument are two values, in Haskell too, and each is computed; keeping them is the memoisation of a function, in the appendix.</aside>
+</section>
+
+<!-- the queue -->
+<section>
+  <h2>Lab 2's queue, used twice</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let pop = function
+  | x :: front, rear ->
+      Some (x, (front, rear))
+  | [], rear ->
+      match rev rear with
+      | [] -> None
+      | x :: front ->
+          Some (x, (front, []))</code></pre>
+    </div>
+    <div>
+      <p>The queue is a front and a rear. When the front is empty, <code>pop</code> reverses the rear.</p>
+      <pre class="fragment" data-fragment-index="0"><code class="language-ocaml">(* q: eight elements pushed *)
+let a = pop q
+let b = pop q</code></pre>
+      <pre class="out tr rec fragment" data-fragment-index="0">a=1 b=1 reversals=2</pre>
+    </div>
+  </div>
+  <div class="box fragment" data-fragment-index="1">The queue is persistent: <code>q</code> can be used twice, and the reversal is paid twice. With <code>lazy</code> the reversal is suspended, shared, and <span class="hl">paid once</span>.</div>
+  <p class="fn fragment" data-fragment-index="1">We write it as homework: the last part of the warm-up's sheet. Source: Okasaki 1998, chapter 6, the banker's queue.</p>
+  <aside class="notes">Lab 2, part D, ended on this question: the queue costs one reversal for n pushes, on average, as long as each version is used once. Recorded from demos/delay.ml: two pops of the same q, reversals=2; with the reversal under lazy, reversals=1. What the slide shows is the effect in its smallest form. Okasaki's queue keeps the front as a stream and an invariant on the two lengths; that is for the warm-up and the reading.</aside>
+</section>
+
+<!-- conclusion -->
+<section>
+  <h2>Conclusion of block 2</h2>
+  <table class="concl c4">
+    <tr><th></th><th>the question</th><th>the program decides, in OCaml</th><th>the language decides, in Haskell</th></tr>
+    <tr><td class="s">1</td><td>When is a value computed?</td><td>When we call the <b>thunk</b> that holds it.</td><td>When it is used.</td></tr>
+    <tr><td class="s">2</td><td>How far is a sequence computed?</td><td>As far as we ask: a <b>sequence</b>.</td><td>Every list is a sequence.</td></tr>
+    <tr><td class="s">3</td><td>How many times?</td><td>Once, if we keep the result: <code>lazy</code>.</td><td>Once: every value is a lazy value.</td></tr>
+  </table>
+  <div class="box fragment" data-fragment-index="0">In this block a function held <span class="hl">a computation not yet run</span>: <code>unit -> 'a</code>. We call it to get a value.</div>
+  <div class="box fragment" data-fragment-index="1">In the next block a function holds <span class="hl">the rest of the computation</span>: <code>'a -> 'r</code>. We call it to give a value.</div>
+  <p class="fn fragment" data-fragment-index="1">Session 6: a promise is a value that is not there yet, together with what to do when it arrives.</p>
+  <aside class="notes">One line per part. Promises paid in this block: session 4's "the program delays by hand" and "laziness when the program decides"; session 1's lazy list in Haskell; session 2's question on the queue, in the warm-up. The two boxes are last year's slide "From thunks to continuations": a thunk is "do this later", a continuation is "what to do once we have the value". Session 6 puts the two together: a promise is a placeholder for a result, a signal that it has arrived, and the continuations registered on it. Long break here.</aside>
+</section>
+
+<!-- appendix -->
+<section class="part" data-background-color="#23373B">
+  <div class="eyebrow">APPENDIX · TO READ AT HOME</div>
+  <h1>Memoising a function</h1>
+  <div class="sub">Can a function remember what it has computed?</div>
+</section>
+
+<!-- memo -->
+<section>
+  <h2><code>memo</code>: a function that keeps a table</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let memo f =
+  let table = Hashtbl.create 16 in
+  fun x ->
+    match Hashtbl.find_opt table x with
+    | Some y -> y
+    | None ->
+        let y = f x in
+        Hashtbl.add table x y;
+        y</code></pre>
+    </div>
+    <div>
+      <p><code>memo f</code> makes a table, once, and returns a function.</p>
+      <ul class="why">
+        <li>Called on <code>x</code>, the function looks <code>x</code> up in the table.</li>
+        <li>If the result is there, it returns it, and <code>f</code> is not called.</li>
+        <li>If not, it calls <code>f</code>, keeps the result, and returns it.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box">The function returned is a <span class="hl">closure with a state</span>, as block 1's counter. <code>lazy</code> is the same with one entry: the table of a function of no argument.</div>
+  <aside class="notes">Not presented. memo : ('a -> 'b) -> 'a -> 'b. The table belongs to the function returned: nobody else can reach it. demos/memo.ml writes delay as memo applied to a function of no argument, and the tick counter reads 1, as on the slide "lazy, made by hand". The word is Michie's (1968, "Memo functions and machine learning").</aside>
+</section>
+
+<!-- memo fib -->
+<section>
+  <h2><code>memo fib</code>: the calls that the table sees</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let rec fib n =
+  if n &lt; 2 then n
+  else fib (n - 1) + fib (n - 2)
+
+let mfib = memo fib</code></pre>
+    </div>
+    <div>
+      <table class="small">
+        <tr><th></th><th>result</th><th>the body of <code>fib</code> ran</th></tr>
+        <tr><td><code>mfib 25</code></td><td>75025</td><td>242 785 times</td></tr>
+        <tr><td><code>mfib 25</code>, again</td><td>75025</td><td>0 times</td></tr>
+      </table>
+    </div>
+  </div>
+  <p>The second call is answered from the table. The first one is as slow as <code>fib 25</code>.</p>
+  <div class="box">Inside <code>fib</code>, the two recursive calls are calls of <code>fib</code>, not of <code>mfib</code>. The table sees only the calls that <span class="hl">we</span> make.</div>
+  <aside class="notes">Not presented. Recorded from demos/memo.ml, where the body counts its runs. The name fib, in the body of fib, is bound to fib for ever; memo cannot change it. The next slide changes the function so that it no longer calls itself.</aside>
+</section>
+
+<!-- memo_rec -->
+<section>
+  <h2><code>memo_rec</code>: the function receives the function to call</h2>
+  <div class="cols">
+    <div>
+      <pre><code class="language-ocaml">let fib' self n =
+  if n &lt; 2 then n
+  else self (n - 1) + self (n - 2)</code></pre>
+      <p><code>fib'</code> does not call itself: it has no <code>rec</code>. It calls <code>self</code>, which it receives.</p>
+      <pre class="out tr rec">memo_rec fib' 25 = 75025
+the body ran 26 times</pre>
+    </div>
+    <div>
+      <pre><code class="language-ocaml">let memo_rec f =
+  let table = Hashtbl.create 16 in
+  let rec g x =
+    match Hashtbl.find_opt table x with
+    | Some y -> y
+    | None ->
+        let y = f g x in
+        Hashtbl.add table x y;
+        y
+  in
+  g</code></pre>
+    </div>
+  </div>
+  <div class="box"><code>memo_rec</code> hands <code>g</code>, the function with the table, to <code>f</code> as its <code>self</code>. Every call goes <span class="hl">through the table</span>.</div>
+  <aside class="notes">Not presented. One line differs from memo: f g x in the place of f x. 26 is one run of the body for each argument from 0 to 25. fib' is written as the function that session 4 gave to Y: it receives "itself" as an argument. memo_rec is a fixed point that keeps a table. Recorded from demos/memo.ml.</aside>
+</section>
+
+<!-- orders -->
+<section>
+  <h2>Functions of order 1, 2 and 3</h2>
+  <table class="small orders">
+    <tr><th></th><th>its type</th><th>order</th><th></th></tr>
+    <tr><td><code>fib</code></td><td><code>int -> int</code></td><td>1</td><td>its argument is not a function</td></tr>
+    <tr><td><code>memo</code></td><td><code>('a -> 'b) -> ('a -> 'b)</code></td><td>2</td><td>its argument is a function</td></tr>
+    <tr><td><code>fib'</code></td><td><code>(int -> int) -> (int -> int)</code></td><td>2</td><td></td></tr>
+    <tr><td><code>memo_rec</code></td><td><code>(('a -> 'b) -> ('a -> 'b)) -> ('a -> 'b)</code></td><td>3</td><td>its argument is a function whose argument is a function</td></tr>
+  </table>
+  <div class="box">The three ways to keep a result are one construction: a reference for <b>one value</b> (<code>lazy</code>), a list for <b>each position</b> (<code>fibs</code>), a table for <b>each argument</b> (<code>memo</code>).</div>
+  <aside class="notes">Not presented. The order of a type without an arrow is 0; the order of a -> b is the larger of the order of a plus one and the order of b. fold, map and filter of block 1 are of order 2. Functions of order 3 are rare in everyday code; fixed points and memo_rec are the usual examples. In block 2, fibs on the slide with the two readers is a table whose keys are the positions in the list.</aside>
+</section>
+
+<!-- exercises -->
+<section>
+  <h2>Two exercises</h2>
+  <p><b>1.</b> Given <code>memo</code>, write <code>delay</code> and <code>force</code> of the slide “<code>lazy</code>, made by hand” with it, and count the ticks.</p>
+  <p><b>2.</b> Given <code>memo_rec</code> and the numbers of Pascal's triangle,</p>
+  <pre class="mid tight"><code class="language-ocaml">let rec choose (n, k) =
+  if k = 0 || k = n then 1
+  else choose (n - 1, k - 1) + choose (n - 1, k)</code></pre>
+  <p>write <code>choose'</code>, which receives the function to call, and count how many times each body runs for <code>(24, 12)</code>.</p>
+  <table class="small fragment">
+    <tr><th></th><th>result</th><th>the body ran</th></tr>
+    <tr><td><code>choose (24, 12)</code></td><td>2 704 156</td><td>5 408 311 times</td></tr>
+    <tr><td><code>memo_rec choose' (24, 12)</code></td><td>2 704 156</td><td>168 times</td></tr>
+  </table>
+  <aside class="notes">Not presented, and not collected. The answers are in demos/memo.ml; the table appears on a click. For exercise 1: delay f is memo f, where f takes (), and force s is s (). For exercise 2 the argument is a pair, and the table has pairs as its keys; 168 is the number of pairs that choose (24, 12) depends on.</aside>
+</section>
+
+</div>
+<div class="toc" id="toc" hidden>
+  <div class="toc-inner">
+    <div class="toc-title">Parts <span class="muted">— T closes · Esc overview · Shift+←/→ previous/next part · 1–9 jump</span></div>
+    <ol id="toc-list"></ol>
+  </div>
+</div>
+</div>
+
+<script>
+  // block 2's animations; each exposes finish() so the print shows the final frame
+  window.__anims = [];
+  (() => {
+    const $ = id => document.getElementById(id);
+    [['sq-left', { mode: 'fold', variant: 'left' }], ['sq-right', { mode: 'fold', variant: 'right' }],
+     ['sq-thunk', { mode: 'fold', variant: 'thunk' }], ['sq-cells', { mode: 'cells', n: 3 }],
+     ['sq-pipe', { mode: 'pipeline', n: 5, every: 1000 }], ['sq-twice', { mode: 'twice' }],
+     ['sq-fibs', { mode: 'fibs', n: 8 }], ['sq-lazylist', { mode: 'lazylist', n: 5 }]]
+      .forEach(([id, o]) => window.__anims.push(SeqViz.mount($(id), o)));
+  })();
+</script>
+<script src="vendor/reveal/reveal.min.js"></script>
+<script src="vendor/reveal/plugin/notes/notes.min.js"></script>
+<script src="vendor/hljs/highlight.min.js"></script>
+<script src="vendor/hljs/languages/ocaml.min.js"></script>
+<script src="vendor/hljs/languages/c.min.js"></script>
+<script src="vendor/hljs/languages/python.min.js"></script>
+<script src="vendor/hljs/languages/haskell.min.js"></script>
+<script src="vendor/hljs/languages/java.min.js"></script>
+<script src="vendor/hljs/languages/javascript.min.js"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="vendor/mathjax/tex-svg.js"></script>
+<script>
+  // the code shown on a slide IS the code that runs: <pre> is filled from its <script class="src">
+  const dedent = t => { const ls = t.replace(/^\n+|\s+$/g, '').split('\n'); const ind = Math.min(...ls.filter(l => l.trim()).map(l => l.match(/^ */)[0].length)); return ls.map(l => l.slice(ind)).join('\n'); };
+  document.querySelectorAll('code[data-src]').forEach(c => { c.textContent = dedent(document.getElementById(c.dataset.src).textContent); });
+  const J = v => JSON.stringify(v).replace(/,/g, ', ');
+  const show = (id, text) => { document.getElementById(id).textContent = text; };
+  // Runnable code is editable: click, type, Run. Nothing is saved; Reset restores the slide.
+  document.querySelectorAll('code[data-src]').forEach(c => {
+    c.setAttribute('contenteditable', 'true'); c.setAttribute('spellcheck', 'false'); c.title = 'edit this code, then Run';
+    c.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); document.execCommand('insertText', false, '\n'); } else if (e.key === 'Tab') { e.preventDefault(); document.execCommand('insertText', false, '  '); } });
+    c.addEventListener('paste', e => { e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain')); });
+  });
+  // runJS(button, out, needs): runs the JavaScript AS SHOWN in the listed code blocks (ids of their
+  // <script class="src">, comma-separated, in order) in a fresh scope; every console.log is a line of output.
+  const shownSrc = id => { const c = document.querySelector('code[data-src="' + id + '"]'); return c ? c.textContent : dedent(document.getElementById(id).textContent); };
+  const fmt = v => typeof v === 'string' ? v : v === undefined ? 'undefined' : typeof v === 'function' ? '[function]' : JSON.stringify(v).replace(/"([A-Za-z_]\w*)":/g, '$1: ').replace(/,/g, ', ').replace(/\{/g, '{ ').replace(/\}/g, ' }');
+  const runJS = (btn, out, ids) => {
+    const lines = [], log = (...xs) => lines.push(xs.map(fmt).join(' '));
+    try { new Function('console', ids.split(',').map(shownSrc).join('\n'))({ log }); }
+    catch (e) { lines.push(e.name + ': ' + e.message); }
+    show(out, lines.join('\n') || ' ');
+  };
+  const reset = (btn, out) => {
+    btn.closest('section').querySelectorAll('code[data-src]').forEach(c => { c.textContent = dedent(document.getElementById(c.dataset.src).textContent); c.removeAttribute('data-highlighted'); hljs.highlightElement(c); });
+    out.split(',').forEach(id => { const o = document.getElementById(id); o.textContent = ' '; o.removeAttribute('data-label'); });
+  };
+  // a small label with the language's name in the corner of every code box
+  const LANG = { ocaml: 'OCaml', python: 'Python', js: 'JavaScript', javascript: 'JavaScript', c: 'C', java: 'Java', haskell: 'Haskell', smalltalk: 'Smalltalk', go: 'Go' };
+  document.querySelectorAll('pre > code').forEach(c => { const pre = c.parentElement; if (pre.dataset.lang) return; const m = [...c.classList].map(k => k.match(/^language-(.+)$/)).find(Boolean); if (m && LANG[m[1]]) pre.dataset.lang = LANG[m[1]]; });
+  hljs.highlightAll();
+
+  // Parts become vertical stacks (columns in the overview); navigation itself is linear.
+  (() => {
+    const slides = document.querySelector('.reveal .slides');
+    let stack = null;
+    [...slides.children].forEach(s => {
+      if (s.classList.contains('part')) { stack = document.createElement('section'); slides.insertBefore(stack, s); stack.appendChild(s); }
+      else if (stack && s.tagName === 'SECTION') stack.appendChild(s);
+    });
+  })();
+  const parts = [...document.querySelectorAll('.reveal .slides > section')].map((s, h) => {
+    const d = s.querySelector('section.part') || (s.classList.contains('part') ? s : null);
+    return d ? { h, name: d.querySelector('h1').textContent, sub: (d.querySelector('.sub') || {}).textContent || '' } : null;
+  }).filter(Boolean);
+  const tocList = document.getElementById('toc-list');
+  parts.forEach(p => { const li = document.createElement('li'); li.innerHTML = `<b>${p.name}</b> <span class="muted">${p.sub}</span>`; li.onclick = () => { Reveal.slide(p.h, 0); toggleToc(false); }; tocList.appendChild(li); });
+  const toggleToc = (on) => { const t = document.getElementById('toc'); t.hidden = on === undefined ? !t.hidden : !on; };
+
+  Reveal.initialize({
+    width: 1600, height: 900, margin: 0.04, minScale: 0.2, maxScale: 2.0,
+    center: false, hash: true, transition: 'none', backgroundTransition: 'none',
+    slideNumber: 'c/t', controls: false, progress: true, navigationMode: 'linear',
+    scrollActivationWidth: null,                  // never switch to reveal's scroll view in a narrow window
+    keyboard: { 84: () => toggleToc() },          // T: list of parts
+    plugins: [ RevealNotes ]
+  });
+
+
+  // No widows: if a line of text wraps with a short tail, shrink it a few percent
+  // until it fits on one line; if shrinking would not do it, leave it as it is.
+  function fixWidows(root) {
+    root.querySelectorAll('p, li, td, th, .box, h2, h3').forEach(el => {
+      if (el.dataset.widow || el.closest('pre') || el.classList.contains('fn') || el.querySelector('ul, ol, div, pre, table, br')) return;
+      el.dataset.widow = '1';
+      if (el.style.fontSize) return;               // sized by hand in the editor: not ours to shrink
+      const cs = getComputedStyle(el), lh = parseFloat(cs.lineHeight);
+      if (!lh) return;
+      const inner = () => el.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      const lines = () => Math.round(inner() / lh);
+      if (lines() !== 2) return;
+      const base = parseFloat(cs.fontSize), floor = 0.8;
+      for (let f = 0.98; f >= floor - 1e-9; f -= 0.02) { el.style.fontSize = (base * f) + 'px'; if (lines() === 1) return; }
+      el.style.fontSize = '';
+    });
+  }
+  const runWidows = () => document.querySelectorAll('.reveal .slides section').forEach(s => { if (getComputedStyle(s).display !== 'none') fixWidows(s); });
+  Reveal.on('ready', runWidows);
+  Reveal.on('slidechanged', runWidows);
+
+  // Part shortcuts: Shift+Right / Shift+Left = next / previous part; digits 1-9 = part n.
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey || e.altKey || e.target.isContentEditable) return;
+    const h = Reveal.getIndices().h;
+    // reveal.js binds Shift+Right / Shift+Left to last / first slide; stop it from seeing these.
+    const swallow = () => { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); };
+    if (e.shiftKey && e.key === 'ArrowRight') { const p = parts.find(p => p.h > h); if (p) Reveal.slide(p.h, 0); swallow(); }
+    else if (e.shiftKey && e.key === 'ArrowLeft') { const ps = parts.filter(p => p.h < h); const p = ps[ps.length - 1]; Reveal.slide(p ? p.h : 0, 0); swallow(); }
+    else if (/^[1-9]$/.test(e.key) && !e.shiftKey) { const p = parts[+e.key - 1]; if (p) { Reveal.slide(p.h, 0); swallow(); } }
+  }, true);
+
+  // Remember where we are across reloads and republishes (per browser; the URL hash wins when present).
+  const POS = 'pp26-position-' + location.pathname.split('/').pop();
+  const savePos = () => { try { localStorage.setItem(POS, JSON.stringify(Reveal.getIndices())); } catch (e) {} };
+  Reveal.on('slidechanged', savePos);
+  Reveal.on('fragmentshown', savePos);
+  Reveal.on('fragmenthidden', savePos);
+  Reveal.on('ready', () => {
+    if (location.hash && location.hash !== '#/' && location.hash !== '#/0') return;
+    try { const p = JSON.parse(localStorage.getItem(POS)); if (p && typeof p.h === 'number') Reveal.slide(p.h, p.v || 0, typeof p.f === 'number' ? p.f : undefined); } catch (e) {}
+  });
+  document.fonts.ready.then(() => setTimeout(runWidows, 50));
+
+  // An element with data-lit="N" (or "N,M") is lit while step N (or M) is the latest step shown on its slide.
+  const syncLit = () => { const f = Reveal.getIndices().f; document.querySelectorAll('[data-lit]').forEach(e => e.classList.toggle('lit', e.closest('section') === Reveal.getCurrentSlide() && f !== undefined && e.dataset.lit.split(',').map(Number).includes(f))); };
+  ['fragmentshown', 'fragmenthidden', 'slidechanged', 'ready'].forEach(ev => Reveal.on(ev, () => setTimeout(syncLit, 0)));
+
+  // Carousel: tabs follow the current-visible panel; clicking a tab jumps to its fragment.
+  const syncCar = () => document.querySelectorAll('.car').forEach(car => {
+    const panels = [...car.querySelectorAll('.car-panel')], tabs = [...car.querySelectorAll('.car-tabs span')];
+    const cur = panels.findIndex(p => p.classList.contains('current-fragment'));
+    tabs.forEach((t, i) => t.classList.toggle('on', i === cur));
+  });
+  ['fragmentshown', 'fragmenthidden', 'slidechanged', 'ready'].forEach(ev => Reveal.on(ev, syncCar));
+  document.querySelectorAll('.car-tabs span').forEach((t, i) => t.onclick = () => { const p = t.closest('.car').querySelectorAll('.car-panel')[i]; const idx = Reveal.getIndices(); Reveal.slide(idx.h, idx.v, +p.dataset.fragmentIndex); });
+
+  // The matrix slide: each click fills one whole column (Way 1) or one whole row (Way 2).
+  (() => {
+    const m = document.getElementById('matrix'); if (!m) return;
+    const sec = m.closest('section');
+    const clear = () => m.querySelectorAll('.on').forEach(e => e.classList.remove('on', 'w1', 'w2'));
+    const cell = (r, c) => m.querySelector(`td.cell[data-r="${r}"][data-c="${c}"]`);
+    const apply = () => {
+      clear();
+      const vis = [...sec.querySelectorAll('[data-anim].visible')];
+      const rows = vis.filter(f => f.dataset.anim === 'row').map(f => +f.dataset.n), cols = vis.filter(f => f.dataset.anim === 'col').map(f => +f.dataset.n);
+      const mark = (el, w) => { if (el) el.classList.add('on', w); };
+      if (rows.length) { const R = Math.max(...rows) === 1 ? 2 : 3; for (let r = 1; r <= R; r++) { mark(m.querySelector(`td.rl[data-r="${r}"]`), 'w2'); for (let c = 1; c <= 3; c++) mark(cell(r, c), 'w2'); } }
+      else if (cols.length) { const C = Math.max(...cols) === 1 ? 3 : 4; for (let c = 1; c <= C; c++) { mark(m.querySelector(`th.hd[data-c="${c}"]`), 'w1'); for (let r = 1; r <= 2; r++) mark(cell(r, c), 'w1'); } }
+    };
+    ['fragmentshown', 'fragmenthidden', 'slidechanged', 'ready'].forEach(ev => Reveal.on(ev, () => setTimeout(apply, 0)));
+    window.__matrixApply = apply;
+  })();
+
+  // Print (?print-pdf): the page is static, so run what the clicks would have run —
+  // the demos' Run buttons, the matrix in its final state, the carousel's first panel.
+  if (/print-pdf/.test(location.search)) {
+    const printPrep = () => {
+      document.querySelectorAll('button.run:not(.reset)').forEach(b => { if (!b.closest('.stepper, .anim, .fold')) { try { b.onclick(); } catch (e) {} } });
+      (window.__anims || []).forEach(a => { try { a.finish(); } catch (e) {} });
+      document.querySelectorAll('.car').forEach(car => {
+        const p = car.querySelector('.car-panel'); if (p) p.classList.add('visible', 'current-fragment');
+        const t = car.querySelector('.car-tabs span'); if (t) t.classList.add('on');
+      });
+      document.querySelectorAll('[data-anim]').forEach(f => f.classList.add('visible'));
+      if (window.__matrixApply) window.__matrixApply();
+    };
+    Reveal.on('ready', () => setTimeout(printPrep, 300));
+    Reveal.on('pdf-ready', () => setTimeout(printPrep, 300));
+  }
+
+  // Local preview only: reload when the built file changes on disk (the position is remembered above).
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    let stamp = null;
+    setInterval(async () => {
+      try {
+        const r = await fetch(location.pathname, { method: 'HEAD', cache: 'no-store' });
+        const m = r.headers.get('Last-Modified') + '/' + r.headers.get('Content-Length');
+        if (stamp === null) stamp = m; else if (m !== stamp) { if (window.__editHolds && window.__editHolds()) return; savePos(); location.reload(); }
+      } catch (e) {}
+    }, 1500);
+  }
+</script>
+</body>
+</html>
