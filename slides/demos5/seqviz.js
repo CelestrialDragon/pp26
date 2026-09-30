@@ -135,25 +135,26 @@
   };
 
   MODES.cells = function (o) {
-    const n = o.n || 3, frames = [], YL = 120, YS = 330, U = 250, X = k => 330 + k * U;
+    // the cells are drawn at 0.72 of their size (84 by 46): at full size the slide was too dense
+    const n = o.n || 3, frames = [], S = 0.72, YL = 108, YS = 292, U = 230, X = k => 330 + k * U;
     const base = () => {
       const it = {
         cap1: { kind: 'label', x: 40, y: 40, text: 'a list: every cell is built before we read the first one', cls: 'cap' },
-        cap2: { kind: 'label', x: 40, y: YS - 96, text: 'a sequence: a cell is built when we call the thunk', cls: 'cap' },
+        cap2: { kind: 'label', x: 40, y: YS - 84, text: 'a sequence: a cell is built when we call the thunk', cls: 'cap' },
         n1: { kind: 'label', x: 40, y: YL + 11, text: '[0; 1; 2]', cls: 'mono start' },
         n2: { kind: 'label', x: 40, y: YS + 11, text: 'nats 0', cls: 'mono start' },
-        Lin: { kind: 'edge', x1: 210, y1: YL, x2: X(0) - 66, y2: YL, cls: 'arrow ptr' },
-        Sin: { kind: 'edge', x1: 210, y1: YS, x2: X(0) - 66, y2: YS, cls: 'arrow ptr' },
+        Lin: { kind: 'edge', x1: 210, y1: YL, x2: X(0) - 50, y2: YL, cls: 'arrow ptr' },
+        Sin: { kind: 'edge', x1: 210, y1: YS, x2: X(0) - 50, y2: YS, cls: 'arrow ptr' },
         Lnil: { kind: 'label', x: X(3) - 20, y: YL + 11, text: '[]', cls: 'mono' }
       };
       for (let i = 0; i < 3; i++) {
-        it['L' + i] = { kind: 'pair', x: X(i), y: YL, text: String(i), cls: '' };
-        it['La' + i] = { kind: 'edge', x1: X(i) + 40, y1: YL, x2: X(i + 1) - (i < 2 ? 66 : 50), y2: YL, cls: 'arrow ptr' };
+        it['L' + i] = { kind: 'pair', s: S, x: X(i), y: YL, text: String(i), cls: '' };
+        it['La' + i] = { kind: 'edge', x1: X(i) + 29, y1: YL, x2: X(i + 1) - 50, y2: YL, cls: 'arrow ptr' };
       }
       return it;
     };
-    const seal = (k, cls) => ({ kind: 'seal', x: X(k) + 6, y: YS, w: 140, h: 64, text: 'nats ' + k, sub: '', cls: cls || '' });
-    const tag = k => ({ kind: 'chip', x: X(k) - 128, y: YS + 46, w: 150, h: 40, text: 'nats ' + k + ' ()', cls: 'tag' });
+    const seal = (k, cls) => ({ kind: 'seal', x: X(k) + 20, y: YS, w: 124, h: 46, text: 'nats ' + k, sub: '', cls: cls || '' });
+    const tag = k => ({ kind: 'chip', x: X(k) - 122, y: YS + 40, w: 150, h: 40, text: 'nats ' + k + ' ()', cls: 'tag' });
     const it = base(); it.s0 = seal(0);
     frames.push({ items: clone(it), what: 'nats 0 is a thunk: no number has been computed', counters: [['cells built', 0]] });
     for (let k = 0; k < n; k++) {
@@ -161,13 +162,13 @@
       frames.push({ items: clone(it), what: 'we call the thunk: nats ' + k + ' ()', counters: [['cells built', k]] });
       delete it['s' + k];
       it['g' + k] = Object.assign(tag(k), { from: { x: X(k), y: YS } });
-      it['p' + k] = { kind: 'pair', x: X(k), y: YS, text: String(k), cls: 'new' };
-      it['q' + k] = { kind: 'edge', x1: X(k) + 40, y1: YS, x2: X(k + 1) - 66, y2: YS, cls: 'arrow ptr' };
+      it['p' + k] = { kind: 'pair', s: S, x: X(k), y: YS, text: String(k), cls: 'new' };
+      it['q' + k] = { kind: 'edge', x1: X(k) + 29, y1: YS, x2: X(k + 1) - 50, y2: YS, cls: 'arrow ptr' };
       it['s' + (k + 1)] = Object.assign(seal(k + 1), { from: { x: X(k), y: YS } });
       frames.push({ items: clone(it), what: 'it builds one cell: the number ' + k + ', and the thunk nats ' + (k + 1), counters: [['cells built', k + 1]] });
       it['p' + k].cls = ''; delete it['g' + k].from; delete it['s' + (k + 1)].from;
     }
-    return { frames, w: 1400, h: 400 };
+    return { frames, w: 1400, h: 364 };
   };
 
   MODES.pipeline = function (o) {
@@ -522,10 +523,11 @@
           box(nd.rect, Math.max(56, it.text.length * 19 + 22), 52, 10);
           nd.text.textContent = it.text; nd.text.setAttribute('y', 11);
         } else if (it.kind === 'pair') {
-          box(nd.rect, 116, 64, 10); nd.rect.setAttribute('filter', 'url(#' + uid + '-sh)');
-          nd.div.setAttribute('x1', 18); nd.div.setAttribute('x2', 18); nd.div.setAttribute('y1', -32); nd.div.setAttribute('y2', 32);
-          nd.text.textContent = it.text; nd.text.setAttribute('x', -20); nd.text.setAttribute('y', 12);
-          nd.dot.setAttribute('cx', 38); nd.dot.setAttribute('cy', 0); nd.dot.setAttribute('r', 6);
+          const s = it.s || 1;   // a cell is 116 by 64; s makes it smaller
+          box(nd.rect, 116 * s, 64 * s, 10 * s); nd.rect.setAttribute('filter', 'url(#' + uid + '-sh)');
+          nd.div.setAttribute('x1', 18 * s); nd.div.setAttribute('x2', 18 * s); nd.div.setAttribute('y1', -32 * s); nd.div.setAttribute('y2', 32 * s);
+          nd.text.textContent = it.text; nd.text.setAttribute('x', -20 * s); nd.text.setAttribute('y', s < 1 ? 10 : 12);
+          nd.dot.setAttribute('cx', 38 * s); nd.dot.setAttribute('cy', 0); nd.dot.setAttribute('r', Math.max(4.5, 6 * s));
         } else if (it.kind === 'seal') {
           box(nd.rect, it.w, it.h, 12);
           nd.rect.style.fill = /kept|called/.test(it.cls) ? '' : 'url(#' + uid + '-hatch)';

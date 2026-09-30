@@ -396,5 +396,6 @@ at one position and, in its failure continuation, at the next one. The status li
 - **A tune without end.** Given a melody of lab 3 as a list of events, write the sequence that
   repeats it for ever, and play sixteen events of it through lab 3's `wav.ml`.
 
-Reading: Leroy, *Control structures in programming languages* (2026), chapters 6 and 7;
+Reading: Leroy, *Control structures in programming languages* (2026), [chapter 4](https://xavierleroy.org/control-structures/book/main007.html),
+sections 4.1 and 4.2 (chapters 6 and 7, on continuations, go with Part C and session 6);
 CS3110, chapter 9, section 9.4, sequences.
