@@ -60,11 +60,11 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
 </section>
 <section class="story">
   <h2>This session</h2>
-  <p>Session 5 is about functions passed as values, and how a program uses them to control
-     a traversal or a computation:</p>
+  <p>Session 5 is about functions passed as values, and how a program uses them to control,
+     step by step, a traversal of its data and its own computation:</p>
   <ul>
     <li>two styles of iteration, internal and external,</li>
-    <li>delayed evaluation and streams,</li>
+    <li>delayed evaluation: thunks, sequences computed on demand, memoisation,</li>
     <li>continuations: the rest of a computation, passed as a function.</li>
   </ul>
 </section>
@@ -74,21 +74,28 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
   <table class="parts">
     <tbody>
       <tr><td class="p">1</td><td><strong>Iterators: who drives the traversal?</strong>
-          Closures and what they capture; <code>map</code>, <code>filter</code> and <code>fold</code>;
-          internal iteration (the collection calls our function) against external iteration (we ask
-          for the next element); iterators in Java and OCaml, generators in Python and JavaScript.</td></tr>
+          Closures and what they capture; <code>map</code>, <code>filter</code> and <code>length</code>
+          written with a fold; internal iteration (the list calls our function) and how to stop it
+          before the last element; external iteration (we ask for the next element); an iterator
+          written by hand in Java and in OCaml; a generator in JavaScript, and the object that the
+          compiler makes of it.</td></tr>
       <tr><td class="p">2</td><td><strong>Thunks and streams: when is a value computed?</strong>
-          A thunk is a function that delays a computation until its value is needed. With thunks we
-          build streams, which are sequences computed on demand and possibly infinite, and we add
-          memoisation so that a value is computed at most once.</td></tr>
+          A thunk is a function that holds a computation not yet run. With thunks we choose when a
+          value is computed; with sequences (streams), how far a list is computed, and it can be
+          without end; with memoisation, that a value is computed at most once. Each time we make
+          the choice ourselves in OCaml, then look at Haskell, where the language makes it. An
+          appendix to read at home is on memoising a function.</td></tr>
       <tr><td class="p">3</td><td><strong>Continuations: what does the computation do next?</strong>
-          A continuation is a function that represents the rest of a computation. We write traversals
-          in continuation-passing style, derive an iterator from one, and use two continuations, one
-          for success and one for failure, to search with backtracking.</td></tr>
+          A continuation is a function that represents the rest of a computation, which the machine
+          keeps in frames. We write <code>sum</code> on a list and <code>count</code> on a tree in
+          continuation-passing style, keep a continuation to make a sequence from a tree, and use
+          two continuations, one for success and one for failure, for exceptions and for a search
+          with backtracking.</td></tr>
     </tbody>
   </table>
-  <p class="p">The examples use the melody from lab 3 and ropes, the tree structure in which text
-     editors store a document. In the quest we write a mini text editor.</p>
+  <p class="p">The examples of the lecture are on lists and sequences, and in block 3 on the melody
+     from lab 3. In the quest we write a mini text editor on a rope, the tree structure in which
+     text editors store a document.</p>
 </section>
 
   </div>
