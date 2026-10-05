@@ -194,10 +194,17 @@ td.ttl .n{display:inline-block;width:1.5rem;text-indent:0;color:var(--ink3);
 td.ttl{width:30%;min-width:16rem}
 td.mat{width:auto}
 td.mat .none{color:var(--faint)}
-tr.partrow td{background:var(--side);padding:.55rem .8rem;
-  font:600 .68rem/1.5 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
-tr.partrow .pill{color:var(--acc-t);margin-right:.5rem}
-tr.partrow .dim{font-weight:400;letter-spacing:.02em;text-transform:none;font-size:.78rem}
+/* a part's row: a tinted band with a rule above, its name in full ink, and
+   under it one line that says what the part is about */
+tr.partrow td{background:var(--acc-l);padding:.8rem .8rem .75rem;border-top:2px solid var(--acc-t);
+  font:700 .76rem/1.5 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+tr.partrow .pill{background:var(--acc-t);color:var(--bg);padding:.28rem .5rem;border-radius:5px;margin-right:.6rem}
+tr.partrow .dim{font-weight:400;letter-spacing:.02em;text-transform:none;font-size:.8rem;color:var(--ink2);margin-left:.35rem}
+tr.partrow .psub{margin-top:.4rem;font:400 .9rem/1.45 var(--sans);letter-spacing:0;text-transform:none;color:var(--ink2)}
+tr.partrow .psub::first-letter,.stl::first-letter{text-transform:uppercase}
+/* a session's subtitle: under the title, aligned with its first word */
+td.ttl .stl{padding-left:1.5rem;margin-top:.2rem;font-size:.84rem;line-height:1.45;color:var(--ink2)}
+.hero p.stl{margin:.35rem 0 .9rem;font-size:1.02rem;line-height:1.45;color:var(--ink2)}
 tr.now td{background:var(--sunk)}
 tr.now td.date{box-shadow:inset 3px 0 0 var(--wine);color:var(--wine);font-weight:600}
 tr.done td.date{color:var(--ink3)}
