@@ -213,7 +213,7 @@ tr.has-blocks td.ttl,tr.has-blocks td.blocks{border-bottom:none;padding-bottom:.
 tr.block td{border-bottom:none;padding-top:.12rem;padding-bottom:.12rem}
 tr.block.last td{border-bottom:1px solid var(--line-soft);padding-bottom:.75rem}
 tr.block td.ttl{padding-left:calc(2.55rem + 3.9rem);text-indent:-3.9rem;font-size:.84rem;color:var(--ink2)}
-.blk{display:inline-block;width:3.6rem;margin-right:.3rem;text-indent:0;font:500 .64rem/1 var(--mono);letter-spacing:.08em;
+.blk{display:inline-block;width:3.6rem;margin-right:.3rem;text-indent:0;font:600 .64rem/1 var(--mono);letter-spacing:.08em;
   text-transform:uppercase;color:color-mix(in srgb,var(--wine) 70%,var(--bg))}
 td.ttl .blk-m{display:none}
 
