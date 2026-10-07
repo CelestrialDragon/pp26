@@ -2,10 +2,10 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>S2 Persistent Data Structures - PP26</title>
+<title>S2 Persistent and Ephemeral Data Structures - PP26</title>
 <meta name="description" content="This course examines key design decisions and major differences between programming languages, focusing on characteristics such as state, control flow, process communication, data ">
 <meta name="theme-color" content="#211a52">
-<meta property="og:title" content="S2 Persistent Data Structures - PP26">
+<meta property="og:title" content="S2 Persistent and Ephemeral Data Structures - PP26">
 <meta property="og:description" content="This course examines key design decisions and major differences between programming languages, focusing on characteristics such as state, control flow, process communication, data ">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://homes.cs.aau.dk/~lego/pp26/">
@@ -23,9 +23,9 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
     <b>Programming<br>Paradigms</b>
   </a>
   <p class="brand-sub">SW7 &middot; Autumn 2026 &middot; AAU Copenhagen</p>
-  <nav aria-label="Course"><ul><li><a href="index.html">Overview</a></li><li><a href="index.html#sessions">Schedule</a></li><li><a href="index.html#exam">Exam format</a></li><li><a href="index.html#materials">Materials</a></li><li><a href="https://www.moodle.aau.dk/course/view.php?id=60967">Moodle ↗</a></li><li><a href="https://github.com/leon-gondelman/pp26">Repository ↗</a></li></ul></nav>
+  <nav aria-label="Course"><ul><li><a href="index.html">Overview</a></li><li><a href="index.html#sessions">Schedule</a></li><li><a href="exam.html">Exam format</a></li><li><a href="index.html#materials">Materials</a></li><li><a href="https://www.moodle.aau.dk/course/view.php?id=60967">Moodle ↗</a></li><li><a href="https://github.com/leon-gondelman/pp26">Repository ↗</a></li></ul></nav>
   <p class="railhead">Sessions</p>
-  <nav aria-label="Sessions"><ol class="railsessions"><li><a href="s1.html"><span class="n">01</span><span>Intro</span></a></li><li><a href="s2.html" aria-current='page'><span class="n">02</span><span>Persistent Data Structures</span></a></li><li><a href="s3.html"><span class="n">03</span><span>Algebraic Data Types and Objects</span></a></li><li><a href="s4.html"><span class="n">04</span><span>Functional Programming</span></a></li><li><a href="s5.html"><span class="n">05</span><span>Higher-Order Functions</span></a></li><li><a href="s6.html"><span class="n">06</span><span>Asynchronous Programming</span></a></li><li><a href="s7.html"><span class="n">07</span><span>Multi-Threading</span></a></li><li><a href="s8.html"><span class="n">08</span><span>Message Passing</span></a></li><li><a href="s9.html"><span class="n">09</span><span>Static Type Systems</span></a></li><li><a href="s10.html"><span class="n">10</span><span>Polymorphism</span></a></li><li><a href="s11.html"><span class="n">11</span><span>Data Abstraction</span></a></li><li><a href="s12.html"><span class="n">12</span><span>Declarative Programming and Conclusion</span></a></li></ol></nav>
+  <nav aria-label="Sessions"><ol class="railsessions"><li><a href="s1.html"><span class="n">01</span><span>Intro</span></a></li><li><a href="s2.html" aria-current='page'><span class="n">02</span><span>Persistent and Ephemeral Data Structures</span></a></li><li><a href="s3.html"><span class="n">03</span><span>Algebraic Data Types and Objects</span></a></li><li><a href="s4.html"><span class="n">04</span><span>Functional Programming and Control</span></a></li><li><a href="s5.html"><span class="n">05</span><span>Functions as Values: Iterators and Streams</span></a></li><li><a href="s6.html"><span class="n">06</span><span>Asynchronous Programming</span></a></li><li><a href="s7.html"><span class="n">07</span><span>Multi-Threading</span></a></li><li><a href="s8.html"><span class="n">08</span><span>Message Passing</span></a></li><li><a href="s9.html"><span class="n">09</span><span>Failure and Recovery</span></a></li><li><a href="s10.html"><span class="n">10</span><span>Static Type Systems</span></a></li><li><a href="s11.html"><span class="n">11</span><span>Polymorphism</span></a></li><li><a href="s12.html"><span class="n">12</span><span>Data Abstraction</span></a></li><li><a href="s13.html"><span class="n">13</span><span>Declarative Programming and Conclusion</span></a></li></ol></nav>
   <div class="railfoot">
     <a class="aaumark" href="https://www.en.aau.dk/">
       <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aalborg University" focusable="false"><path d="M56.913 45.79c-1.532-.698-3.072-.989-5.688-2.844-6.654-4.72-9.649-10.186-5.388-21.751 2.459-6.671 3.464-11.579 3.319-18.053-.082-.064-.406-.277-.483-.341-1.326 8.045-3.543 12.011-8.535 20.115-11.296 18.345-.675 29.574 4.344 33.605 4.99-2.878 9.253-7.061 12.431-12.222a29.9 29.9 0 0 1-.0-.0Z"/><path d="M44.807 3.108a44 44 0 0 0-.586-.312c-2.86 7.061-6.717 10.696-13.34 16.028-14.096 11.348-12.242 24.428-6.037 34.673a29.9 29.9 0 0 0 9.219.219c-5.916-9.028-8.436-19.409 1.243-31.63 5.75-7.262 8.16-11.708 9.501-18.978Z"/><path d="M42.83 2.093A30 30 0 0 0 30.001 0C13.432 0 0 13.432 0 30c0 7.61 2.834 14.558 7.503 19.845.363-14.55 4.184-21.62 17.203-28.462 8.876-4.665 14.2-8.256 18.124-19.29Z"/></svg><span>Aalborg University Copenhagen</span>
@@ -45,15 +45,18 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
   <div class="inner">
 
 <p class="crumb"><a href="index.html">&larr; all sessions</a></p>
-<section class="hero">
+<section class="hero with-art">
+  <div class="text">
   <p class="dim">Session 2</p>
-  <h1>Persistent Data Structures</h1>
+  <h1>Persistent and Ephemeral Data Structures</h1>
   <p class="lead">Structures that keep their past: what they cost, what they buy, and how to spot one from its interface.</p>
+  </div>
+  <figure class="art"><img src="art/persistence.jpg" width="640" height="640" alt=""></figure>
 </section>
 
 <section>
   <h2>Materials</h2>
-  <ul class="materials"><li class="group"><span class="glabel">Lecture</span><ul><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s2-persistence.pdf">Lecture slides</a></span></li><li class="m-code c-lecture"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/tour.ml">OCaml tour — tour.ml</a></span></li></ul></li><li class="group"><span class="glabel">Warm-up</span><ul><li class="m-paper c-warmup"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/handouts/s2-queue-on-paper.pdf">Warm-up — the two-list queue, on paper</a></span></li></ul></li><li class="group"><span class="glabel">Quest</span><ul><li class="m-lab c-quest"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/labs/lab2-persistent-queue/index.html">Quest — one queue, three languages</a></span></li></ul></li><li class="group"><span class="glabel">Homework</span><ul><li class="m-homework c-homework"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/homework.ml">OCaml exercises — homework.ml</a></span></li></ul></li><li class="group"><span class="glabel">Solutions</span><ul><li class="m-solution c-solutions"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/solutions/s2/queue-on-paper-solutions.pdf">Warm-up — the nine paper exercises, worked</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s2/python/pqueue.py">Part A — the queue in Python</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s2/ocaml/pqueue.ml">Part C — the queue in OCaml</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s2/java/PQueue.java">Part E — the queue in Java</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s2/ocaml/homework.ml">OCaml exercises — homework.ml</a></span></li></ul></li></ul>
+  <ul class="materials"><li class="group"><span class="glabel">Lecture</span><ul><li class="blockhead"><span class="blk">Block 1</span> Persistent data structures</li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s2-persistence-block-1.pdf">Slides (PDF)</a></span></li><li class="blockhead"><span class="blk">Block 2</span> Introduction to OCaml</li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s2-persistence-block-2.pdf">Slides (PDF)</a></span></li><li class="m-code c-lecture"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/tour.ml">OCaml tour — tour.ml</a></span></li></ul></li><li class="group"><span class="glabel">Warm-up</span><ul><li class="m-paper c-warmup"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/handouts/s2-queue-on-paper.pdf">Warm-up — the two-list queue, on paper</a></span></li></ul></li><li class="group"><span class="glabel">Quest</span><ul><li class="m-lab c-quest"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/labs/lab2-persistent-queue/index.html">Quest — one queue, three languages</a></span></li><li class="m-lab c-quest"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/README.md">Lab README — what to do, part by part</a></span></li></ul></li><li class="group"><span class="glabel">Solutions</span><ul><li class="m-solution c-solutions"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/solutions/s2/queue-on-paper-solutions.pdf">Warm-up — the nine paper exercises, worked</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s2/python/pqueue.py">Part A — the queue in Python</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s2/ocaml/pqueue.ml">Part C — the queue in OCaml</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s2/java/PQueue.java">Part E — the queue in Java</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s2/ocaml/homework.ml">OCaml exercises — homework.ml</a></span></li></ul></li><li class="group"><span class="glabel">Homework</span><ul><li class="m-homework c-homework"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/homework.ml">OCaml exercises — homework.ml</a></span></li></ul></li></ul>
 </section>
 <section class="story">
   <h2>The question</h2>
@@ -79,20 +82,24 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
   <h2>Three things to take away</h2>
   <div class="cards">
     <article class="card num" data-n="1">
-      <h3>Persistence is visible in the type</h3>
+      <h3>The update style is visible in the interface</h3>
       <p>An operation returning <code>unit</code> or <code>void</code> has
          changed something we cannot see. One returning a new <code>t</code>
          hands us the next version and leaves the old one standing. We can read
-         a module&rsquo;s interface and know which world we are in, before
-         seeing a single line of implementation.</p>
+         a module&rsquo;s interface and know which world it intends, before
+         seeing a single line of implementation. The type shows the intent; it
+         cannot promise that nothing is mutated behind it.</p>
     </article>
     <article class="card num" data-n="2">
-      <h3>Immutability &rArr; safe sharing &rArr; persistence</h3>
-      <p>A chain of implications, and the middle link carries the weight:
-         sharing is <em>safe</em> when no version can be changed through
-         another version&rsquo;s pointer. Immutability buys that outright.
-         It is not the only way to buy it &mdash; ownership and undetectable
-         mutation also work &mdash; but it is the one a compiler checks.</p>
+      <h3>Immutability makes sharing safe; safe sharing makes persistence affordable</h3>
+      <p>Two steps, not one. Immutability alone gives persistence: nothing is
+         ever overwritten, so every old version stays valid. Structural sharing
+         is what makes that affordable, one pointer per version instead of a
+         copy &mdash; and sharing is <em>safe</em> only when no version can be
+         changed through another version&rsquo;s pointer, which immutability
+         buys outright. It is not the only way to buy it &mdash; ownership and
+         undetectable mutation also work &mdash; but it is the one a compiler
+         checks.</p>
     </article>
     <article class="card num" data-n="3">
       <h3>A paradigm is not a language</h3>
@@ -106,7 +113,23 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
 </section>
 
 <section>
-  <h2>The lecture, in order</h2>
+  <h2>The lecture, in two blocks</h2>
+  <table class="parts">
+    <tbody>
+      <tr><td class="p">1</td><td><strong>Persistent data structures.</strong>
+          Recipe or definition; a stack twice, the checkpoint trick and where it fails;
+          why immutability gives persistence and sharing makes it cheap, in Java and in Python;
+          languages that start persistent.
+          <a href="https://leon-gondelman.github.io/pp26/slides/s2-persistence-block-1.pdf">slides (PDF)</a></td></tr>
+      <tr><td class="p">2</td><td><strong>Introduction to OCaml.</strong>
+          Enough of the language to write the lab: lists and what <code>::</code> shares,
+          <code>match</code>, records, <code>option</code>, how to compile and run &mdash;
+          and the same stack with a <em>mutable</em> record.
+          <a href="https://leon-gondelman.github.io/pp26/slides/s2-persistence-block-2.pdf">slides (PDF)</a></td></tr>
+    </tbody>
+  </table>
+
+  <p class="p">Block&nbsp;1, in order:</p>
   <ol class="arc">
     <li><strong>Recipe or definition.</strong> Two readings of what an
         algorithm is, and why declarative programming needs the second one.</li>
@@ -135,15 +158,16 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
         cell, Haskell with no assignment to take away, and OCaml&rsquo;s
         persistent stack in five lines. No keyword was required in any of
         them: the default did the work.</li>
-    <li><strong>A first look at OCaml.</strong> Enough of the language to
-        write the lab and deliberately no more: lists and what <code>::</code>
-        shares, <code>match</code>, records, <code>option</code> in place of
-        <code>null</code>, and how to compile and run. It closes on the same
-        stack written with a <em>mutable</em> record &mdash; same language,
-        same data, and the whole difference visible in one type.</li>
   </ol>
 
-  <p class="p">The OCaml half is also a program.
+  <p class="p"><strong>Block&nbsp;2 is a first look at OCaml.</strong> Enough of the language to
+     write the lab and deliberately no more: lists and what <code>::</code>
+     shares, <code>match</code>, records, <code>option</code> in place of
+     <code>null</code>, and how to compile and run. It closes on the same
+     stack written with a <em>mutable</em> record &mdash; same language,
+     same data, and the whole difference visible in one type.</p>
+
+  <p class="p">The OCaml block is also a program.
      <a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab2-persistent-queue/tour.ml">tour.ml</a>
      walks the same ten steps in the same order, so the claims made on the
      slides can be checked instead of believed &mdash; structural sharing,
@@ -183,7 +207,7 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
           sharing.</td></tr>
       <tr class="watch"><td class="p">B</td><td><strong>The payoff.</strong>
           Our queue drives a maze solver. Swapping it for the lecture&rsquo;s
-          stack turns breadth-first search into depth-first, without touching
+          stack turns breadth-first search into a stack-based search, without touching
           the search: the algorithm never mentions queue or stack, only a
           frontier. A slider then scrubs through every frontier the search ever
           had, and <code>--inspect=40</code> asks what the frontier held at
@@ -296,8 +320,9 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
         <a href="https://doi.org/10.1016/0022-0000(89)90034-2">JCSS, 1989</a>.
         Where the vocabulary comes from: <em>partial</em> persistence, where
         old versions can be read, against <em>full</em> persistence, where they
-        can be written too. The <code>--inspect</code> flag in the lab is the
-        partial kind.</li>
+        can be written too. <code>--inspect</code> only reads old versions;
+        the lab&rsquo;s queue is fully persistent, and Part D updates an old
+        version on purpose.</li>
 
     <li><strong>Hood and Melville (1981); Kaplan and Tarjan (1995).</strong>
         Queues with worst-case O(1) bounds instead of amortised ones, reached

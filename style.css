@@ -50,9 +50,12 @@
 }
 
 *{box-sizing:border-box}
-html{-webkit-font-smoothing:antialiased}
+/* The whole layout is in rem, so the root size scales it with the screen:
+   15.5px on a 13" laptop, ~17px on a 24" display, capped at 19.5px so an
+   ultrawide does not keep growing. Phone rules below start under the range. */
+html{-webkit-font-smoothing:antialiased;font-size:clamp(15.5px,0.55rem + 0.5vw,19.5px)}
 body{margin:0;background:var(--bg);color:var(--ink);
-  font:400 15.5px/1.62 var(--sans);
+  font:400 1rem/1.62 var(--sans);
   display:grid;grid-template-columns:var(--rail) minmax(0,1fr);min-height:100vh}
 a{color:var(--acc)}
 a:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:3px}
@@ -106,13 +109,28 @@ main{min-width:0;display:flex;flex-direction:column}
 .topbar .theme[data-mode="auto"] [data-t="auto"],
 .topbar .theme[data-mode="light"] [data-t="light"],
 .topbar .theme[data-mode="dark"] [data-t="dark"]{display:inline}
-.inner{padding:2.6rem 3rem 4.5rem;max-width:64rem;flex:1}
+.inner{padding:2.6rem 3rem 4.5rem;max-width:64rem;flex:1;width:100%;box-sizing:border-box;margin-inline:auto}
 /* The schedule carries four columns of chips and is the one block that wants
    more room than the reading measure; let it use the width the rail leaves. */
-.inner>section#sessions{max-width:none;width:min(78rem,100%)}
+/* ... so it breaks out of the column, centred, up to 78rem or the main area
+   minus the page margins; the phone rules put it back in the flow. */
+.inner>section#sessions{--sw:min(78rem,calc(100vw - var(--rail) - 6rem));
+  max-width:none;width:var(--sw);margin-inline:calc((100% - var(--sw)) / 2)}
 
 /* ---------------------------------------------------------------- hero */
 .hero{margin-bottom:2.2rem}
+/* the index masthead: the painting's middle strip across the full column, above the title */
+figure.masthead{margin:0 0 2.2rem}
+figure.masthead img{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;object-position:50% 50%;
+  border-radius:12px;border:1px solid var(--line)}
+@media (max-width:760px){figure.masthead img{aspect-ratio:2/1}}
+/* a session page: its painting beside the title and the lead */
+.hero.with-art{display:grid;grid-template-columns:minmax(0,1fr) 12.5rem;gap:2.4rem;align-items:center}
+.hero figure.art{margin:0}
+.hero figure.art img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+@media (max-width:760px){.hero.with-art{grid-template-columns:1fr}.hero figure.art{max-width:14rem}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) :is(figure.masthead img,.hero figure.art img){filter:brightness(.86) saturate(.95)}}
+:root[data-theme="dark"] :is(figure.masthead img,.hero figure.art img){filter:brightness(.86) saturate(.95)}
 h1{font:500 clamp(2.1rem,4.4vw,2.95rem)/1.08 var(--serif);letter-spacing:-.015em;
   margin:0 0 .55rem}
 .hero .sub{margin:0 0 1.7rem;font-size:.92rem;color:var(--ink3)}
@@ -145,43 +163,79 @@ code{font:400 .88em/1.4 var(--mono);background:var(--sunk);border:1px solid var(
   padding:.1em .35em;border-radius:4px}
 
 /* ---------------------------------------------------------------- sessions table */
-.tablewrap{overflow-x:auto}
+/* The schedule is a size too big for the column beside the rail at 100%: it
+   is scaled down as one piece (chips, dates, titles, padding together) and
+   its cells sit a little tighter. The prose keeps its size. */
+.tablewrap{overflow-x:auto;zoom:.88}
 table.sessions{width:100%;border-collapse:collapse;font-size:.9rem;min-width:52rem}
-table.sessions th{text-align:left;font:600 .67rem/1 var(--sans);letter-spacing:.12em;
+table.sessions th{text-align:left;white-space:nowrap;font:600 .67rem/1 var(--sans);letter-spacing:.12em;
   text-transform:uppercase;color:var(--ink3);padding:0 .8rem .7rem;
-  border-bottom:1px solid var(--line);vertical-align:bottom}
-table.sessions th.lab{padding-bottom:.35rem;border-bottom:none}
-table.sessions th.sub{font-weight:500;letter-spacing:.1em;opacity:.55;padding-top:0}
-table.sessions td{padding:.7rem .8rem;border-bottom:1px solid var(--line-soft);
-  vertical-align:middle}
-td.date{width:5.2rem;white-space:nowrap;color:var(--ink3);
+  border-bottom:1px solid var(--line);vertical-align:top}
+table.sessions th.lab{padding-bottom:.35rem;border-bottom:none;text-align:center}
+/* the lab's two halves are framed by two very faint rules */
+table.sessions th.lab,table.sessions .col-warmup{border-left:1px solid color-mix(in srgb,var(--line) 45%,transparent)}
+table.sessions th.lab,table.sessions .col-quest{border-right:1px solid color-mix(in srgb,var(--line) 45%,transparent)}
+/* homework is the last column, apart from what precedes it by the same faint rule */
+table.sessions .col-homework{border-left:1px solid color-mix(in srgb,var(--line) 45%,transparent)}
+table.sessions th.sub{font-weight:500;letter-spacing:.1em;opacity:.55;padding-top:.3rem}
+table.sessions td{padding:.65rem .65rem;border-bottom:1px solid var(--line-soft);
+  vertical-align:top}
+table.sessions td.date{padding-top:.85rem}
+td.date{width:5.2rem;padding-right:1.6rem;white-space:nowrap;color:var(--ink3);
   font:500 .79rem/1 var(--mono);font-variant-numeric:tabular-nums}
-td.ttl a{font-weight:600;text-decoration:none;color:var(--ink);font-size:.945rem}
-td.ttl a:hover{color:var(--acc)}
-td.ttl .n{color:var(--ink3);font:400 .82rem/1 var(--mono);font-variant-numeric:tabular-nums;
-  margin-right:.15rem}
-td.ttl{width:26%;min-width:13rem}
+/* hanging indents: a wrapped title lines up with its own first word, not with
+   the session number; a wrapped block title with its own text, not the chip */
+td.ttl>a{display:block;padding-left:1.5rem;text-indent:-1.5rem;
+  font-weight:600;text-decoration:none;color:var(--ink);font-size:.945rem}
+td.ttl>a:hover{color:var(--acc)}
+td.ttl .mat .dl{font-size:.705rem}
+td.ttl .n{display:inline-block;width:1.5rem;text-indent:0;color:var(--ink3);
+  font:400 .82rem/1 var(--mono);font-variant-numeric:tabular-nums}
+td.ttl{width:30%;min-width:16rem}
 td.mat{width:auto}
 td.mat .none{color:var(--faint)}
-tr.partrow td{background:var(--side);padding:.55rem .8rem;
-  font:600 .68rem/1.5 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
-tr.partrow .pill{color:var(--acc-t);margin-right:.5rem}
-tr.partrow .dim{font-weight:400;letter-spacing:.02em;text-transform:none;font-size:.78rem}
+/* a part's row: a tinted band with a rule above, its name in full ink, and
+   under it one line that says what the part is about */
+tr.partrow td{background:var(--acc-l);padding:.8rem .8rem .75rem;border-top:2px solid var(--acc-t);
+  font:700 .76rem/1.5 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+tr.partrow .pill{background:var(--acc-t);color:var(--bg);padding:.28rem .5rem;border-radius:5px;margin-right:.6rem}
+tr.partrow .dim{font-weight:400;letter-spacing:.02em;text-transform:none;font-size:.8rem;color:var(--ink2);margin-left:.35rem}
+tr.partrow .psub{margin-top:.4rem;font:400 .9rem/1.45 var(--sans);letter-spacing:0;text-transform:none;color:var(--ink2)}
+tr.partrow .psub::first-letter,.stl::first-letter{text-transform:uppercase}
+/* a session's subtitle: under the title, aligned with its first word */
+td.ttl .stl{padding-left:1.5rem;margin-top:.2rem;font-size:.84rem;line-height:1.45;color:var(--ink2)}
+.hero p.stl{margin:.35rem 0 .9rem;font-size:1.02rem;line-height:1.45;color:var(--ink2)}
 tr.now td{background:var(--sunk)}
 tr.now td.date{box-shadow:inset 3px 0 0 var(--wine);color:var(--wine);font-weight:600}
 tr.done td.date{color:var(--ink3)}
+/* a lecture in two blocks: the session's row, then one sub-row per block */
+tr.has-blocks td.ttl,tr.has-blocks td.blocks{border-bottom:none;padding-bottom:.2rem}
+tr.block td{border-bottom:none;padding-top:.12rem;padding-bottom:.12rem}
+tr.block.last td{border-bottom:1px solid var(--line-soft);padding-bottom:.75rem}
+tr.block td.ttl{padding-left:calc(2.55rem + 3.9rem);text-indent:-3.9rem;font-size:.84rem;color:var(--ink2)}
+.blk{display:inline-block;width:3.6rem;margin-right:.3rem;text-indent:0;font:600 .64rem/1 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:color-mix(in srgb,var(--wine) 70%,var(--bg))}
+td.ttl .blk-m{display:none}
 
 /* material chips, coloured by what the thing is */
-a.dl{display:inline-block;white-space:nowrap;text-decoration:none;margin:.1rem .2rem .1rem 0;
+.dl{display:inline-block;white-space:nowrap;text-decoration:none;margin:.1rem .2rem .1rem 0;
   font:600 .705rem/1 var(--sans);letter-spacing:.005em;padding:.44em .58em;border-radius:5px;
   background:var(--sunk);color:var(--ink2);border:1px solid var(--line);
   transition:filter .12s ease,border-color .12s ease}
-a.dl:hover{filter:brightness(.96);border-color:var(--ink3)}
-a.dl.c-lecture{color:var(--lec);background:var(--lec-b);border-color:transparent}
-a.dl.c-warmup{color:var(--warm);background:var(--warm-b);border-color:transparent}
-a.dl.c-quest{color:var(--lab);background:var(--lab-b);border-color:transparent}
-a.dl.c-homework{color:var(--hw);background:var(--hw-b);border-color:transparent}
-a.dl.c-solutions{color:var(--sol);background:var(--sol-b);border-color:transparent}
+.dl:hover{filter:brightness(.96);border-color:var(--ink3)}
+/* announced, not released: a chip that is not a link */
+.dl.soon,.dl.soon:hover{cursor:default;filter:none;background:transparent;border:1px dashed currentColor}
+/* one chip, several parts, each a link; a plain stage word may lead */
+.dl.grp .lbl{margin-right:.15em;font-weight:500;opacity:.55}
+.dl.c-solutions.grp{display:block;width:max-content}
+.dl.grp a{color:inherit;text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px}
+.dl.grp a:hover{text-decoration-thickness:2px}
+.dl.grp .sep{opacity:.55;margin:0 .35em}
+.dl.c-lecture{color:var(--lec);background:var(--lec-b);border-color:transparent}
+.dl.c-warmup{color:var(--warm);background:var(--warm-b);border-color:transparent}
+.dl.c-quest{color:var(--lab);background:var(--lab-b);border-color:transparent}
+.dl.c-homework{color:var(--hw);background:var(--hw-b);border-color:transparent}
+.dl.c-solutions{color:var(--sol);background:var(--sol-b);border-color:transparent}
 
 /* ---------------------------------------------------------------- session pages */
 /* Materials. Same visual language as the index: a tinted pill per item,
@@ -205,6 +259,11 @@ ul.materials li.c-quest{color:var(--lab);background:var(--lab-b);border-color:tr
 ul.materials li.c-homework{color:var(--hw);background:var(--hw-b);border-color:transparent}
 ul.materials li.c-solutions{color:var(--sol);background:var(--sol-b);border-color:transparent}
 ul.materials li.dim{width:100%;display:block;font-weight:400;color:var(--ink3)}
+/* a lecture block's heading inside the Lecture group: a line, not a pill */
+ul.materials li.blockhead{width:100%;display:block;background:none;border:0;padding:.3rem 0 0;
+  font:500 .84rem/1.3 var(--sans);color:var(--ink2)}
+ul.materials li.blockhead .blk{margin-right:.4rem}
+ul.materials li.blocknote{width:100%;display:block;background:none;border:0;padding:.35rem 0 0;color:var(--ink3);font-size:.92em}
 
 /* A group is a labelled row of those pills, not a box of its own. */
 ul.materials li.group{display:block;width:100%;border:0;background:none;padding:0;
@@ -265,6 +324,17 @@ table.langs th{text-align:left;font:600 .68rem/1.5 var(--sans);letter-spacing:.1
   text-transform:uppercase;color:var(--ink3)}
 table.parts td.p{width:2.6rem;font:700 .82rem/1.6 var(--mono);color:var(--acc-t)}
 table.langs td:first-child{width:8rem;font-weight:600;color:var(--ink)}
+
+/* code blocks on a session page (S5's types), keywords and constructors coloured */
+pre.code{font:400 .84rem/1.5 var(--mono);background:var(--sunk);border:1px solid var(--line-soft);
+  border-left:3px solid var(--acc);border-radius:6px;padding:.7rem .9rem;margin:.4rem 0 1rem;
+  overflow-x:auto;max-width:44rem}
+pre.code .k{color:var(--acc-t);font-weight:600}
+pre.code .c{color:var(--wine)}
+pre.code .cm{color:var(--ink3)}
+section>h3{margin:1.8rem 0 .5rem}
+table.langs.qa td:first-child{width:36%}
+table.langs.qa{margin-bottom:.8rem}
 table.parts tr.watch{background:var(--acc-l)}
 table.parts tr.watch td:last-child::after{content:"run and watch";display:block;
   margin-top:.4rem;font:600 .66rem/1 var(--sans);letter-spacing:.09em;
@@ -290,7 +360,7 @@ footer.site .meta a:hover{text-decoration:underline}
    Every selector below is prefixed with table.sessions so it outranks the
    desktop cell rules rather than tying with them. */
 @media (max-width:760px){
-  .tablewrap{overflow-x:visible}
+  .tablewrap{overflow-x:visible;zoom:1}
   table.sessions{min-width:0;display:block;font-size:.92rem}
   table.sessions thead{display:none}
   table.sessions tbody{display:block}
@@ -309,6 +379,12 @@ footer.site .meta a:hover{text-decoration:underline}
   table.sessions tr.now{background:var(--sunk);border-radius:8px;
     padding-left:.6rem;box-shadow:inset 3px 0 0 var(--wine)}
   table.sessions tr.now td.date{box-shadow:none}
+  /* blocks: the phone copy inside the title cell shows, the sub-rows hide */
+  table.sessions tr.block{display:none}
+  table.sessions td.ttl .blk-m{display:block;margin-top:.45rem;font-size:.9rem;color:var(--ink2);
+    padding-left:3.9rem;text-indent:-3.9rem}
+  table.sessions td.ttl .blk-m .mat{text-indent:0}
+  table.sessions td.ttl .blk-m .mat{padding:.15rem 0 0}
 }
 @media (max-width:980px){
   body{display:block}
@@ -325,9 +401,15 @@ footer.site .meta a:hover{text-decoration:underline}
   .topbar{padding:.75rem 1.4rem}
   .topbar .where{display:none}
   .inner{padding:1.8rem 1.4rem 3rem}
+  .inner>section#sessions{width:100%;margin-inline:0}
   footer.site{padding:1.6rem 1.4rem 2.4rem}
   footer.site .meta{margin-left:0;text-align:left}
   .field{grid-template-columns:1fr;gap:.1rem}
+}
+/* wide screens: the column is centred by .inner's margin; here it also gets
+   a little more room and the schedule uses all of it */
+@media (min-width:1600px){
+  .inner{max-width:70rem}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 

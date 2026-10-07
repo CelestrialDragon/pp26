@@ -12,6 +12,8 @@ let check name f expected show =
 
 let str s = "\"" ^ s ^ "\""
 let last_at es = List.fold_left (fun m (e : event) -> Float.max m e.at) 0. es
+(* the melody's length in seconds, once length_in_beats works: the .wav then keeps a final rest *)
+let secs tempo m = try length_in_beats m *. 60. /. float_of_int tempo with Failure _ -> 0.
 
 let () =
   print_endline "Part A";
@@ -62,10 +64,10 @@ let () =
   Printf.printf "\n%d passed, %d failed, %d to do\n" !ok !bad !todo;
   (match to_events 120 bach with
    | exception Failure _ -> print_endline "bach.wav: after Part B1"
-   | es -> Wav.write "bach.wav" es; print_endline "wrote bach.wav — play it");
+   | es -> Wav.write ~secs:(secs 120 bach) "bach.wav" es; print_endline "wrote bach.wav — play it");
   (match to_events 120 (scale ++ r Whole ++ cadence ++ r Whole ++ duet ++ r Whole ++ canon) with
    | exception Failure _ -> ()
-   | es -> Wav.write "examples.wav" es; print_endline "wrote examples.wav — the scale, the cadence, the duet, the canon");
+   | es -> Wav.write ~secs:(secs 120 (scale ++ r Whole ++ cadence ++ r Whole ++ duet ++ r Whole ++ canon)) "examples.wav" es; print_endline "wrote examples.wav — the scale, the cadence, the duet, the canon");
   (match to_events 60 (crab_theme // retrograde crab_theme) with
    | exception Failure _ -> print_endline "crab.wav: after Part C3"
-   | es -> Wav.write "crab.wav" es; print_endline "wrote crab.wav — Bach's crab canon, BWV 1079")
+   | es -> Wav.write ~secs:(secs 60 (crab_theme // retrograde crab_theme)) "crab.wav" es; print_endline "wrote crab.wav — Bach's crab canon, BWV 1079")

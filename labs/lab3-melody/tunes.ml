@@ -79,7 +79,7 @@ let duet = scale // thirds
 let canon = scale // (r Whole ++ scale)
 
 (* J. S. Bach, Musical Offering, BWV 1079, Canon 1 a 2 cancrizans — the theme, one line per bar.
-   Checked against an independent transcription and its MIDI (teacher/reference/crab). *)
+   Checked against an independent transcription and its MIDI. *)
 let crab_theme =
      n Half C 4 ++ n Half Ds 4
   ++ n Half G 4 ++ n Half Gs 4

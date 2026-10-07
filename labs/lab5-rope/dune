@@ -1,0 +1,23 @@
+(include_subdirs unqualified)
+
+(dirs edit)
+
+(executables
+ (names main edit)
+ (libraries unix)
+ (flags
+  (:standard -w +8-26-27-32-33-35-37-38-39-69 -warn-error -a)))
+
+; the page and its script, as two strings in the program
+(rule
+ (targets assets.ml)
+ (deps edit/page.html edit/rope-view.js)
+ (action
+  (with-stdout-to
+   assets.ml
+   (progn
+    (echo "let page = {asset|")
+    (cat edit/page.html)
+    (echo "|asset}\nlet rope_view = {asset|")
+    (cat edit/rope-view.js)
+    (echo "|asset}\n")))))

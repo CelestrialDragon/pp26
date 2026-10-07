@@ -37,10 +37,11 @@ invariant guarantees that the *oldest* element is always the head of `front`,
 so `peek` and `dequeue` are one pointer away — except when `front` runs dry
 and `make` performs one O(n) reversal.
 
-**Why is that acceptable? A banker's argument.** Charge every `enqueue` two
-coins: one for the cons, one deposited *on the element*. When the reversal
-finally happens, each element in `back` pays for its own move with its
-deposited coin. Every element is reversed **at most once**, so n operations
+**Why is that acceptable? A banker's argument.** Count one step per
+operation plus one per element a reversal moves. Give every operation one coin
+for its own step, and every `enqueue` a second coin deposited *on the
+element*. When the reversal finally happens, each element in `back` pays for
+its own move with its deposited coin. Every element is reversed **at most once**, so n operations
 cost O(n) total: **amortized O(1)**. Remember the highlighted assumption —
 the lab's last part returns to it.
 
@@ -91,18 +92,20 @@ correct **ephemeral** one.
 ### Part B — the payoff
 
 The four runs below are, in order: breadth-first with the persistent queue;
-the one-line swap to depth-first; the time-travel view, written to a file; and
+the one-line swap to the stack-based search; the time-travel view, written to a file; and
 a question put to an old version of the frontier.
 
 ```bash
 python3 solver.py ../mazes/medium.txt --bfs
-python3 solver.py ../mazes/medium.txt --dfs
+python3 solver.py ../mazes/medium.txt --stack
 python3 solver.py ../mazes/medium.txt --bfs --html=bfs.html
 python3 solver.py ../mazes/medium.txt --bfs --inspect=40
 ```
 
-`--dfs` works before a single line is written — the stack frontier is provided
-in `python/pstack.py`. Read it: it is the same file shape as `pqueue.py` with
+`--stack` works before a single line is written — the stack frontier is provided
+in `python/pstack.py`. (`--dfs` is still accepted, as the flag's old name; it
+selects the same stack-based search, which is not depth-first search — the
+caveat on the lab page explains why.) Read it: it is the same file shape as `pqueue.py` with
 the same interface, and it has no TODOs, because for a LIFO structure
 persistence is free (`push` shares the *entire* old stack and there is no
 rebalancing step). All the difficulty of Part A lives in `pqueue._make`.
@@ -112,7 +115,7 @@ Part A is done it says so instead of crashing.
 Open the HTML file and drag the slider. Then look at `solver.py`: the search
 never mentions "queue" or "stack" — it is written against a tiny frontier
 interface. Swapping the persistent queue for the lecture's persistent stack
-turns breadth-first search into depth-first search **without touching the
+turns breadth-first search into a stack-based search **without touching the
 algorithm**. Compare the two explorations and the two path lengths.
 
 `--inspect=40` prints the frontier *as it was* at step 40. No replaying, no
@@ -127,12 +130,12 @@ versions is free when nothing can modify them.
 cd ocaml
 dune runtest
 dune exec bin/solver.exe -- ../mazes/medium.txt --bfs
-dune exec bin/solver.exe -- ../mazes/medium.txt --dfs
+dune exec bin/solver.exe -- ../mazes/medium.txt --stack
 dune exec bin/solver.exe -- ../mazes/medium.txt --bfs --html=bfs.html
 dune exec bin/solver.exe -- ../mazes/medium.txt --bfs --inspect=40
 ```
 
-The solver takes the same flags as the Python one — `--bfs`, `--dfs`,
+The solver takes the same flags as the Python one — `--bfs`, `--stack` (alias `--dfs`),
 `--html[=FILE]`, `--inspect[=N]`, `--no-color` — and writes a byte-identical
 time-travel page, because that page is HTML and JavaScript in both cases.
 
@@ -152,7 +155,8 @@ same numbers.
 cd python && python3 bench.py
 ```
 
-The banker's proof assumed each version is dequeued at most once. But the
+The banker's proof assumed a linear history: each version is dequeued at
+most once, and the output of one operation is the input of the next. But the
 queue is persistent — nothing prevents a program from dequeuing the *same*
 version a thousand times. The benchmark does exactly that, with a version
 whose `front` is nearly empty. Watch the "amortized O(1)" operation cost
@@ -166,7 +170,7 @@ will have the tools in session 5.)
 ```bash
 cd java
 javac *.java && java Tests
-java MazeSolver ../mazes/medium.txt [--dfs]
+java MazeSolver ../mazes/medium.txt [--stack]
 ```
 
 Fill the four TODOs in `PQueue.java`. Note what Java adds that Python could
@@ -177,8 +181,12 @@ the lecture's "why `private` and `final`?" slide, enforced by a compiler.
 
 - Add a **priority-queue frontier** to `solver.py` (Python's `heapq` is fine)
   with Manhattan distance to the exit as priority — the same search text
-  becomes greedy best-first / A*. One observation: `heapq` is ephemeral —
-  what does that break in `--inspect`?
+  becomes greedy best-first search. It is not A*: A* orders by path cost so
+  far plus the heuristic, and it must update a cell's best known cost and
+  parent when a better route is found, which our first-discovery-only loop
+  never does. Swapping the frontier cannot turn it into A*; the loop itself
+  would have to change. One observation: `heapq` is ephemeral — what does
+  that break in `--inspect`?
 - Make `dequeue` in OCaml return the **pair queue-with-both-halves** needed
   for a double-ended queue (`enqueue_front`). Where does the invariant fight
   back?

@@ -12,10 +12,12 @@ import java.util.Map;
  * The search never says "queue" or "stack" — it talks to the Frontier
  * interface. QueueFrontier (the PQueue) makes it breadth-first search;
  * StackFrontier (a bare cons-list, the lecture's persistent stack) makes
- * the SAME search depth-first. In Java the swap happens through an
+ * the SAME search stack-based. In Java the swap happens through an
  * interface and dynamic dispatch — hold that thought for session 9.
  *
- * Run:  javac *.java && java MazeSolver ../mazes/medium.txt [--dfs]
+ * Run:  javac *.java && java MazeSolver ../mazes/medium.txt [--stack]
+ *       (--dfs is the flag's old name, still accepted: the search it selects
+ *       is stack-based, not depth-first — see the caveat on the lab page)
  */
 public final class MazeSolver {
 
@@ -50,21 +52,21 @@ public final class MazeSolver {
 
     public static void main(String[] args) throws IOException {
         List<String> plain = new ArrayList<>();
-        boolean dfs = false, bfs = false, noColour = false;
+        boolean stack = false, bfs = false, noColour = false;
         for (String a : args) {
             switch (a) {
-                case "--dfs" -> dfs = true;
+                case "--stack", "--dfs" -> stack = true;
                 case "--bfs" -> bfs = true;
                 case "--no-color" -> noColour = true;
                 default -> plain.add(a);
             }
         }
-        if (dfs && bfs) {
-            System.err.println("pick one frontier: --bfs (queue) or --dfs (stack)");
+        if (stack && bfs) {
+            System.err.println("pick one frontier: --bfs (queue) or --stack (stack)");
             System.exit(2);
         }
         if (plain.size() != 1) {
-            System.err.println("usage: java MazeSolver <maze-file> [--bfs|--dfs] [--no-color]");
+            System.err.println("usage: java MazeSolver <maze-file> [--bfs|--stack] [--no-color]");
             System.exit(1);
         }
 
@@ -73,7 +75,7 @@ public final class MazeSolver {
         Pos start = find(grid, 'S'), goal = find(grid, 'E');
 
         // No flag means --bfs: the default frontier is the one under construction.
-        Frontier frontier = dfs ? StackFrontier.empty()
+        Frontier frontier = stack ? StackFrontier.empty()
                                 : new QueueFrontier(PQueue.empty());
         Map<Pos, Pos> parent = new HashMap<>();
         parent.put(start, start);
@@ -106,13 +108,13 @@ public final class MazeSolver {
             System.err.println("--bfs runs on the persistent queue of PQueue.java, "
                     + "which is not yet finished (" + todo.getMessage() + ").");
             System.err.println("  * fill the TODOs in PQueue.java  (Part E), or");
-            System.err.println("  * run --dfs right now: the stack frontier is provided.");
+            System.err.println("  * run --stack right now: the stack frontier is provided.");
             System.exit(1);
         }
 
         print(grid, path, visited, !noColour && colourAvailable(),
-              dfs ? SEEN_STACK : SEEN_QUEUE);
-        String name = dfs ? "DFS (stack frontier)" : "BFS (queue frontier)";
+              stack ? SEEN_STACK : SEEN_QUEUE);
+        String name = stack ? "stack-based (stack frontier)" : "BFS (queue frontier)";
         System.out.println(path == null
                 ? name + ": no path found"
                 : name + ": explored " + explored + " cells, path length " + path.size());

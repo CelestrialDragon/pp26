@@ -47,9 +47,9 @@ Provided: `beats : duration -> float` and `frequency : pitch -> float`. With the
 operators a tune reads left to right: `q C 4 ++ q D 4 ++ q E 4 ++ q C 4`, and a chord is
 `q C 4 // q E 4 // q G 4`.
 
-A `Seq` or a `Par` holds two melodies: the type is a **tree**. Every Part C operation
-returns a new tree and shares the parts it did not change — the persistent structures of
-session 2, without any extra work.
+A `Seq` or a `Par` holds two melodies: the type is a **tree**. Every transformation in Part C
+builds a new tree and can reuse unchanged subtrees without copying them — the persistent
+structures of session 2.
 
 The piece we test on is Bach's Invention no. 1 in C major, BWV 772: two voices, 22 bars,
 467 notes, in `tunes.ml`, one `let` per bar and voice. `voice1` is the upper voice alone;
@@ -145,6 +145,10 @@ per function, *"this pattern-matching is not exhaustive"*, with the missing case
 of warnings is the checklist. Then uncomment `twice` in `tunes.ml` and the B2 checks in
 `main.ml`: repeating a voice twice must sound exactly like writing it twice.
 
+The count is never negative. The type cannot say so — `Repeat (-1, m)` is a value it admits —
+so this is a rule we keep by hand, and our functions may assume it. What the type guarantees
+and what stays a rule beside it is a distinction session 10 returns to.
+
 ## Part C — operations on melodies
 
 **C1** Move a melody up or down by whole octaves. The `Note` case is done: it builds a new pitch
@@ -163,7 +167,9 @@ pretty : melody -> string
 ```
 
 **C3** Play a melody backwards. `Seq` swaps its two halves; `Par` does not — time reverses,
-simultaneity does not.
+simultaneity does not. Each voice is reversed on its own and the voices of a `Par` stay aligned
+at their start: a shorter voice is not moved to the end. (Reversing the whole timeline instead
+would need leading silence in the shorter voice — a question for the discussion.)
 
 ```ocaml
 retrograde : melody -> melody

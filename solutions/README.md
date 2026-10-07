@@ -15,6 +15,14 @@ handout PDF under `handouts/`.
 | `s3/ocaml/melody.ml` | lab 3, every part, commented; `main.ml` and `tunes.ml` beside it with all checks on |
 | `s3/s3-warmup-solutions.pdf` | the warm-up sheet, worked |
 | `s3/ocaml/warmup.ml` | the warm-up ladder, solved |
+| `s4/index.html` | lab 4, the warm-up and both parts explained — [read it as a page](https://leon-gondelman.github.io/pp26/solutions/s4/index.html) |
+| `s4/ocaml/lambda.ml` | lab 4, every hole filled, commented; `main.ml` beside it with all 31 checks |
+| `s4/s4-warmup-solutions.pdf` | the warm-up sheet, worked |
+| `s5/index.html` | lab 5, the quest, every level explained — [read it as a page](https://leon-gondelman.github.io/pp26/solutions/s5/index.html) |
+| `s5/ocaml/rope.ml`, `stream.ml`, `next.ml` | the quest's library, every hole filled; `checks.ml` beside them with the 55 checks |
+| `s5/s5-warmup-solutions.pdf` | the warm-up sheet, worked, with its homework |
+| `s5/ocaml/warmup.ml` | the warm-up's exercises at the keyboard, solved |
+| `s5/ocaml/queue.ml` | the homework: lab 2's queue, with its reversal kept |
 
 The code files are drop-in replacements for the ones with holes in them, and
 they carry more commentary than a solution normally would: the interesting

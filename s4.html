@@ -2,10 +2,10 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>S4 Functional Programming - PP26</title>
+<title>S4 Functional Programming and Control - PP26</title>
 <meta name="description" content="This course examines key design decisions and major differences between programming languages, focusing on characteristics such as state, control flow, process communication, data ">
 <meta name="theme-color" content="#211a52">
-<meta property="og:title" content="S4 Functional Programming - PP26">
+<meta property="og:title" content="S4 Functional Programming and Control - PP26">
 <meta property="og:description" content="This course examines key design decisions and major differences between programming languages, focusing on characteristics such as state, control flow, process communication, data ">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://homes.cs.aau.dk/~lego/pp26/">
@@ -23,9 +23,9 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
     <b>Programming<br>Paradigms</b>
   </a>
   <p class="brand-sub">SW7 &middot; Autumn 2026 &middot; AAU Copenhagen</p>
-  <nav aria-label="Course"><ul><li><a href="index.html">Overview</a></li><li><a href="index.html#sessions">Schedule</a></li><li><a href="index.html#exam">Exam format</a></li><li><a href="index.html#materials">Materials</a></li><li><a href="https://www.moodle.aau.dk/course/view.php?id=60967">Moodle ↗</a></li><li><a href="https://github.com/leon-gondelman/pp26">Repository ↗</a></li></ul></nav>
+  <nav aria-label="Course"><ul><li><a href="index.html">Overview</a></li><li><a href="index.html#sessions">Schedule</a></li><li><a href="exam.html">Exam format</a></li><li><a href="index.html#materials">Materials</a></li><li><a href="https://www.moodle.aau.dk/course/view.php?id=60967">Moodle ↗</a></li><li><a href="https://github.com/leon-gondelman/pp26">Repository ↗</a></li></ul></nav>
   <p class="railhead">Sessions</p>
-  <nav aria-label="Sessions"><ol class="railsessions"><li><a href="s1.html"><span class="n">01</span><span>Intro</span></a></li><li><a href="s2.html"><span class="n">02</span><span>Persistent Data Structures</span></a></li><li><a href="s3.html"><span class="n">03</span><span>Algebraic Data Types and Objects</span></a></li><li><a href="s4.html" aria-current='page'><span class="n">04</span><span>Functional Programming</span></a></li><li><a href="s5.html"><span class="n">05</span><span>Higher-Order Functions</span></a></li><li><a href="s6.html"><span class="n">06</span><span>Asynchronous Programming</span></a></li><li><a href="s7.html"><span class="n">07</span><span>Multi-Threading</span></a></li><li><a href="s8.html"><span class="n">08</span><span>Message Passing</span></a></li><li><a href="s9.html"><span class="n">09</span><span>Static Type Systems</span></a></li><li><a href="s10.html"><span class="n">10</span><span>Polymorphism</span></a></li><li><a href="s11.html"><span class="n">11</span><span>Data Abstraction</span></a></li><li><a href="s12.html"><span class="n">12</span><span>Declarative Programming and Conclusion</span></a></li></ol></nav>
+  <nav aria-label="Sessions"><ol class="railsessions"><li><a href="s1.html"><span class="n">01</span><span>Intro</span></a></li><li><a href="s2.html"><span class="n">02</span><span>Persistent and Ephemeral Data Structures</span></a></li><li><a href="s3.html"><span class="n">03</span><span>Algebraic Data Types and Objects</span></a></li><li><a href="s4.html" aria-current='page'><span class="n">04</span><span>Functional Programming and Control</span></a></li><li><a href="s5.html"><span class="n">05</span><span>Functions as Values: Iterators and Streams</span></a></li><li><a href="s6.html"><span class="n">06</span><span>Asynchronous Programming</span></a></li><li><a href="s7.html"><span class="n">07</span><span>Multi-Threading</span></a></li><li><a href="s8.html"><span class="n">08</span><span>Message Passing</span></a></li><li><a href="s9.html"><span class="n">09</span><span>Failure and Recovery</span></a></li><li><a href="s10.html"><span class="n">10</span><span>Static Type Systems</span></a></li><li><a href="s11.html"><span class="n">11</span><span>Polymorphism</span></a></li><li><a href="s12.html"><span class="n">12</span><span>Data Abstraction</span></a></li><li><a href="s13.html"><span class="n">13</span><span>Declarative Programming and Conclusion</span></a></li></ol></nav>
   <div class="railfoot">
     <a class="aaumark" href="https://www.en.aau.dk/">
       <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aalborg University" focusable="false"><path d="M56.913 45.79c-1.532-.698-3.072-.989-5.688-2.844-6.654-4.72-9.649-10.186-5.388-21.751 2.459-6.671 3.464-11.579 3.319-18.053-.082-.064-.406-.277-.483-.341-1.326 8.045-3.543 12.011-8.535 20.115-11.296 18.345-.675 29.574 4.344 33.605 4.99-2.878 9.253-7.061 12.431-12.222a29.9 29.9 0 0 1-.0-.0Z"/><path d="M44.807 3.108a44 44 0 0 0-.586-.312c-2.86 7.061-6.717 10.696-13.34 16.028-14.096 11.348-12.242 24.428-6.037 34.673a29.9 29.9 0 0 0 9.219.219c-5.916-9.028-8.436-19.409 1.243-31.63 5.75-7.262 8.16-11.708 9.501-18.978Z"/><path d="M42.83 2.093A30 30 0 0 0 30.001 0C13.432 0 0 13.432 0 30c0 7.61 2.834 14.558 7.503 19.845.363-14.55 4.184-21.62 17.203-28.462 8.876-4.665 14.2-8.256 18.124-19.29Z"/></svg><span>Aalborg University Copenhagen</span>
@@ -45,15 +45,272 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
   <div class="inner">
 
 <p class="crumb"><a href="index.html">&larr; all sessions</a></p>
-<section class="hero">
+<section class="hero with-art">
+  <div class="text">
   <p class="dim">Session 4</p>
-  <h1>Functional Programming</h1>
-  <p class="lead">Not yet. This session&rsquo;s outline may still change.</p>
+  <h1>Functional Programming and Control</h1>
+  <p class="lead">Functional programming and control: who decides the next step? Recursion and the stack, the loop as a value, evaluation order and parameter passing — then the λ-calculus as the formalism.</p>
+  </div>
+  <figure class="art"><img src="art/control.jpg" width="640" height="640" alt=""></figure>
 </section>
 
 <section>
   <h2>Materials</h2>
-  <ul class="materials"><li class="dim">Published when the session runs.</li></ul>
+  <ul class="materials"><li class="group"><span class="glabel">Lecture</span><ul><li class="blockhead"><span class="blk">Block 1</span> Control patterns: recursion, fold, evaluation</li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s4-control-block-1.html">Slides (opens in the browser; → and ← to move, T lists the parts)</a></span></li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s4-control-block-1.pdf">Slides as PDF (one page per slide; the demos and animations are on the web version)</a></span></li><li class="blockhead"><span class="blk">Block 2</span> The formalism: the λ-calculus</li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s4-control-block-2.html">Slides (opens in the browser; → and ← to move, T lists the parts)</a></span></li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s4-control-block-2.pdf">Slides as PDF (one page per slide; the demos and animations are on the web version)</a></span></li></ul></li><li class="group"><span class="glabel">Warm-up</span><ul><li class="m-paper c-warmup"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/handouts/s4-lambda-on-paper.pdf">Warm-up — the λ-calculus on paper: five reductions, then four functions</a></span></li></ul></li><li class="group"><span class="glabel">Quest</span><ul><li class="m-lab c-quest"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/labs/lab4-lambda/index.html">Quest — an evaluator for the λ-calculus</a></span></li><li class="m-lab c-quest"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab4-lambda/README.md">Lab README — what to do, part by part</a></span></li><li class="m-code c-quest"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/tree/main/labs/lab4-lambda">The lab folder — lambda.ml, term.ml, syntax.ml, main.ml</a></span></li></ul></li><li class="group"><span class="glabel">Solutions</span><ul><li class="m-solution c-solutions"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/solutions/s4/index.html">Lab 4, every part explained — as a page</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s4/ocaml/lambda.ml">lambda.ml — every hole filled, commented</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s4/ocaml/main.ml">main.ml — the 31 checks</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/solutions/s4/s4-warmup-solutions.pdf">Warm-up — the sheet, worked</a></span></li></ul></li><li class="group"><span class="glabel">Homework</span><ul><li class="m-reading c-homework"><span class="mi"><a href="https://cs3110.github.io/textbook/chapters/interp/intro.html">CS3110, chapter 10 — sections 10.1 to 10.4</a></span></li><li class="m-homework c-homework"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/labs/lab4-lambda/index.html#homework">What to finish at home — on the lab page</a></span></li></ul></li></ul>
+</section>
+<section class="story">
+  <h2>This session</h2>
+  <p>Who, and how, decides the next step of a computation? Block&nbsp;1 asks it four
+     times in real languages &mdash; at a function call, across an iteration, in the
+     order and the moment arguments are evaluated &mdash; and each time sets beside
+     the explicit control a functional way to express it: recursion, a function
+     passed as the body of a loop, a function that delays an argument. Block&nbsp;2 formalises
+     those choices in the smallest functional language there is, the
+     &lambda;-calculus: three forms, one rule, and the strategy that picks the next
+     redex.</p>
+</section>
+
+<section>
+  <h2>The lecture, in two blocks</h2>
+  <table class="parts">
+    <tbody>
+      <tr><td class="p">1</td><td><strong>Control patterns: recursion, the stack, fold, evaluation.</strong>
+          Two definitions of computing (1936); a call on the machine and in the calculus; recursion and loops;
+          the loop as a value; evaluation order and parameter passing.
+          <a href="https://leon-gondelman.github.io/pp26/slides/s4-control-block-1.html">slides (web, with the demos)</a> &middot;
+          <a href="https://leon-gondelman.github.io/pp26/slides/s4-control-block-1.pdf">PDF</a></td></tr>
+      <tr><td class="p">2</td><td><strong>The formalism: the &lambda;-calculus.</strong>
+          Syntax, free variables, &beta;-reduction, substitution; normal and applicative order, the
+          small-step rules; booleans, numbers, <code>if</code> and recursion from three forms; laziness.
+          <a href="https://leon-gondelman.github.io/pp26/slides/s4-control-block-2.html">slides (web, with the steppers)</a> &middot;
+          <a href="https://leon-gondelman.github.io/pp26/slides/s4-control-block-2.pdf">PDF</a></td></tr>
+    </tbody>
+  </table>
+  <p class="p">The web slides run their code: Python in the page, JavaScript, and a &lambda;-calculus
+     stepper with a switch for the strategy. <kbd>&rarr;</kbd> moves one step; <kbd>T</kbd> lists the parts.</p>
+</section>
+
+<section>
+  <h2>The questions of the session</h2>
+  <h3>Block 1: who decides the next step, in the languages we use?</h3>
+  <table class="langs qa">
+    <thead><tr><th>The question</th><th>The answer</th></tr></thead>
+    <tbody>
+      <tr><td>What is computing?</td>
+          <td>Two definitions, 1936. In the machine the next step is a function of the state; in the
+              calculus it is a relation, and a strategy makes it a function.</td></tr>
+      <tr><td>What does a machine need to call a function?</td>
+          <td>A frame. The stack holds what the calculus keeps in the term. Every loop can be written
+              as a tail-recursive function, every recursion as a loop with a stack.</td></tr>
+      <tr><td>Do we need a loop construct at all?</td>
+          <td>No. The recursion is written once, in <code>fold</code>; a use passes the body and
+              writes no control. <code>fold_left</code> and <code>fold_right</code> differ in the
+              order of applying <code>f</code>.</td></tr>
+      <tr><td>In which order, and when, are arguments evaluated?</td>
+          <td>The language decides both: the order (fixed or unspecified) and the mode &mdash; by
+              value, by name, by need. Under call by value <code>if</code> cannot be a function
+              unless the caller delays the branches.</td></tr>
+    </tbody>
+  </table>
+  <p>Each time, functional programming expressed the control through recursion and function
+     values: recursion rather than an explicit stack, <code>fold</code> rather than a loop, a
+     function that delays rather than an argument evaluated first. Implicit control is not
+     particular to it: an imperative program also has a call stack and an evaluation order that
+     the language fixes.</p>
+
+  <h3>Block 2: block 1&rsquo;s answers in one formalism</h3>
+  <ul class="refs">
+    <li><strong>In the pure calculus, the order of reduction never changes the normal form.</strong>
+        A term has at most one normal form, up to the renaming of bound variables (Church and
+        Rosser, 1936). The order decides whether we reach it; normal order
+        reaches it whenever it exists. <code>(&lambda;x. &lambda;y. y) &Omega;</code> gives
+        <code>&lambda;y. y</code> in normal order, and runs for ever in applicative order.</li>
+    <li><strong>A strategy says when an argument is evaluated, and each choice has a cost.</strong>
+      <table class="langs qa">
+        <thead><tr><th>Strategy</th><th>An argument is evaluated</th><th>What it costs</th></tr></thead>
+        <tbody>
+          <tr><td>call by value</td><td>before the call, once</td><td>work on arguments never used; &Omega; is fatal</td></tr>
+          <tr><td>call by name</td><td>at each use</td><td>the same argument evaluated many times</td></tr>
+          <tr><td>call by need</td><td>at first use, once</td><td>a delayed argument kept, and updated when it is first used; memory held until then; and
+              when evaluation has effects, their order is no longer readable from the program</td></tr>
+        </tbody>
+      </table></li>
+    <li><strong>The calculus has no <code>;</code>, no <code>while</code>, no <code>if</code>.</strong>
+        Control lives in values, and the values are functions: a boolean picks, a numeral repeats,
+        <code>Y</code> recurses, a thunk delays. Functions as values are not a feature the calculus
+        happens to have: they are what a language without control syntax must have, and they
+        suffice.</li>
+  </ul>
+  <p>Session 4 asked what the language decides: whether a call keeps a frame, in what order the
+     arguments go, and when an argument is evaluated. It also showed the program taking these
+     decisions itself, with an explicit stack, with <code>fold</code>, with branches wrapped in
+     functions. Session 5 develops these techniques: iterators, thunks, streams.</p>
+</section>
+
+<section>
+  <h2>Everything from functions</h2>
+  <p>The calculus has three forms: a variable <code>x</code>, a function <code>&lambda;x. t</code>,
+     an application <code>t u</code>. No numbers, no booleans, no <code>let</code>, no
+     <code>if</code>. Block 2 defines them from the three forms:</p>
+<pre class="code"><span class="cm">(* a boolean is a choice: given two things, it picks one *)</span>
+true  = &lambda;t. &lambda;f. t
+false = &lambda;t. &lambda;f. f
+if    = &lambda;c. &lambda;t. &lambda;e. c t e
+
+<span class="cm">(* a number is a repetition: n applies f to x, n times *)</span>
+0    = &lambda;f x. x
+3    = &lambda;f x. f (f (f x))
+succ = &lambda;n f x. f (n f x)
+add  = &lambda;m n f x. m f (n f x)
+
+<span class="cm">(* recursion without let rec *)</span>
+Y = &lambda;f. (&lambda;x. f (x x)) (&lambda;x. f (x x))
+Z = &lambda;f. (&lambda;x. f (&lambda;v. x x v)) (&lambda;x. f (&lambda;v. x x v))</pre>
+  <ul class="plain">
+    <li><code>if</code> only hands the two branches to the condition. It is a function under normal
+        order; under call by value both branches are evaluated before the choice, and
+        <code>if</code> is a function only when the caller delays them: block 1&rsquo;s
+        <code>myIf</code>, with each branch wrapped in a function.</li>
+    <li>A number applies a function <em>n</em> times: a number is its own fold, block 1&rsquo;s
+        <code>fold</code> taken literally.</li>
+    <li><code>Y g</code> under call by value evaluates <code>x x</code> first, for ever.
+        <code>Z</code> wraps it in a thunk, <code>&lambda;v. x x v</code>: the same repair as for
+        <code>if</code>. OCaml refuses the type of <code>Y</code> before it can run it; why is
+        session 10.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The types of the lab</h2>
+  <p>The evaluator is three OCaml types and a few functions that match on them.</p>
+<pre class="code"><span class="k">type</span> term =
+  | <span class="c">Var</span> <span class="k">of</span> string                 <span class="cm">(* x     *)</span>
+  | <span class="c">Lam</span> <span class="k">of</span> string * term          <span class="cm">(* λx. t *)</span>
+  | <span class="c">App</span> <span class="k">of</span> term * term            <span class="cm">(* t u   *)</span>
+
+<span class="k">type</span> strategy = <span class="c">CBN</span> | <span class="c">CBV</span> | <span class="c">Normal</span>
+
+<span class="k">type</span> value = <span class="c">Closure</span> <span class="k">of</span> string * term * env
+<span class="k">and</span>  env = (string * value) list</pre>
+  <ul class="plain">
+    <li><code>term</code> has one constructor per form of the calculus: the table of the slide
+        <em>Syntax: three forms</em>, written as a type. The functions of the warm-up take a term
+        apart with a <code>match</code> on these three cases.</li>
+    <li><code>strategy</code> is the switch of the stepper, as a value. <code>step</code> matches
+        on it and returns <code>step_cbn</code>, <code>step_cbv</code> or <code>step_normal</code>;
+        the rules of each strategy are one <code>match</code> case each.</li>
+    <li><code>value</code> and <code>env</code> are defined together, with <code>and</code>: an
+        environment holds values, and a closure holds an environment. A function value is its
+        parameter, its body, and the bindings it was made in. What the closure carries is
+        session 5&rsquo;s first question.</li>
+  </ul>
+  <p>Two extensions change these types. <strong>A small ML</strong> adds <code>Int</code>,
+     <code>Add</code>, <code>If</code> and <code>Let</code> to <code>term</code>, and the evaluator
+     becomes a language; session 10 gives it a type checker. <strong>A meta-circular
+     evaluator</strong> replaces <code>Closure</code> by <code>VFun of (value -&gt; value)</code>: a
+     constructor that carries an OCaml function, so a &lambda; of the calculus becomes a function of
+     OCaml. <code>readback</code> shows what is lost.</p>
+</section>
+
+<section>
+  <h2>The lab: warm-up, then the evaluator</h2>
+  <table class="parts">
+    <tbody>
+      <tr><td class="p">W</td><td><strong>Warm-up.</strong> Five reductions on paper, then four functions on the
+          term type: <code>size</code>, <code>free_vars</code>, <code>is_closed</code>, <code>subst</code> without capture.
+          <a href="https://leon-gondelman.github.io/pp26/handouts/s4-lambda-on-paper.pdf">the sheet (PDF)</a></td></tr>
+      <tr class="watch"><td class="p">A</td><td><strong>Small-step.</strong> One step under call by name, under call by value, and in
+          full normal order; <code>(&lambda;x. &lambda;y. y) &Omega;</code> ends under one and not the other, in our own code.</td></tr>
+      <tr><td class="p">B</td><td><strong>Big-step.</strong> An environment instead of substitution; a function value that
+          carries the environment it was made in &mdash; a closure.</td></tr>
+    </tbody>
+  </table>
+  <p class="p"><a href="https://leon-gondelman.github.io/pp26/labs/lab4-lambda/index.html">the lab page</a> &middot;
+     <a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab4-lambda/README.md">README</a> &middot;
+     source files: <a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab4-lambda/lambda.ml">lambda.ml</a> (the file we edit),
+     <a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab4-lambda/term.ml">term.ml</a>, <a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab4-lambda/syntax.ml">syntax.ml</a>,
+     <a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab4-lambda/main.ml">main.ml</a> &middot; <a href="https://github.com/leon-gondelman/pp26/tree/main/labs/lab4-lambda">the whole folder</a>.
+     Nothing is handed in; the checks in <code>main.ml</code> say which parts remain.</p>
+</section>
+
+<section>
+  <h2>Homework</h2>
+  <ul class="refs">
+    <li><strong>Finish the lab</strong>, any part left open, in order; the extensions are on the lab page.</li>
+    <li class="must"><strong>Reading.</strong>
+        <a href="https://cs3110.github.io/textbook/chapters/interp/intro.html">CS3110, chapter 10</a>,
+        sections 10.1&ndash;10.4; Pierce, <em>Types and Programming Languages</em>, chapter 5.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Languages this session</h2>
+  <table class="langs">
+    <thead><tr><th>Language</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>OCaml</td><td><span class="tag read">read</span> in both blocks,
+          <span class="tag write">write</span> in the lab &mdash; the evaluator for the calculus</td></tr>
+      <tr><td>&lambda;-calculus</td><td><span class="tag read">read</span> and run in the stepper on
+          the slides, <span class="tag write">write</span> on the warm-up sheet</td></tr>
+      <tr><td>Python</td><td><span class="tag read">read</span> and run on the slides:
+          <code>count</code> with and without a stack, <code>Y</code> and <code>Z</code></td></tr>
+      <tr><td>JavaScript</td><td><span class="tag read">read</span> and run on the slides: the order
+          in which arguments are evaluated, <code>myIf</code> with and without the branches as functions</td></tr>
+      <tr><td>C, Java, Scheme, Haskell</td><td><span class="tag read">read</span> in the
+          tables: tail calls, the loop as a value, the order of arguments, the parameter-passing modes</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Further reading</h2>
+  <p>None of this is required. Everything on the slides comes from the list on their last page;
+     these are the parts of it that can be read online. Landin&rsquo;s paper is on its
+     publisher&rsquo;s site, which may ask for a university login.</p>
+  <h3>Two definitions of computing</h3>
+  <ul class="refs">
+    <li><strong>Alan Turing, &ldquo;On computable numbers, with an application to the
+        Entscheidungsproblem&rdquo;</strong> &mdash;
+        <a href="https://www.cs.virginia.edu/~robins/Turing_Paper_1936.pdf">1936 (PDF)</a>. The machine.
+        Its appendix shows that the machine computes the same functions as Church&rsquo;s calculus.</li>
+    <li><strong>John Backus, &ldquo;Can programming be liberated from the von Neumann
+        style?&rdquo;</strong> &mdash;
+        <a href="https://worrydream.com/refs/Backus_1978_-_Can_Programming_Be_Liberated_from_the_von_Neumann_Style.pdf">Turing Award lecture, 1978 (PDF)</a>.
+        The case against programming one word of state at a time, by the designer of Fortran.</li>
+  </ul>
+  <h3>Recursion, the stack, tail calls</h3>
+  <ul class="refs">
+    <li><strong>Guy Steele, &ldquo;Debunking the &lsquo;expensive procedure call&rsquo; myth&rdquo;</strong> &mdash;
+        <a href="https://dspace.mit.edu/handle/1721.1/5753">MIT AI Memo 443, 1977</a>. A procedure
+        call is a jump that passes arguments; a properly implemented tail call keeps no frame for
+        the caller.</li>
+    <li><strong>William Clinger, &ldquo;Proper tail recursion and space efficiency&rdquo;</strong>
+&mdash;
+        <a href="https://www.cs.tufts.edu/comp/150FP/archive/will-clinger/proper-tail-space.pdf">PLDI 1998 (PDF)</a>.
+        What &ldquo;proper tail calls&rdquo; means, stated as a guarantee on space.</li>
+  </ul>
+  <h3>Evaluation strategies</h3>
+  <ul class="refs">
+    <li><strong>Gordon Plotkin, &ldquo;Call-by-name, call-by-value and the &lambda;-calculus&rdquo;</strong> &mdash;
+        <a href="https://homepages.inf.ed.ac.uk/gdp/publications/cbn_cbv_lambda.pdf">Theoretical Computer Science, 1975 (PDF)</a>.
+        The two strategies of the lab, each with its own calculus.</li>
+    <li><strong>John Hughes, &ldquo;Why functional programming matters&rdquo;</strong> &mdash;
+        <a href="https://www.cse.chalmers.se/~rjmh/Papers/whyfp.pdf">1989 (PDF)</a>. Higher-order
+        functions and lazy evaluation as two ways to glue programs together; the second is
+        session 5.</li>
+  </ul>
+  <h3>Interpreters</h3>
+  <ul class="refs">
+    <li><strong>Peter Landin, &ldquo;The mechanical evaluation of expressions&rdquo;</strong> &mdash;
+        <a href="https://doi.org/10.1093/comjnl/6.4.308">The Computer Journal, 1964</a>. The first
+        machine for the calculus with environments, and the closure: Part B of the lab.</li>
+    <li><strong>John Reynolds, &ldquo;Definitional interpreters for higher-order programming
+        languages&rdquo;</strong> &mdash;
+        <a href="https://homepages.inf.ed.ac.uk/wadler/papers/papers-we-love/reynolds-definitional-interpreters-1998.pdf">1972, reprinted 1998 (PDF)</a>.
+        An interpreter whose function values are functions of the language it is written in, as
+        in the meta-circular extension, and how to turn them into records, as in
+        <code>Closure</code>.</li>
+  </ul>
 </section>
 
   </div>

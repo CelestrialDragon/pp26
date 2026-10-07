@@ -30,7 +30,7 @@ type melody =
   | Rest of duration
   | Seq  of melody * melody      (* one after the other *)
   | Par  of melody * melody      (* at the same time    *)
-  | Repeat of int * melody       (* Part B2: n times over *)
+  | Repeat of int * melody       (* Part B2: n times over; n >= 0, which the type does not say *)
 
 let ( ++ ) a b = Seq (a, b)
 let ( // ) a b = Par (a, b)
@@ -78,8 +78,9 @@ let rec length_in_beats m =
 (* A3. Par takes exactly two voices, so three voices is a Par inside a Par.
    The first voice is a separate argument, and that is the point of the
    exercise: with `voices : melody list -> melody` the empty list would have
-   to produce a chord with no notes, and no value of type melody represents one.
-   (No Empty constructor -- see the homework question.) Head plus list is the
+   to produce a chord with no notes, and before Part B2 no value of type melody
+   represents one. (After B2, Repeat (0, m) has no notes and no duration -- an
+   empty melody by the back door; the honest one is the homework question.) Head plus list is the
    lecture's non-empty list: the meaningless call cannot be written at all,
    where a plain list would turn it into an exception at run time. The result nests to the right,
    Par (v1, Par (v2, v3)); the grouping changes `pretty`'s parentheses and
@@ -139,9 +140,10 @@ let to_events tempo m =
 (* C1. `{ p with octave = ... }` is a functional record update: a NEW pitch
    that copies p and changes one field; p itself is untouched. Every arm
    builds a new node from the old one. `Rest _ -> m` returns the rest
-   itself, unchanged, and the Seq/Par arms rebuild only the spine above the leaves that
-   changed: session 2's persistent tree, at no cost, because nothing here
-   is ever mutated and sharing is therefore always safe. The type
+   itself, unchanged; the Seq/Par arms rebuild every node they visit, changed
+   or not, and only the rests are shared. That is session 2's persistent tree:
+   nothing is mutated, so sharing a subtree is always safe, but each rebuilt
+   node is an allocation -- reuse is free, rebuilding is not. The type
    says nothing about a playable range, so transposing by 10 octaves is
    allowed and sounds like nothing; whether a type should promise more than
    this is a session 9 question. *)
@@ -189,8 +191,10 @@ let rec pretty m =
    reversal of the SOUND: the shorter voice starts at the beginning before
    and still starts at the beginning after, whereas played backwards on tape
    it would end at the end. The two notions agree exactly when both voices
-   are equally long, which is the case for every Par in the lab -- and for
-   Bach's canon, where the second voice is the first one's mirror image. *)
+   are equally long -- true of the chords and of Bach's canon, whose second
+   voice is the first one's mirror image, but not of `canon` in tunes.ml,
+   whose voices last 8 and 12 beats. The lab's C3 check expects the
+   notation's retrograde; reversing the sound is the homework question. *)
 let rec retrograde m =
   match m with
   | Note _ | Rest _ -> m

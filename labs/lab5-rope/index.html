@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making a Mini Text Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+:root{
+  --ground:#f5f4f0; --surface:#ffffff; --surface-2:#eae8e2; --sunken:#f0eeea;
+  --ink:#15171c; --ink-2:#3b4250; --ink-3:#5f6774; --rule:#d8d5cd; --rule-2:#c5c1b8;
+  --queue:#0a5f96; --queue-soft:#e2edf6; --queue-line:#94bcd9;
+  --stack:#7f4e06; --stack-soft:#f6ecd8; --stack-line:#d7b67c;
+  --start:#1b7a45; --exit:#9b2e92; --wall:#adaeaa;
+  --queue-tint:#88b5d4; --stack-tint:#cfa65d;
+  --task:#7a1f2e; --task-soft:#f4e7ea; --task-line:#d2a2ad;
+  --shadow:0 1px 2px rgba(30,26,20,.06), 0 8px 24px -12px rgba(30,26,20,.16);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#111318; --surface:#181b22; --surface-2:#232833; --sunken:#14171d;
+    --ink:#e8eaef; --ink-2:#b6bdc9; --ink-3:#8a929f; --rule:#2a2f39; --rule-2:#363c48;
+    --queue:#62b8ee; --queue-soft:#14283a; --queue-line:#2d5a79;
+    --stack:#e3ab55; --stack-soft:#2d2413; --stack-line:#6c572b;
+    --start:#52c283; --exit:#e07cd6; --wall:#4a505a;
+    --queue-tint:#376c90; --stack-tint:#7f6433;
+    --task:#e39aa7; --task-soft:#2f191e; --task-line:#6f3a46;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1217; --surface:#161a21; --surface-2:#1d222b; --sunken:#12161c;
+  --ink:#e6eaf0; --ink-2:#b2bac6; --ink-3:#828b99; --rule:#282e38; --rule-2:#333b47;
+  --queue:#5db6ec; --queue-soft:#132738; --queue-line:#2b5876;
+  --stack:#e2a951; --stack-soft:#2c2312; --stack-line:#6b552a;
+  --start:#4fc07f; --exit:#e07ad4; --wall:#464e5a;
+  --queue-tint:#356a8e; --stack-tint:#7d6231;
+  --task:#ff9d8b; --task-soft:#2f1613; --task-line:#7c3c31;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.62; font-weight:400;
+  text-rendering:optimizeLegibility;
+}
+.wrap{max-width:930px; margin:0 auto; padding:0 28px 96px}
+.col{max-width:660px; margin-left:auto; margin-right:auto}
+.figure-wide + .col{margin-top:34px}
+.compare + .col, .mazes + .legend{margin-top:20px}
+
+/* ---- masthead ---- */
+header.masthead{
+  border-bottom:1px solid var(--rule); background:var(--surface);
+}
+.masthead .wrap{padding-top:44px; padding-bottom:36px}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 18px;
+}
+h1{
+  font-family:"IBM Plex Serif",Georgia,serif; font-weight:600;
+  font-size:clamp(34px,5.2vw,52px); line-height:1.06; letter-spacing:-.02em;
+  margin:0 0 20px; text-wrap:balance;
+}
+.standfirst{font-size:19px; line-height:1.55; color:var(--ink-2); margin:0; max-width:640px}
+.standfirst strong{font-weight:600; color:var(--ink)}
+
+nav.toc{
+  display:grid; grid-auto-flow:column; grid-template-rows:repeat(4,auto);
+  gap:0 48px; margin-top:32px; max-width:600px;
+  font-family:"IBM Plex Mono",monospace; font-size:12.5px; letter-spacing:.03em;
+}
+nav.toc a{
+  color:var(--ink-3); text-decoration:none; padding:5px 0;
+  border-bottom:1px solid transparent; justify-self:start;
+}
+nav.toc a:hover{color:var(--queue); border-bottom-color:var(--queue-line)}
+nav.toc a.assign{color:var(--task); font-weight:500}
+nav.toc a.assign:hover{color:var(--task); border-bottom-color:var(--task-line)}
+
+/* ---- sections ---- */
+section{padding-top:68px}
+h2{
+  font-family:"IBM Plex Serif",Georgia,serif; font-weight:600;
+  font-size:29px; line-height:1.2; letter-spacing:-.012em; margin:0 0 6px;
+  text-wrap:balance;
+}
+.col h4{
+  font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:15px;
+  letter-spacing:-.004em; color:var(--ink-2); margin:26px 0 6px;
+}
+h3{
+  font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:16px;
+  letter-spacing:-.005em; margin:34px 0 8px;
+}
+h3.sub{
+  font-family:"IBM Plex Serif",Georgia,serif; font-size:20px; font-weight:600;
+  letter-spacing:-.01em; margin:46px 0 10px; padding-top:22px;
+  border-top:1px solid var(--rule);
+}
+.kicker{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--ink-3); margin:0 0 12px;
+  display:flex; align-items:center; gap:12px;
+}
+.kicker::after{content:""; flex:1; height:1px; background:var(--rule); max-width:180px}
+.kicker.task{color:var(--task)}
+.kicker.task::after{background:var(--task-line)}
+.badge{
+  display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+  letter-spacing:.12em; text-transform:uppercase; font-weight:600;
+  color:var(--task); background:var(--task-soft); border:1px solid var(--task-line);
+  border-radius:3px; padding:2px 7px; vertical-align:3px; margin-left:10px;
+}
+p{margin:0 0 17px}
+.lede{font-size:18.5px; color:var(--ink-2); margin-bottom:22px}
+
+a{color:var(--queue)}
+a.file{
+  font-family:"IBM Plex Mono",monospace; font-size:.9em; font-weight:500;
+  color:var(--ink); text-decoration:none;
+  border-bottom:1.5px solid var(--queue-line);
+  padding-bottom:1px; white-space:nowrap;
+}
+a.file:hover{color:var(--queue); border-bottom-color:var(--queue); background:var(--queue-soft)}
+a.file::before{content:"↗ "; font-size:.85em; color:var(--ink-3)}
+a:focus-visible, a.file:focus-visible{outline:2px solid var(--queue); outline-offset:3px; border-radius:2px}
+
+code{
+  font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.875em;
+  background:color-mix(in srgb,var(--surface-2) 55%,transparent); padding:.1em .3em; border-radius:3px;
+  color:var(--ink);
+  /* a chip never breaks inside an expression: the line breaks before it */
+  white-space:nowrap; -webkit-box-decoration-break:clone; box-decoration-break:clone;
+}
+@media (max-width:600px){ code{white-space:normal} }
+/* a code block on its own: one framed box, not a chip per line */
+pre>code{
+  display:block; padding:14px 16px; overflow-x:auto; white-space:pre;
+  font-size:13.5px; line-height:1.65;
+  background:var(--surface); border:1px solid var(--rule); border-radius:6px;
+  box-shadow:var(--shadow);
+}
+
+/* ---- code blocks ---- */
+figure{margin:26px 0}
+.code{
+  background:var(--surface); border:1px solid var(--rule); border-radius:6px;
+  overflow-x:auto; box-shadow:var(--shadow);
+}
+.code-head{
+  display:flex; justify-content:space-between; align-items:baseline; gap:16px;
+  padding:9px 16px; border-bottom:1px solid var(--rule);
+  background:var(--sunken); border-radius:6px 6px 0 0;
+  font-family:"IBM Plex Mono",monospace; font-size:12px;
+  position:sticky; left:0;
+}
+.code-head .path{font-weight:500}
+.code-head .lines{color:var(--ink-3); letter-spacing:.03em; white-space:nowrap}
+.code pre{
+  margin:0; padding:16px; font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  font-size:13.5px; line-height:1.65; color:var(--ink);
+}
+.code .c{color:var(--ink-3)}
+.code .hl{
+  display:inline-block; width:100%;
+  background:var(--queue-soft); box-shadow:-6px 0 0 var(--queue-soft), inset 3px 0 0 var(--queue);
+  padding-left:3px; margin-left:-3px;
+}
+.code .hl-s{
+  display:inline-block; width:100%;
+  background:var(--stack-soft); box-shadow:-6px 0 0 var(--stack-soft), inset 3px 0 0 var(--stack);
+  padding-left:3px; margin-left:-3px;
+}
+figcaption{
+  font-size:14px; color:var(--ink-3); margin-top:10px; line-height:1.5;
+  max-width:640px;
+}
+figcaption b{color:var(--ink-2); font-weight:600}
+
+/* ---- diagram ---- */
+.figure-wide{margin:30px 0 0}
+.diagram{
+  background:var(--surface); border:1px solid var(--rule); border-radius:8px;
+  padding:22px 18px 14px; box-shadow:var(--shadow); overflow-x:auto;
+}
+.diagram svg{display:block; width:100%; min-width:620px; height:auto}
+.d-box{fill:var(--surface-2); stroke:var(--rule-2); stroke-width:1}
+.d-box-solver{fill:var(--surface-2); stroke:var(--ink-3); stroke-width:1.5}
+.d-box-q{fill:var(--queue-soft); stroke:var(--queue-line); stroke-width:1.5}
+.d-box-s{fill:var(--stack-soft); stroke:var(--stack-line); stroke-width:1.5}
+.d-name{font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:500; fill:var(--ink)}
+.d-sub{font-family:"IBM Plex Sans",sans-serif; font-size:11.5px; fill:var(--ink-3)}
+.d-sub-q{fill:var(--queue)} .d-sub-s{fill:var(--stack)}
+.d-band{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.13em; fill:var(--ink-3)}
+.d-edge{stroke:var(--rule-2); stroke-width:1.5; fill:none}
+.d-edge-q{stroke:var(--queue-line); stroke-width:1.5; fill:none}
+.d-edge-s{stroke:var(--stack-line); stroke-width:1.5; fill:none}
+.d-arrow{fill:var(--rule-2)} .d-arrow-q{fill:var(--queue-line)} .d-arrow-s{fill:var(--stack-line)}
+.d-note{font-family:"IBM Plex Sans",sans-serif; font-size:11.5px; font-style:italic; fill:var(--ink-3)}
+
+/* ---- two-up compare ---- */
+.compare{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:26px 0}
+.panel{
+  border:1px solid var(--rule); border-radius:8px; background:var(--surface);
+  padding:18px 20px 20px; box-shadow:var(--shadow); min-width:0;
+}
+.panel.q{border-top:3px solid var(--queue)}
+.panel.s{border-top:3px solid var(--stack)}
+.panel h4{
+  margin:0 0 2px; font-family:"IBM Plex Mono",monospace; font-size:13.5px; font-weight:600;
+}
+.panel.q h4{color:var(--queue)} .panel.s h4{color:var(--stack)}
+.panel .role{font-size:12.5px; color:var(--ink-3); margin:0 0 14px; line-height:1.45}
+.panel p{font-size:15px; margin:0 0 12px}
+.panel p:last-child{margin-bottom:0}
+.panel pre{
+  margin:0 0 12px; font-family:"IBM Plex Mono",monospace; font-size:12.5px;
+  line-height:1.6; background:var(--surface); border:1px solid var(--rule);
+  border-radius:5px; padding:12px; overflow-x:auto; color:var(--ink);
+}
+.panel pre .c{color:var(--ink-3)}
+
+/* ---- interface table ---- */
+.iface{
+  width:100%; border-collapse:collapse; margin:24px 0 8px;
+  font-family:"IBM Plex Mono",monospace; font-size:13px;
+}
+.iface th{
+  text-align:left; font-weight:600; font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3); padding:0 14px 8px 0;
+  border-bottom:1px solid var(--rule-2); white-space:nowrap;
+}
+.iface th.q{color:var(--queue)} .iface th.s{color:var(--stack)}
+.iface td{padding:9px 14px 9px 0; border-bottom:1px solid var(--rule); vertical-align:baseline}
+.iface td:first-child{color:var(--ink-2)}
+.iface td.q{color:var(--queue); font-weight:500}
+.iface td.s{color:var(--stack); font-weight:500}
+.iface tr:last-child td{border-bottom:none}
+
+/* ---- results table ---- */
+.results{
+  width:100%; border-collapse:collapse; margin:22px 0 8px; font-size:14px;
+  font-variant-numeric:tabular-nums;
+}
+.results caption{
+  text-align:left; font-size:12.5px; color:var(--ink-3); padding-bottom:10px;
+  font-family:"IBM Plex Mono",monospace;
+}
+.results th{
+  text-align:right; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:600; padding:0 0 8px 18px;
+  border-bottom:1px solid var(--rule-2);
+}
+.results th:first-child{text-align:left; padding-left:0}
+.results th.q{color:var(--queue)} .results th.s{color:var(--stack)}
+.results td{text-align:right; padding:10px 0 10px 18px; border-bottom:1px solid var(--rule)}
+.results td:first-child{
+  text-align:left; padding-left:0; font-family:"IBM Plex Mono",monospace; font-size:13px;
+}
+.results td .dim{color:var(--ink-3); font-size:12px}
+.results td.q{color:var(--queue); font-weight:500}
+.results td.s{color:var(--stack); font-weight:500}
+.results tr:last-child td{border-bottom:none}
+
+/* ---- maze renders ---- */
+.mazes{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:26px 0 0}
+.maze-card{
+  border:1px solid var(--rule); border-radius:8px; background:var(--surface);
+  padding:16px 16px 14px; box-shadow:var(--shadow); overflow-x:auto; min-width:0;
+}
+.maze-card h4{
+  margin:0 0 3px; font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600;
+}
+.maze-card.q h4{color:var(--queue)} .maze-card.s h4{color:var(--stack)}
+.maze-card .stat{font-size:12.5px; color:var(--ink-3); margin:0 0 12px}
+.maze{
+  font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:12px;
+  line-height:1.02; white-space:pre; margin:0; letter-spacing:0;
+}
+.maze .w{color:var(--wall)}
+.maze .o{color:transparent}
+.maze-card.q .maze .v{color:var(--queue-tint)}
+.maze-card.s .maze .v{color:var(--stack-tint)}
+.maze .p-q{color:var(--queue); font-weight:600}
+.maze .p-s{color:var(--stack); font-weight:600}
+.maze .s{color:var(--start); font-weight:600}
+.maze .e{color:var(--exit); font-weight:600}
+.legend{
+  display:flex; flex-wrap:wrap; gap:6px 18px; margin:16px 0 0;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);
+}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{font-style:normal; font-size:13px}
+
+/* ---- callout ---- */
+.callout{
+  border-left:3px solid var(--stack); background:var(--stack-soft);
+  padding:16px 20px; border-radius:0 6px 6px 0; margin:26px 0;
+}
+.callout p{margin:0; font-size:15.5px; color:var(--ink-2)}
+.callout p + p{margin-top:10px}
+.callout strong{color:var(--ink); font-weight:600}
+
+/* ---- run block ---- */
+.shell{
+  background:var(--sunken); border:1px solid var(--rule); border-radius:6px;
+  padding:16px 18px; overflow-x:auto; box-shadow:var(--shadow);
+  font-family:"IBM Plex Mono",monospace; font-size:13px; line-height:1.9;
+}
+.shell .prompt{color:var(--ink-3); user-select:none}
+.shell .c{color:var(--ink-3)}
+.shell div{white-space:pre}
+
+/* ---- checkpoints ---- */
+ul.marks{list-style:none; padding:0; margin:18px 0}
+ul.marks li{
+  padding:12px 0 12px 30px; border-bottom:1px solid var(--rule); position:relative;
+  font-size:16px;
+}
+ul.marks li:last-child{border-bottom:none}
+ul.marks li::before{
+  content:"—"; position:absolute; left:0; top:12px; color:var(--queue);
+  font-family:"IBM Plex Mono",monospace;
+}
+ul.marks b{font-weight:600}
+
+footer{
+  margin-top:80px; padding-top:26px; border-top:1px solid var(--rule);
+  font-size:13.5px; color:var(--ink-3); line-height:1.6;
+}
+footer p{margin:0 0 8px; max-width:640px}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .compare, .mazes{grid-template-columns:1fr}
+  .wrap{padding:0 20px 72px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important}
+}
+
+/* ================= session-page additions ================= */
+
+/* ---- masthead course link ---- */
+.eyebrow a{color:inherit; text-decoration:none; border-bottom:1px solid var(--rule-2)}
+.eyebrow a:hover{color:var(--queue); border-bottom-color:var(--queue)}
+
+/* ---- objectives ---- */
+.objectives{
+  display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:26px 0 8px;
+}
+.obj{
+  border:1px solid var(--rule); border-radius:8px; background:var(--surface);
+  padding:16px 18px 18px; box-shadow:var(--shadow); min-width:0;
+}
+.obj h4{
+  margin:0 0 10px; font-family:"IBM Plex Mono",monospace; font-size:11px;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3); font-weight:600;
+}
+.obj ul{margin:0; padding-left:18px}
+.obj li{font-size:14.5px; line-height:1.5; margin-bottom:8px; color:var(--ink-2)}
+.obj li:last-child{margin-bottom:0}
+.obj li b{color:var(--ink); font-weight:600}
+
+/* ---- in-class / homework split ---- */
+.split{
+  display:grid; grid-template-columns:1fr 1fr; gap:0; margin:26px 0 0;
+  border:1px solid var(--rule); border-radius:8px; overflow:hidden;
+  background:var(--surface); box-shadow:var(--shadow);
+}
+.split > div{padding:16px 20px 18px}
+.split > div + div{border-left:1px solid var(--rule); background:var(--sunken)}
+.split h4{
+  margin:0 0 8px; font-family:"IBM Plex Mono",monospace; font-size:11px;
+  letter-spacing:.13em; text-transform:uppercase; font-weight:600;
+}
+.split .now h4{color:var(--queue)}
+.split .later h4{color:var(--stack)}
+.split p{font-size:14.5px; margin:0; color:var(--ink-2); line-height:1.55}
+.split code{font-size:.85em}
+
+/* ---- session forward-link chip ---- */
+.sn{
+  display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+  letter-spacing:.06em; text-transform:uppercase; white-space:nowrap;
+  color:var(--stack); background:var(--stack-soft);
+  border:1px solid var(--stack-line); border-radius:3px;
+  padding:1px 5px; margin-left:6px; vertical-align:1px; font-weight:500;
+}
+
+/* ---- cross-language table ---- */
+.xwrap{overflow-x:auto; margin:26px 0 8px; -webkit-overflow-scrolling:touch}
+.xlang{
+  border-collapse:collapse; font-size:13.5px; min-width:760px; width:100%;
+}
+.xlang th{
+  text-align:left; font-family:"IBM Plex Mono",monospace; font-size:11px;
+  letter-spacing:.11em; text-transform:uppercase; font-weight:600;
+  color:var(--ink-3); padding:0 16px 9px 0; border-bottom:1px solid var(--rule-2);
+  vertical-align:bottom;
+}
+.xlang th.py{color:var(--queue)} .xlang th.ml{color:var(--start)} .xlang th.jv{color:var(--stack)}
+.xlang td{
+  padding:11px 16px 11px 0; border-bottom:1px solid var(--rule);
+  vertical-align:top; line-height:1.45;
+}
+.xlang td:first-child{
+  color:var(--ink-3); font-size:12.5px; width:20%;
+  font-family:"IBM Plex Mono",monospace;
+}
+.xlang tbody tr:hover td{background:var(--surface-2)}
+.xlang tr:last-child td{border-bottom:none}
+.xlang tr.count td{font-weight:600; color:var(--ink)}
+.xlang tr.count td:first-child{color:var(--ink-2)}
+.xlang code{font-size:.86em; white-space:nowrap}
+.xlang .no{color:var(--ink-3); font-style:italic}
+
+/* ---- route cards ---- */
+.routes{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:26px 0 0}
+.routes.two{grid-template-columns:repeat(2,1fr); max-width:660px; margin-left:auto; margin-right:auto}
+.routes.one{grid-template-columns:1fr; max-width:660px; margin-left:auto; margin-right:auto}
+.route{
+  border:1px solid var(--rule); border-radius:8px; background:var(--surface);
+  padding:16px 18px 18px; box-shadow:var(--shadow); min-width:0;
+  display:flex; flex-direction:column;
+}
+.route.py{border-top:3px solid var(--queue)}
+.route.ml{border-top:3px solid var(--start)}
+.route.jv{border-top:3px solid var(--stack)}
+.route h4{
+  margin:0 0 2px; font-family:"IBM Plex Mono",monospace;
+  font-size:14px; font-weight:600;
+}
+.route.py h4{color:var(--queue)} .route.ml h4{color:var(--start)} .route.jv h4{color:var(--stack)}
+.route .part{font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); font-family:"IBM Plex Mono",monospace; margin:0 0 12px}
+.route p{font-size:14px; margin:0 0 12px; color:var(--ink-2); line-height:1.5}
+.route pre{
+  margin:0 0 12px; font-family:"IBM Plex Mono",monospace; font-size:11.5px;
+  line-height:1.75; background:var(--sunken); border:1px solid var(--rule);
+  border-radius:5px; padding:10px 12px; color:var(--ink);
+  white-space:pre-wrap; overflow-wrap:anywhere;
+}
+.route .links{margin-top:auto; padding-top:4px; font-size:13px; line-height:1.5}
+.route .links span{display:block; margin-bottom:6px}
+.route .links span:last-child{margin-bottom:0}
+.route .todo{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-3);
+  border-top:1px solid var(--rule); padding-top:10px; margin-top:4px;
+}
+.route .soon{color:var(--ink-3); font-style:italic; font-size:13px}
+
+/* ---- demo ---- */
+.demo{
+  border:1px solid var(--rule); border-radius:8px; background:var(--surface);
+  box-shadow:var(--shadow); padding:18px 18px 14px; margin:26px 0 0;
+}
+.demo-boards{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.board{min-width:0}
+.board h4{
+  margin:0 0 2px; font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600;
+}
+.board.q h4{color:var(--queue)} .board.s h4{color:var(--stack)}
+.board .stat{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3);
+  margin:0 0 10px; font-variant-numeric:tabular-nums;
+}
+.board canvas{
+  display:block; width:100%; height:auto;
+  border:1px solid var(--rule); border-radius:4px; background:var(--sunken);
+}
+.demo-bar{
+  display:flex; align-items:center; gap:14px; margin-top:16px;
+  padding-top:14px; border-top:1px solid var(--rule);
+}
+.demo-bar button{
+  font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:500;
+  color:var(--ink); background:var(--surface-2);
+  border:1px solid var(--rule-2); border-radius:5px;
+  padding:5px 14px; cursor:pointer; min-width:76px;
+}
+.demo-bar button:hover{border-color:var(--queue); color:var(--queue)}
+.demo-bar button:focus-visible{outline:2px solid var(--queue); outline-offset:2px}
+.demo-bar input[type=range]{flex:1; min-width:0; accent-color:var(--queue)}
+.demo-bar .step{
+  font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--ink-3);
+  white-space:nowrap; font-variant-numeric:tabular-nums; min-width:96px; text-align:right;
+}
+
+/* ---- related work ---- */
+ul.refs{list-style:none; padding:0; margin:18px 0 0}
+ul.refs li{
+  padding:11px 0; border-bottom:1px solid var(--rule);
+  font-size:14.5px; line-height:1.5; color:var(--ink-2);
+}
+ul.refs li:last-child{border-bottom:none}
+ul.refs b{color:var(--ink); font-weight:600}
+ul.refs .where{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3);
+  display:block; margin-top:2px;
+}
+
+@media (max-width:760px){
+  .objectives, .split, .routes, .routes.two, .demo-boards{grid-template-columns:1fr}
+  nav.toc{grid-auto-flow:row; grid-template-rows:none}
+  .split > div + div{border-left:none; border-top:1px solid var(--rule)}
+}
+/* ---- lab rail (generated; edit the injector, not this) -----------------
+   Wide screens: the rail is an absolute left column spanning the page. Its
+   top block is decoration, sized to the masthead by script, so the menu
+   begins level with section 00; the menu itself is sticky, so the snippet
+   scrolls away and the navigation stays. Narrow screens: a compact block of
+   links, and the page keeps its own boxed contents list under the standfirst. */
+:root{--labrail:21rem; --masthead-h:340px}
+.labrail{background:var(--surface); border-right:1px solid var(--rule);
+  padding:22px 20px 28px; font-size:14.5px; line-height:1.5; z-index:20}
+@media (min-width:1180px){
+  body{position:relative; padding-left:var(--labrail)}
+  .labrail{position:absolute; left:0; top:0; bottom:0; width:var(--labrail);
+    padding:0}
+  .lr-art{height:var(--masthead-h); padding:26px 22px; display:flex;
+    flex-direction:column; justify-content:flex-end; overflow:hidden}
+  .lr-nav{position:sticky; top:0; max-height:100vh; overflow-y:auto;
+    padding:22px 20px 28px}
+  header.masthead nav.toc{display:none}   /* it lives in the rail up here */
+}
+.lr-art svg{width:100%; height:auto; display:block}
+.lr-art .cap{font:500 10.5px/1.4 "IBM Plex Sans",sans-serif; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3); border-top:1px solid var(--rule);
+  padding-top:10px; margin:14px 0 0}
+.lr-art{display:none}
+@media (min-width:1180px){.lr-art{display:flex}}
+
+.labrail .lr-brand{display:block; text-decoration:none; color:var(--ink);
+  margin-bottom:20px}
+.labrail .lr-brand .up{display:block; font:500 11px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-bottom:6px}
+.labrail .lr-brand b{font:600 16px/1.28 "IBM Plex Sans",sans-serif; letter-spacing:-.01em}
+.labrail h2{display:flex; align-items:center; gap:10px;
+  font:600 11.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink); margin:26px 0 10px; padding:0; border:0}
+.labrail h2::after{content:""; flex:1; height:1px; background:var(--rule-2)}
+.labrail .lr-nav>div:first-of-type h2{margin-top:18px}
+.labrail ul{list-style:none; margin:0; padding:0}
+.labrail a.lr{display:block; padding:6px 10px; border-radius:7px;
+  text-decoration:none; color:var(--ink-2); font-size:14.5px}
+.labrail a.lr:hover{background:var(--sunken); color:var(--ink)}
+.labrail a.lr[aria-current]{background:var(--queue-soft); color:var(--queue); font-weight:600}
+.labrail a.lr code{font:500 13.5px/1.5 "IBM Plex Mono",monospace; background:none;
+  padding:0; color:inherit}
+
+.labrail a.lr .t{display:block}
+.labrail a.lr .d{display:block; font:400 12px/1.35 "IBM Plex Sans",sans-serif;
+  color:var(--ink-3); margin-top:1px}
+.labrail a.lr[aria-current] .d{color:var(--queue); opacity:.85; font-weight:400}
+
+/* The assignment itself, first: one line per part, letter in mono, the parts
+   where code gets written in the lab's task colour; run-and-watch parts muted. */
+.labrail .lr-todo a{display:grid; grid-template-columns:2.4rem 1fr; gap:0 6px;
+  align-items:baseline; padding:5px 10px; border-radius:7px; text-decoration:none;
+  color:var(--ink-2)}
+.labrail .lr-todo a:hover{background:var(--sunken); color:var(--ink)}
+.labrail .lr-todo .k{font:500 12.5px/1.5 "IBM Plex Mono",monospace; color:var(--ink-3);
+  letter-spacing:.02em}
+.labrail .lr-todo .t{font-size:14.5px; font-weight:600}
+.labrail .lr-todo .d{grid-column:2; font:400 12px/1.35 "IBM Plex Sans",sans-serif;
+  color:var(--ink-3); margin-top:1px}
+.labrail .lr-todo .d code{font:500 11.5px/1.4 "IBM Plex Mono",monospace; background:none;
+  padding:0; color:inherit}
+.labrail .lr-todo a.do .k,.labrail .lr-todo a.do .t{color:var(--task)}
+.labrail .lr-todo a.do:hover{background:var(--task-soft)}
+.labrail .lr-readme{margin:6px 0 0; padding:0 10px; font-size:12.5px}
+.labrail .lr-readme a{color:var(--ink-3); text-decoration:none; border-bottom:1px solid var(--rule-2)}
+.labrail .lr-readme a:hover{color:var(--task); border-color:var(--task-line)}
+
+/* A helper note sits under the guide it serves: indented, on a hairline,
+   lighter weight — subordinate, not equal. */
+.labrail li.sub a.lr{margin-left:12px; padding-left:12px; border-left:2px solid var(--rule);
+  border-radius:0 7px 7px 0}
+.labrail li.sub a.lr .t{font-weight:400; font-size:13.5px}
+.labrail li.sub a.lr[aria-current]{border-left-color:var(--queue)}
+
+/* This page's own sections, in the page's own voice: mono, numbered, with the
+   assignment marker the boxed list used. The current one lights up on scroll. */
+.labrail .lr-toc a{display:block; padding:5.5px 10px; border-radius:7px;
+  text-decoration:none; font:400 14px/1.45 "IBM Plex Mono",monospace;
+  letter-spacing:.02em; color:var(--ink-3)}
+.labrail .lr-toc a:hover{background:var(--sunken); color:var(--queue)}
+.labrail .lr-toc a.on{background:var(--queue-soft); color:var(--queue); font-weight:500}
+.labrail .lr-toc a.assign{color:var(--task); font-weight:500}
+.labrail .lr-toc a.assign.on{background:var(--task-soft); color:var(--task)}
+
+.labrail .lr-foot{margin:24px 0 0; padding-top:15px; border-top:1px solid var(--rule);
+  font-size:13px}
+.labrail .lr-foot a{color:var(--ink-3); text-decoration:none}
+.labrail .lr-foot a:hover{color:var(--queue)}
+@media (max-width:1179px){
+  /* Narrow: the lab is long-form reading, so the navigation goes AFTER it
+     rather than ahead of it. The page already names itself in its masthead
+     and keeps its own boxed contents list, so nothing is lost from the top. */
+  body{display:flex; flex-direction:column}
+  .labrail{order:99; position:static; width:auto; border-right:0;
+    border-top:1px solid var(--rule); border-bottom:0; display:grid;
+    align-items:start; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:0 24px}
+  .labrail .lr-nav{display:contents}
+  .labrail .lr-brand{grid-column:1/-1}
+  .labrail .lr-sections{display:none}
+  .labrail h2{margin-top:16px}
+  .labrail .lr-foot{grid-column:1/-1}
+}
+</style>
+<style>
+.music{border:1px solid var(--rule); border-left:4px solid var(--queue); background:var(--queue-soft); padding:14px 20px; border-radius:6px; margin:18px 0}
+.music h3{margin:0 0 8px; font-size:15px; letter-spacing:.04em; text-transform:uppercase; color:var(--queue)}
+.music ul{margin:0; padding-left:1.2em}
+table.parts{width:100%; border-collapse:collapse; margin:14px 0 22px; font-size:15.5px}
+table.parts th{text-align:left; border-bottom:2px solid var(--rule-2); padding:6px 10px 8px 0; font-weight:600}
+table.parts td{border-bottom:1px solid var(--rule); padding:8px 10px 8px 0; vertical-align:top}
+table.parts td.k{font-family:"IBM Plex Mono",monospace; white-space:nowrap; color:var(--ink-3)}
+</style>
+<style id="hilite">
+/* Pygments token colours (tools/hilite.py); the same palette as the slides. */
+.hl-code .k,.hl-code .kd,.hl-code .kn,.hl-code .kr,.hl-code .kp,.hl-code .ow{color:#2a6f97}
+.hl-code .kt,.hl-code .nc,.hl-code .nn,.hl-code .nb,.hl-code .bp{color:#c05a0e}
+.hl-code .s,.hl-code .s1,.hl-code .s2,.hl-code .sb,.hl-code .sc,.hl-code .se,.hl-code .sd{color:#0f8a2f}
+.hl-code .c,.hl-code .c1,.hl-code .cm,.hl-code .cp{color:#6f7f84;font-style:italic}
+.hl-code .m,.hl-code .mi,.hl-code .mf,.hl-code .mh{color:#7a3e9d}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .hl-code .k,:root:not([data-theme="light"]) .hl-code .kd,:root:not([data-theme="light"]) .hl-code .kn,:root:not([data-theme="light"]) .hl-code .kr,:root:not([data-theme="light"]) .hl-code .kp,:root:not([data-theme="light"]) .hl-code .ow{color:#7fb3e0}
+  :root:not([data-theme="light"]) .hl-code .kt,:root:not([data-theme="light"]) .hl-code .nc,:root:not([data-theme="light"]) .hl-code .nn,:root:not([data-theme="light"]) .hl-code .nb,:root:not([data-theme="light"]) .hl-code .bp{color:#f0a060}
+  :root:not([data-theme="light"]) .hl-code .s,:root:not([data-theme="light"]) .hl-code .s1,:root:not([data-theme="light"]) .hl-code .s2,:root:not([data-theme="light"]) .hl-code .sb,:root:not([data-theme="light"]) .hl-code .sc,:root:not([data-theme="light"]) .hl-code .se,:root:not([data-theme="light"]) .hl-code .sd{color:#5fd37f}
+  :root:not([data-theme="light"]) .hl-code .c,:root:not([data-theme="light"]) .hl-code .c1,:root:not([data-theme="light"]) .hl-code .cm,:root:not([data-theme="light"]) .hl-code .cp{color:#8a929f}
+  :root:not([data-theme="light"]) .hl-code .m,:root:not([data-theme="light"]) .hl-code .mi,:root:not([data-theme="light"]) .hl-code .mf,:root:not([data-theme="light"]) .hl-code .mh{color:#c39be0}
+}
+:root[data-theme="dark"] .hl-code .k,:root[data-theme="dark"] .hl-code .kd,:root[data-theme="dark"] .hl-code .kn,:root[data-theme="dark"] .hl-code .kr,:root[data-theme="dark"] .hl-code .kp,:root[data-theme="dark"] .hl-code .ow{color:#7fb3e0}
+:root[data-theme="dark"] .hl-code .kt,:root[data-theme="dark"] .hl-code .nc,:root[data-theme="dark"] .hl-code .nn,:root[data-theme="dark"] .hl-code .nb,:root[data-theme="dark"] .hl-code .bp{color:#f0a060}
+:root[data-theme="dark"] .hl-code .s,:root[data-theme="dark"] .hl-code .s1,:root[data-theme="dark"] .hl-code .s2,:root[data-theme="dark"] .hl-code .sb,:root[data-theme="dark"] .hl-code .sc,:root[data-theme="dark"] .hl-code .se,:root[data-theme="dark"] .hl-code .sd{color:#5fd37f}
+:root[data-theme="dark"] .hl-code .c,:root[data-theme="dark"] .hl-code .c1,:root[data-theme="dark"] .hl-code .cm,:root[data-theme="dark"] .hl-code .cp{color:#8a929f}
+:root[data-theme="dark"] .hl-code .m,:root[data-theme="dark"] .hl-code .mi,:root[data-theme="dark"] .hl-code .mf,:root[data-theme="dark"] .hl-code .mh{color:#c39be0}
+</style>
+</head>
+<body>
+<!-- pp26:labrail -->
+<aside class="labrail">
+  <div class="lr-nav">
+    <a class="lr-brand" href="https://homes.cs.aau.dk/~lego/pp26/s5.html">
+      <span class="up">PP26 &middot; Session 5</span><b>Lab 5 &mdash; Making a Mini Text Editor</b></a>
+      <div class="lr-what">
+        <h2>What to do</h2>
+        <ul class="lr-todo">
+          <li><a class="do" href="#rope"><span class="k">0</span><span class="t">The rope</span><span class="d">on paper and in the toplevel</span></a></li>
+          <li><a class="do" href="#warmup"><span class="k">W</span><span class="t">Warm-up</span><span class="d">lists, then Pascal's triangle</span></a></li>
+          <li><a class="do" href="#part-a"><span class="k">A</span><span class="t">The rope</span><span class="d"><code>fold</code>, <code>insert</code>, undo, <code>to_seq</code></span></a></li>
+          <li><a class="do" href="#part-b"><span class="k">B</span><span class="t">Sequences</span><span class="d"><code>map</code>, <code>lines</code>, <code>grep</code></span></a></li>
+          <li><a class="do" href="#part-c"><span class="k">C</span><span class="t">What comes next</span><span class="d"><code>iter_k</code>, two continuations, going back</span></a></li>
+        </ul>
+        <p class="lr-readme"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/README.md">the same, as a README</a></p>
+      </div>
+      <div class="lr-sections">
+        <h2>On this page</h2>
+        <ul class="lr-toc"><li><a href="#description">00 · description</a></li><li><a href="#types">01 · the types</a></li><li><a href="#rope">02 · the rope, on paper</a></li><li><a href="#warmup">03 · warm-up</a></li><li><a href="#quest">04 · the quest</a></li><li><a href="#homework">05 · homework</a></li></ul>
+      </div>
+      <div>
+        <h2>Code</h2>
+        <ul>
+          <li><a class="lr" href="warmup/warmup.pdf">the warm-up sheet (PDF)</a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/warmup/warmup.ml"><code>warmup/warmup.ml</code> — its exercises at the keyboard</a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/rope.ml"><code>rope.ml</code> — Part A, we edit it</a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/stream.ml"><code>stream.ml</code> — Part B, we edit it</a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/next.ml"><code>next.ml</code> — Part C, we edit it</a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/checks.ml"><code>checks.ml</code> — the 55 checks</a></li>
+          <li><a class="lr" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/edit/protocol.ml"><code>edit/</code> — the editor, provided</a></li>
+        </ul>
+      </div>
+      <p class="lr-foot"><a href="https://homes.cs.aau.dk/~lego/pp26/">&larr; Programming Paradigms</a></p>
+  </div>
+</aside>
+<!-- /pp26:labrail -->
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow"><a href="https://homes.cs.aau.dk/~lego/pp26/">PP26</a> &nbsp;·&nbsp; <a href="https://homes.cs.aau.dk/~lego/pp26/s5.html">Session 5</a> &nbsp;·&nbsp; lab</p>
+    <h1>Making a Mini Text Editor</h1>
+    <p class="standfirst">We write one library, a <strong>rope</strong>: a tree that holds the characters of a document at its leaves; and a text editor that stands on it. The editor is provided and at first it can do nothing. Each function that we write gives it one more feature: when <code>fold</code> is written the file appears, when <code>insert</code> is written we can type, when <code>to_seq</code> is written the screen reads twenty-four lines of a file of twelve thousand and leaves the rest alone.</p>
+    <nav class="toc">
+      <a href="#description">00 · description</a>
+      <a href="#types">01 · the types</a>
+      <a class="assign" href="#rope">02 · the rope, on paper</a>
+      <a class="assign" href="#warmup">03 · warm-up</a>
+      <a class="assign" href="#quest">04 · the quest</a>
+      <a class="assign" href="#homework">05 · homework</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="description">
+  <div class="col">
+    <p class="kicker">00 — description</p>
+    <h2>What this lab is for</h2>
+    <p>The lecture passed a function as a value twice: as one step of a traversal (block 1), and as a computation not yet run (block 2). Session 6 shows a third way: as the rest of the computation. The lecture did it on lists, which OCaml gives us. Here the collection is our own. Parts A and B of the quest go with the two blocks: Part A hands the rope one step of a traversal, Part B postpones the next element of a sequence. Part C goes with session 6: it keeps the rest of a traversal as a function and calls it later, or twice, or not at all.</p>
+    <p>The lab has two halves. The <strong>warm-up</strong> is a sheet of questions on paper and exercises at the keyboard, on lists and on a triangle of numbers; it is meant to be finished in the lab. The <strong>quest</strong> (Parts A, B and C) is started in the lab; Parts A and B are finished during the week, Part C after session 6. Nothing is handed in.</p>
+    <pre><code class="hl-code language-bash">dune<span class="w"> </span>build
+dune<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>./main.exe<span class="w">                         </span><span class="c1"># pass / FAIL / todo, one line per check</span>
+dune<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>./edit.exe<span class="w">                         </span><span class="c1"># the editor, on samples/notes.txt</span>
+dune<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>./edit.exe<span class="w"> </span>--<span class="w"> </span>samples/long.txt<span class="w">     </span><span class="c1"># on another file</span></code></pre>
+    <p>The editor prints an address, <code>http://localhost:8150/</code>, that we open in a browser. The program that answers the browser is our own OCaml, running on our own machine; nothing leaves it. We stop it with Ctrl-C, and we start it again after each <code>dune build</code> to see what the new function gives. If the page does not open, the editor also runs in the terminal, one command per line: <code>dune exec ./edit.exe -- --ed</code>.</p>
+    <p>Each hole is a <code>failwith "TODO …"</code>. The checks report it as <em>todo</em> until it is filled, then as <em>pass</em> or <em>FAIL</em>. The editor shows the same checks in the strip at the top of its page, and every key or panel whose level is <em>todo</em> carries the name of that level. <strong>The checks are the authority</strong>: the editor shows what a function gives, the checks say whether it is right. When a function is wrong the editor is not protected from it, and it misbehaves.</p>
+    <h3 class="sub" id="demo">The editor, level by level</h3>
+    <p>A sketch of the editor's page, redrawn at every level of the quest. We click a level in the strip, or move the slider, and the page shows what the functions of the levels written so far give it. The document is <code>samples/notes.txt</code>; the numbers are those of the real editor on it, recomputed here by the same functions.</p>
+  </div>
+  <style>
+  .ed{font-size:12px; line-height:1.45; color:var(--ink)}
+  .ed-head{display:flex; flex-wrap:wrap; gap:6px 12px; align-items:baseline; padding:0 0 10px; border-bottom:1px solid var(--rule); margin-bottom:12px}
+  .ed-head b{font-size:14px; font-weight:600}
+  .ed-head .file{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-2)}
+  .ed-head .mod{font-size:11.5px; font-weight:600; color:var(--task)}
+  .ed-chips{display:flex; flex-wrap:wrap; gap:4px; flex-basis:100%}
+  .ed-chips button{font-family:"IBM Plex Mono",monospace; font-size:10.5px; padding:1px 7px; border-radius:999px; border:1px solid var(--rule); background:var(--sunken); color:var(--ink-3); cursor:pointer; line-height:1.5}
+  .ed-chips button:hover{border-color:var(--queue); color:var(--queue)}
+  .ed-chips button:focus-visible{outline:2px solid var(--queue); outline-offset:1px}
+  .ed-chips button.pass{background:color-mix(in srgb,var(--start) 14%,var(--surface)); color:var(--start); border-color:var(--start)}
+  .ed-chips button.new{outline:2px solid var(--queue); outline-offset:1px}
+  .ed-main{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:12px}
+  @media (max-width:700px){ .ed-main{grid-template-columns:1fr} }
+  .ed-card{background:var(--surface); border:1px solid var(--rule); border-radius:6px; padding:8px 10px; margin-bottom:10px; transition:opacity .3s}
+  .ed-card.locked{opacity:.5}
+  .ed-card.new{border-color:var(--queue); box-shadow:0 0 0 2px var(--queue-soft)}
+  .ed-card h4{font-family:"IBM Plex Sans",sans-serif; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 6px; font-weight:600}
+  .ed-card h4 .lock{font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--stack); background:var(--stack-soft); border-radius:3px; padding:0 5px; margin-left:6px; text-transform:none; letter-spacing:0}
+  .ed-pane{font-family:"IBM Plex Mono",monospace; font-size:11.5px; line-height:1.5; white-space:pre; overflow-x:auto; min-height:calc(14 * 1.5em); padding:4px 0; box-shadow:inset 3px 0 0 var(--queue)}
+  .ed-pane .num{display:inline-block; width:3em; padding-right:.8em; text-align:right; color:var(--ink-3)}
+  .ed-pane .nonum{display:inline-block; width:10px}
+  .ed-pane .caret{display:inline-block; width:0; height:1.1em; vertical-align:text-bottom; border-left:2px solid var(--task); margin-right:-2px}
+  .ed-pane mark{background:var(--queue-soft); color:inherit; outline:1px solid var(--queue-line)}
+  .ed-pane .lit{background:var(--stack-soft)}
+  .ed-pane .empty{white-space:normal; font-family:"IBM Plex Sans",sans-serif; color:var(--ink-2); padding:8px 10px}
+  .ed-status{font-family:"IBM Plex Mono",monospace; font-size:11px; border-top:1px solid var(--rule); margin-top:6px; padding:6px 0 0; display:flex; flex-wrap:wrap; gap:2px 14px; color:var(--ink-2); min-height:1.6em}
+  .ed-status b{color:var(--ink)} .ed-status .cost b{color:var(--stack)}
+  .ed-msg{font-size:11.5px; color:var(--task); min-height:1.5em; margin-top:4px}
+  .ed-keys{border-collapse:collapse; width:100%; font-size:11.5px}
+  .ed-keys td{padding:1px 6px 1px 0; vertical-align:baseline}
+  .ed-keys tr.locked td{color:var(--ink-3)}
+  .ed-keys kbd{font-family:"IBM Plex Mono",monospace; font-size:.9em; border:1px solid var(--rule); border-bottom-width:2px; border-radius:3px; padding:0 4px; background:var(--surface)}
+  .ed-out{font-family:"IBM Plex Mono",monospace; font-size:11px; background:var(--sunken); border-radius:4px; padding:5px 8px; margin-top:4px; white-space:pre-wrap}
+  .ed-row{display:flex; flex-wrap:wrap; gap:5px; align-items:center; margin:3px 0}
+  .ed-row .fld{font-family:"IBM Plex Mono",monospace; font-size:11px; padding:2px 6px; border:1px solid var(--rule); border-radius:4px; background:var(--ground); min-width:5em}
+  .ed-row .btn{font-size:11px; padding:2px 8px; border:1px solid var(--queue-line); border-radius:4px; background:var(--queue-soft); color:var(--queue)}
+  .ed-row .radio{font-size:11px}
+  .ed-row .radio i{display:inline-block; width:9px; height:9px; border-radius:50%; border:1.5px solid var(--ink-3); vertical-align:-1px; margin-right:3px}
+  .ed-row .radio.on i{border-color:var(--queue); background:var(--queue)}
+  .ed-dots{display:flex; gap:4px; margin:4px 0}
+  .ed-dots span{width:18px; height:18px; border-radius:50%; border:1.5px solid var(--ink-3); font-family:"IBM Plex Mono",monospace; font-size:9px; color:var(--ink-3); display:inline-flex; align-items:center; justify-content:center}
+  .ed-dots span.at{border-color:var(--task); border-width:2.5px}
+  .ed-dots span.picked{background:var(--queue-soft); border-color:var(--queue)}
+  .ed-rope svg{width:100%; height:auto; display:block}
+  .ed-rope .e{stroke:var(--ink-3); stroke-width:1.3} .ed-rope .e.shared{stroke:var(--queue)}
+  .ed-rope rect,.ed-rope circle{fill:var(--surface); stroke:var(--ink-2); stroke-width:1.3}
+  .ed-rope text{font-family:"IBM Plex Mono",monospace; font-size:13px; text-anchor:middle; fill:var(--ink)}
+  .ed-rope .shared rect,.ed-rope .shared circle{fill:var(--queue-soft); stroke:var(--queue)}
+  .ed-rope .lit rect{fill:var(--stack-soft); stroke:var(--stack); stroke-width:2}
+  .ed-rope .caret rect{stroke:var(--task); stroke-width:2.5}
+  .ed-note{font-size:11px; color:var(--ink-2); margin:4px 0 0}
+  .ed-cap{margin:14px 0 0; font-size:15px; color:var(--ink-2); min-height:3.2em}
+  .ed-cap b{color:var(--ink)}
+  </style>
+  <div class="demo ed" id="ed">
+    <div class="ed-head"><b>Lab 5: the editor</b> <span class="file">samples/notes.txt</span> <span class="mod" id="ed-mod"></span><div class="ed-chips" id="ed-chips"></div></div>
+    <div class="ed-main">
+      <div>
+        <div class="ed-card"><div class="ed-pane" id="ed-pane"></div><div class="ed-status" id="ed-status"></div><div class="ed-msg" id="ed-msg"></div></div>
+        <div class="ed-card"><h4>Keys</h4><table class="ed-keys" id="ed-keys"></table></div>
+      </div>
+      <div>
+        <div class="ed-card" data-level="A0"><h4>The rope around the caret</h4><div class="ed-rope" id="ed-rope"></div><p class="ed-note" id="ed-ropeinfo"></p></div>
+        <div class="ed-card" data-level="A2"><h4>Versions</h4><div class="ed-dots" id="ed-dots"></div><div class="ed-out" id="ed-versions"></div></div>
+        <div class="ed-card" data-level="A5"><h4>Since saving</h4><div class="ed-row"><span class="btn">Go to the first change</span> <span class="btn">Save</span></div></div>
+        <div class="ed-card" data-level="A4"><h4>The screen is drawn from</h4><div class="ed-row"><span class="radio" id="ed-seq-stack"><i></i>the sequence of <code>rope.ml</code>, a stack</span> <span class="radio" id="ed-seq-cps"><i></i>the sequence of <code>next.ml</code>, from <code>iter_k</code></span></div></div>
+        <div class="ed-card" data-level="B1"><h4>Stream</h4><div class="ed-row"><span class="fld">evens</span> take <span class="fld">4</span> <span class="btn">Ask</span></div><div class="ed-out" id="ed-stream"></div></div>
+        <div class="ed-card" data-level="B3"><h4>Find a line</h4><div class="ed-row"><span class="fld" id="ed-ltext">text</span> <span class="btn">Next line that contains it</span></div></div>
+        <div class="ed-card" data-level="C3"><h4>Find a character</h4><div class="ed-row"><span class="fld" id="ed-ctext">&nbsp;</span> <span class="fld" id="ed-way">iter and raise Found</span> <span class="btn">Next one</span></div></div>
+        <div class="ed-card" data-level="C4"><h4>Search with a pattern</h4><div class="ed-row"><span class="fld" id="ed-ptext">f*n</span> <span class="btn">Next match</span></div></div>
+        <div class="ed-card" data-level="C1"><h4>Trace</h4><div class="ed-row"><span class="btn">Start a traversal</span> <span class="btn">Call k</span></div><div class="ed-out" id="ed-trace"></div></div>
+      </div>
+    </div>
+    <div class="demo-bar">
+      <span class="step" style="text-align:left; min-width:0">written so far:</span>
+      <input type="range" id="ed-slider" min="0" max="13" value="0" aria-label="the levels written so far">
+      <span class="step" id="ed-step">nothing yet</span>
+    </div>
+    <p class="ed-cap" id="ed-cap"></p>
+  </div>
+  <div class="col">
+  </div>
+</section>
+
+<section id="types">
+  <div class="col">
+    <p class="kicker">01 — the types</p>
+    <h2>A rope, and a sequence</h2>
+    <pre><code class="hl-code language-ocaml"><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Leaf</span> <span class="k">of</span> <span class="k">&#39;</span><span class="n">a</span>
+  <span class="o">|</span> <span class="nc">Cat</span> <span class="k">of</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span></code></pre>
+    <p>A document is a rope of characters. There is no empty rope: a document always ends with a newline, and the editor does not let us delete the last one. A leaf is one ASCII character; a character outside ASCII is shown as <code>?</code>. Real editors keep pieces of text in the leaves, not single characters: that is the first stretch at the end.</p>
+    <pre><code class="hl-code language-ocaml"><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">node</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Nil</span>
+  <span class="o">|</span> <span class="nc">Cons</span> <span class="k">of</span> <span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span>
+
+<span class="k">and</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span> <span class="o">=</span> <span class="kt">unit</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">node</span></code></pre>
+    <p>A value of type <code>'a seq</code> is a <strong>sequence</strong> (also called a <em>stream</em>: Okasaki 1998, chapter 4; CS3110, section 9.4). OCaml's library has the same type as <code>Seq.t</code>, with the same two constructors. Here we write it ourselves.</p>
+    <div class="music">
+      <h3>Files</h3>
+      <ul>
+        <li><code>rope.ml</code> — Part A, <strong>we edit it</strong>; <code>stream.ml</code> — Part B; <code>next.ml</code> — Part C. The holes are marked <code>TODO</code>.</li>
+        <li><code>main.ml</code>, <code>checks.ml</code> — the checks, several per level.</li>
+        <li><code>edit/</code> — the editor: a small server and one page. Provided, not to be edited.</li>
+        <li><code>probe.ml</code> — a counter that Part C uses. Provided.</li>
+        <li><code>samples/</code> — <code>notes.txt</code>, and <code>long.txt</code> with its twelve thousand lines.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="rope">
+  <div class="col">
+    <p class="kicker">02 — the rope, on paper</p>
+    <h2>Part 0: what a rope is<span class="badge">warm-up</span></h2>
+    <p>Before writing a function on the rope we look at what one is. Five minutes of reading, then six questions; the answers are short, and question 0.6 is where Part A starts.</p>
+    <p>A rope is a binary tree. The elements are at the leaves, and only there: a <code>Cat</code> node holds no character, it holds two ropes. <code>'a</code> is a <strong>parameter</strong> of the type, the type of the elements; a document is a <code>char rope</code>. It is the first type with a parameter that we write ourselves: <code>'a list</code> and <code>'a option</code> we have only used.</p>
+    <pre><code class="hl-code language-ocaml"><span class="k">let</span> <span class="n">doc</span> <span class="o">=</span> <span class="nc">Cat</span> <span class="o">(</span><span class="nc">Cat</span> <span class="o">(</span><span class="nc">Leaf</span> <span class="sc">&#39;h&#39;</span><span class="o">,</span> <span class="nc">Leaf</span> <span class="sc">&#39;i&#39;</span><span class="o">),</span>
+               <span class="nc">Cat</span> <span class="o">(</span><span class="nc">Leaf</span> <span class="sc">&#39;\n&#39;</span><span class="o">,</span> <span class="nc">Cat</span> <span class="o">(</span><span class="nc">Leaf</span> <span class="sc">&#39;y&#39;</span><span class="o">,</span> <span class="nc">Leaf</span> <span class="sc">&#39;o&#39;</span><span class="o">)))</span></code></pre>
+    <pre><code>            Cat
+           /   \
+        Cat     Cat
+       /   \   /   \
+      h     i \n    Cat
+                   /   \
+                  y     o</code></pre>
+    <p>Read from left to right, the leaves of <code>doc</code> are the text <code>hi</code>, a newline, <code>yo</code>. The shape of the tree is not part of the text: another rope, with the same five leaves in the same order under other <code>Cat</code> nodes, holds the same document. Text editors store a document this way (Boehm, Atkinson and Plass 1995; the editor Helix, and the strings of JavaScript engines) for two reasons.</p>
+    <ul>
+      <li><strong>A concatenation is one node.</strong> <code>Cat (a, b)</code> puts two documents one after the other without copying a character of either: the new node points at <code>a</code> and at <code>b</code>.</li>
+      <li><strong>An insertion copies one path.</strong> To change one leaf we make a new leaf and new copies of the nodes from the root down to it; every other subtree is <strong>shared</strong> by the old version and the new one. The old version is unchanged, as lab 2's queue was: the rope is persistent, and undo is a list of roots (Part A2).</li>
+    </ul>
+    <p>Lab 3's melody is a rope too, when it has no <code>Par</code>: a <code>Note</code> or a <code>Rest</code> is a leaf, <code>Seq (a, b)</code> is <code>Cat (a, b)</code>, and <code>Par</code> has no counterpart, since a rope is a sequence and <code>Par</code> is not. Every function of Part A is written once, on <code>'a rope</code>, and works on a text and on a tune.</p>
+    <table class="parts">
+      <tr><td class="k">0.1</td><td>Given this drawing, write the rope as a value of type <code>char rope</code>, and give its text. Then, given <code>Cat (Leaf 'o', Cat (Leaf 'k', Leaf '\n'))</code>, draw it.<pre><code>        Cat
+       /   \
+    Cat     \n
+   /   \
+  b     y</code></pre></td></tr>
+      <tr><td class="k">0.2</td><td>Given a rope of <code>n</code> leaves, how many <code>Cat</code> nodes does it have? Does the answer depend on its shape? Count on <code>doc</code> and on the rope of 0.1. Then: the type has no empty rope; what would <code>Cat (empty, r)</code> have been, and how many nodes would a document then have?</td></tr>
+      <tr><td class="k">0.3</td><td>Given the text <code>abcdefgh</code>, one character per leaf, draw the deepest rope that holds it and the shallowest one, and give the depth of each (a leaf has depth 0). <code>of_string</code>, given in <code>rope.ml</code>, builds one of the two; which one, and why does an editor prefer it? (Part A1's question, <em>the depth grows as we type</em>, comes back to this.)</td></tr>
+      <tr><td class="k">0.4</td><td>In the toplevel, <code>ocaml</code>, then <code>#use "rope.ml";;</code> (the holes are <code>failwith</code>, so the file loads before anything is written). Given <code>doc</code> typed in, and <code>iter</code>, print its text with <code>iter print_char doc</code>. Then <code>of_string "hi\nyo" = doc</code>: guess before running. Then, given <code>doc'</code>, the same text in another shape, what is <code>doc' = doc</code>? The equality <code>=</code> compares two trees, node by node. Part A5 writes the comparison that a document needs, <code>same</code>, which reads the leaves and ignores the shape.<pre><code class="hl-code language-ocaml"><span class="k">let</span> <span class="n">doc&#39;</span> <span class="o">=</span> <span class="nc">Cat</span> <span class="o">(</span><span class="nc">Leaf</span> <span class="sc">&#39;h&#39;</span><span class="o">,</span> <span class="nc">Cat</span> <span class="o">(</span><span class="nc">Cat</span> <span class="o">(</span><span class="nc">Leaf</span> <span class="sc">&#39;i&#39;</span><span class="o">,</span> <span class="nc">Leaf</span> <span class="sc">&#39;\n&#39;</span><span class="o">),</span> <span class="nc">Cat</span> <span class="o">(</span><span class="nc">Leaf</span> <span class="sc">&#39;y&#39;</span><span class="o">,</span> <span class="nc">Leaf</span> <span class="sc">&#39;o&#39;</span><span class="o">)))</span></code></pre></td></tr>
+      <tr><td class="k">0.5</td><td>Given <code>let a = of_string "hi\n"</code> and <code>let b = of_string "yo"</code>, we make the document <code>let d = Cat (a, b)</code>. How many nodes were allocated? OCaml's <code>==</code> says whether two values are the very same block in memory: what does <code>(match d with Cat (l, _) -&gt; l == a)</code> say? Now a second version, where <code>y</code> has become <code>Y</code>. Which subtrees do <code>d</code> and <code>d2</code> share? Check one with <code>==</code>. How many nodes did the second version cost, and how many characters would the same change cost on a <code>string</code> of the same length?<pre><code class="hl-code language-ocaml"><span class="k">let</span> <span class="n">d2</span> <span class="o">=</span> <span class="nc">Cat</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="nc">Cat</span> <span class="o">(</span><span class="nc">Leaf</span> <span class="sc">&#39;Y&#39;</span><span class="o">,</span> <span class="nc">Leaf</span> <span class="sc">&#39;o&#39;</span><span class="o">))</span></code></pre></td></tr>
+      <tr><td class="k">0.6</td><td>Given lab 3's type, without <code>Par</code>, write <code>count_notes : melody -&gt; int</code>, the number of <code>Note</code>s, by recursion, as session 4 did. Then look at it: what does it do at a <code>Note</code>, at a <code>Rest</code>, at a <code>Seq</code>? Two of the three answers are a function of a leaf and a function of two results, and that is Part A0: <code>fold</code> takes them as its arguments, and <code>count_notes</code> is one call to it, <code>fold (fun e -&gt; …) ( + )</code>.<pre><code class="hl-code language-ocaml"><span class="k">type</span> <span class="n">melody</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Note</span> <span class="k">of</span> <span class="n">duration</span> <span class="o">*</span> <span class="n">pitch</span>
+  <span class="o">|</span> <span class="nc">Rest</span> <span class="k">of</span> <span class="n">duration</span>
+  <span class="o">|</span> <span class="nc">Seq</span> <span class="k">of</span> <span class="n">melody</span> <span class="o">*</span> <span class="n">melody</span></code></pre></td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="warmup">
+  <div class="col">
+    <p class="kicker">03 — warm-up</p>
+    <h2>On paper, then at the keyboard<span class="badge">warm-up</span></h2>
+    <p>The sheet to print: <a href="warmup/warmup.pdf">warmup.pdf</a>. Questions on paper are lettered; exercises at the keyboard are numbered and typed into <a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/warmup/warmup.ml">warmup/warmup.ml</a>, which checks them: <code>ocaml warmup/warmup.ml</code>.</p>
+    <table class="parts">
+      <tr><td class="k">1</td><td><strong>With block 1, on lists.</strong> Questions A and B, exercises 1 to 5: functions that take and return functions (<code>add 3</code> against <code>add_pair</code>), a closure with a state of its own, three folds, a fold that can stop, an iterator written as a closure.</td></tr>
+      <tr><td class="k">2</td><td><strong>With block 2, on Pascal's triangle.</strong> Questions C and D, exercises 6 to 10, with the type of sequences of the lecture: <code>zip_with</code>; the row under a row; <code>iterate f x</code>, the sequence <code>x</code>, <code>f x</code>, <code>f (f x)</code>, …; <code>pascal</code>, the sequence of all the rows; the sums of its shallow diagonals, which are the Fibonacci numbers of the lecture, starting from Fib(1); then two readers of the same sequence, and each row kept with <code>lazy</code>. Once <code>pascal</code> is written the file draws the triangle on the screen, with a star for every odd number.</td></tr>
+      <tr><td class="k">H</td><td><strong>Homework, not for the lab session.</strong> Question E and exercise 11, in <a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/warmup/queue.ml">warmup/queue.ml</a>: lab 2's queue, used twice from the same version, pays its reversal twice; with <code>lazy</code> it pays it once.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="quest">
+  <div class="col">
+    <p class="kicker">04 — the quest</p>
+    <h2>Three parts, the third with session 6<span class="badge">assignment</span></h2>
+
+    <h3 id="part-a">Part A — one step of a traversal (<code>rope.ml</code>)</h3>
+    <table class="parts">
+      <tr><td class="k">A0</td><td>Given the type of ropes, write <code>fold</code>, which visits the left subtree before the right one; then write <code>length</code>, <code>depth</code> and <code>to_list</code>, each as one call to <code>fold</code>. A leaf has depth 0.<pre><code class="hl-code language-ocaml"><span class="n">fold</span>    <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">b</span>
+<span class="n">length</span>  <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="kt">int</span>
+<span class="n">depth</span>   <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="kt">int</span>
+<span class="n">to_list</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="kt">list</span></code></pre><p><em>The editor wakes up:</em> the file appears, the status line shows its length and its depth, and the rope around the caret is drawn. The status line also says <em>leaves flattened</em>: to show twenty-four lines, the whole document was turned into a list.</p></td></tr>
+      <tr><td class="k">A1</td><td>Given <code>split</code>, which cuts a rope in two without copying more than the nodes on its way down, write <code>insert</code> and <code>delete</code>. The new leaf has position <code>i</code>, counting from 0, and it can be the first or the last one. A rope of one leaf cannot lose it: <code>delete</code> raises <code>Invalid_argument</code> then.<pre><code class="hl-code language-ocaml"><span class="n">split</span>  <span class="o">:</span> <span class="kt">int</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span>       <span class="c">(* given *)</span>
+<span class="n">insert</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span>
+<span class="n">delete</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span></code></pre><p><em>The editor wakes up:</em> typing, Enter, Backspace and Delete. The depth on the status line grows as we type. Why?</p></td></tr>
+      <tr><td class="k">A2</td><td>Given that a version of the document is the root of a rope, and the type of histories, write <code>record</code>, <code>undo</code> and <code>redo</code>. Recording a version forgets the versions that were undone. Undoing when there is no earlier version returns the history unchanged, and so does redoing when nothing was undone.<pre><code class="hl-code language-ocaml"><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">history</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="n">past</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="kt">list</span><span class="o">;</span>
+  <span class="n">present</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">;</span>
+  <span class="n">future</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="kt">list</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="n">record</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">history</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">history</span>
+<span class="n">undo</span>   <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">history</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">history</span>
+<span class="n">redo</span>   <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">history</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">history</span></code></pre><p><em>The editor wakes up:</em> Ctrl-Z and Ctrl-Y, as far back as we like, and the panel <em>Versions</em>, one dot per root. We choose two dots: the panel counts the nodes that the two versions share, and the drawing shades them. How many nodes does one keystroke add?</p></td></tr>
+      <tr><td class="k">A3</td><td>Given the type of answers <code>'b go</code>, write <code>fold_until</code>, where the function we hand over answers <code>Continue</code> to go on and <code>Stop</code> to end the traversal. Then write <code>find_first</code>, the first leaf from the left that satisfies a predicate, as one call to <code>fold_until</code>.<pre><code class="hl-code language-ocaml"><span class="k">type</span> <span class="k">&#39;</span><span class="n">b</span> <span class="n">go</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Continue</span> <span class="k">of</span> <span class="k">&#39;</span><span class="n">b</span>
+  <span class="o">|</span> <span class="nc">Stop</span> <span class="k">of</span> <span class="k">&#39;</span><span class="n">b</span>
+
+<span class="n">fold_until</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">b</span> <span class="n">go</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">b</span> <span class="n">go</span>
+<span class="n">find_first</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">option</span></code></pre><p><em>The editor wakes up:</em> the key End. The status line shows <em>leaves visited</em> beside <em>leaves after the caret</em>; the leaves visited are lit in the drawing. On <code>long.txt</code> the first number is the length of a line, and the second one is in the hundreds of thousands.</p></td></tr>
+      <tr><td class="k">A4</td><td>Given the types of nodes and sequences, write <code>to_seq</code>, whose state is a stack of the subtrees still to visit, as the explicit stack of session 4. Only the three answers of <code>go</code> are to write.<pre><code class="hl-code language-ocaml"><span class="n">to_seq</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span></code></pre><p><em>The editor wakes up:</em> the screen is drawn from a sequence. On <code>long.txt</code>, <em>leaves flattened</em> becomes <em>leaves pulled</em>, and the number falls from the length of the file to the length of the lines on the screen.</p></td></tr>
+      <tr><td class="k">A5</td><td>Given two sequences, write <code>same</code>, which says whether they give the same elements in the same order, and <code>first_difference</code>, the position of the first element that differs. When one sequence ends before the other, the position is the one where it ends. Two ropes of different shapes can hold the same text.<pre><code class="hl-code language-ocaml"><span class="n">same</span>             <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="kt">bool</span>
+<span class="n">first_difference</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="kt">int</span> <span class="n">option</span></code></pre><p><em>The editor wakes up:</em> the mark <em>modified</em> beside the name of the file, and the button that moves the caret to the first change since saving. We type a character and erase it: the rope has another shape, and the mark goes away.</p></td></tr>
+    </table>
+
+    <h3 id="part-b">Part B — a computation not yet run (<code>stream.ml</code>)</h3>
+    <p>A sequence is a function, so none of its elements is computed before it is called. <code>nats</code>, <code>of_list</code> and <code>of_string</code> are given; <code>nats 1</code> has no end.</p>
+    <table class="parts">
+      <tr><td class="k">B1</td><td>Given the type of nodes, write <code>take</code>, <code>map</code>, <code>filter</code> and <code>take_while</code> on sequences. <code>take</code> returns a list and asks for no element more than it returns. The three others return a sequence, and making it asks for nothing.<pre><code class="hl-code language-ocaml"><span class="n">take</span>       <span class="o">:</span> <span class="kt">int</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="kt">list</span>
+<span class="n">map</span>        <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">b</span> <span class="n">seq</span>
+<span class="n">filter</span>     <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span>
+<span class="n">take_while</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span></code></pre><p><em>The editor wakes up:</em> the panel <em>Stream</em>. We ask for five even numbers and read how many cells of <code>nats</code> were produced. What does <code>filter</code> do on <code>nats</code> with a predicate that is never true?</p></td></tr>
+      <tr><td class="k">B2</td><td>Given the sequence of the characters of a document, write <code>lines</code>, the sequence of its lines, without their newlines. A line is read when it is asked for, and not before. A last line without a newline is a line; an empty line is a line; a document without characters has no line. The helper <code>read_line</code> reads one line and returns the rest of the sequence.<pre><code class="hl-code language-ocaml"><span class="n">read_line</span> <span class="o">:</span> <span class="kt">char</span> <span class="kt">list</span> <span class="o">-&gt;</span> <span class="kt">char</span> <span class="n">node</span> <span class="o">-&gt;</span> <span class="kt">char</span> <span class="kt">list</span> <span class="o">*</span> <span class="kt">char</span> <span class="n">seq</span>
+<span class="n">lines</span>     <span class="o">:</span> <span class="kt">char</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="kt">string</span> <span class="n">seq</span></code></pre><p><em>The editor wakes up:</em> line numbers. On <code>long.txt</code> the status line reads <em>lines pulled 24</em>, of twelve thousand. We scroll down with the wheel and watch the number.</p></td></tr>
+      <tr><td class="k">B3</td><td>Given a sequence of lines, write <code>grep</code>, the sequence of the lines that satisfy a predicate, each with its number. The first line has number 1.<pre><code class="hl-code language-ocaml"><span class="n">grep</span> <span class="o">:</span> <span class="o">(</span><span class="kt">string</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="kt">string</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="kt">string</span><span class="o">)</span> <span class="n">seq</span></code></pre><p><em>The editor wakes up:</em> the panel <em>Find a line</em>. On <code>long.txt</code> we look for <code>needle</code>: the status line says how many lines were asked for, and the lines after the match were not read.</p></td></tr>
+    </table>
+
+    <h3 id="part-c">Part C — the rest of the computation (<code>next.ml</code>)</h3>
+    <p>Part C goes with session 6, on continuations: we do it after that lecture.</p>
+    <table class="parts">
+      <tr><td class="k">C1</td><td>Given <code>iter</code>, write <code>iter_k</code>. The function we hand over receives a leaf and <code>k</code>, the function that goes on with the traversal; the last argument of <code>iter_k</code> says what to do after the last leaf. Every call is a tail call.<pre><code class="hl-code language-ocaml"><span class="n">iter_k</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">unit</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">unit</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span></code></pre><p><em>The editor wakes up:</em> the panel <em>Trace</em>. The function that the editor hands over does not call <code>k</code>: it returns it, and the traversal stops after one leaf. The button <em>Call k</em> goes on with it, one leaf at a time.</p></td></tr>
+      <tr><td class="k">C2</td><td>Given <code>iter_k</code>, write <code>to_seq</code> again, in one line.<pre><code class="hl-code language-ocaml"><span class="n">to_seq</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">seq</span></code></pre><p><em>The editor wakes up:</em> the panel <em>The screen is drawn from</em> offers the sequence of <code>next.ml</code>. The screen is the same, the mark <em>modified</em> and the jump to the first change work on it unchanged: <code>same</code> and <code>first_difference</code> know a sequence by its type only.</p></td></tr>
+      <tr><td class="k">C3</td><td>Given a predicate, write the function that finds the first leaf satisfying it, in two more ways: <code>find_raise</code>, with <code>iter</code> and an exception, and <code>find_k</code>, with two continuations, <code>k</code> for the leaf found and <code>h</code> for a rope where there is none. Then write <code>find_cps</code>, one call to <code>find_k</code>. The third way is <code>find_first</code> of Part A, under the name <code>find_until</code>.<pre><code class="hl-code language-ocaml"><span class="n">find_raise</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">option</span>
+<span class="n">find_k</span>     <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">unit</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span>
+<span class="n">find_cps</span>   <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">rope</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">option</span></code></pre><p><em>The editor wakes up:</em> the panel <em>Find a character</em>, with a choice among the three ways. The status line reads the same <em>leaves visited</em> for the three.</p></td></tr>
+      <tr><td class="k">C4</td><td>Given the type of patterns, write <code>match_k</code>, which says whether a sequence of characters begins with a pattern, and <code>matches</code>, one call to <code>match_k</code>. In a pattern, <code>?</code> stands for one character and <code>*</code> for as many characters as possible; neither takes a newline. <code>succ</code> receives the rest of the sequence, after the match, and <code>fail</code>: what to do if what follows the match does not work out. When <code>*</code> takes one more character, the failure continuation that we make says where to go back to; we wrap it with <code>going_back</code>, which is given and counts.<pre><code class="hl-code language-ocaml"><span class="k">type</span> <span class="n">item</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Lit</span> <span class="k">of</span> <span class="kt">char</span>
+  <span class="o">|</span> <span class="nc">Any</span>
+  <span class="o">|</span> <span class="nc">Star</span>
+
+<span class="k">type</span> <span class="n">pattern</span> <span class="o">=</span> <span class="n">item</span> <span class="kt">list</span>
+
+<span class="n">match_k</span> <span class="o">:</span> <span class="n">pattern</span> <span class="o">-&gt;</span> <span class="kt">char</span> <span class="n">seq</span>
+          <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">char</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">unit</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span><span class="o">)</span>
+          <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">unit</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span><span class="o">)</span>
+          <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">r</span>
+<span class="n">matches</span> <span class="o">:</span> <span class="n">pattern</span> <span class="o">-&gt;</span> <span class="kt">char</span> <span class="n">seq</span> <span class="o">-&gt;</span> <span class="kt">bool</span></code></pre><p><em>The editor wakes up:</em> the panel <em>Search with a pattern</em>. <code>search</code>, given, tries the pattern at one position and, in its failure continuation, at the next one. The status line reads <em>went back</em>. We try <code>f*n</code>, then <code>f*q</code>, and compare.</p></td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="homework">
+  <div class="col">
+    <p class="kicker">05 — homework</p>
+    <h2>What to finish at home, and where to go on<span class="badge">assignment</span></h2>
+    <ul>
+      <li>Finish the levels left open; the checks say which. The warm-up's homework is lab 2's queue, <a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/warmup/queue.ml">warmup/queue.ml</a>.</li>
+      <li><strong>The depth.</strong> Typing makes the rope deeper with every key, and <code>split</code> slower. Write <code>rebalance</code>, which returns a rope of the same text and the smallest depth. When should an editor call it? Persistence was free; the bound on the depth has to be earned.</li>
+      <li><strong>Pieces of text in the leaves.</strong> Change the document to a rope of strings. Which functions of the three files change, and which do not?</li>
+      <li><strong>All the matches.</strong> Given <code>match_k</code>, write the function that returns the end of every match of a pattern at one position, by calling <code>fail</code> from <code>succ</code>.</li>
+      <li><strong>A tune without end.</strong> Given a melody of lab 3 as a list of events, write the sequence that repeats it for ever, and play sixteen events of it through lab 3's <code>wav.ml</code>.</li>
+      <li><strong>Reading.</strong> Leroy, <em>Control structures in programming languages</em> (2026), <a href="https://xavierleroy.org/control-structures/book/main007.html">chapter 4</a>, sections 4.1 and 4.2 (chapters 6 and 7, on continuations, go with Part C and session 6); <a href="https://cs3110.github.io/textbook/chapters/ds/sequence.html">CS3110, chapter 9</a>, section 9.4, sequences.</li>
+    </ul>
+  </div>
+
+  <footer class="col">
+    <p><b>Files:</b> <a class="file" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/rope.ml">rope.ml</a> · <a class="file" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/stream.ml">stream.ml</a> · <a class="file" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/next.ml">next.ml</a> · <a class="file" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/checks.ml">checks.ml</a> · <a class="file" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/warmup/warmup.ml">warmup/warmup.ml</a> · <a class="file" href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/README.md">README.md</a></p>
+    <p style="margin-top:16px">Programming Paradigms, session 5 — functions as values: iterators and streams.</p>
+  </footer>
+</section>
+
+</main>
+<script>
+/* pp26:lab5-editor-sketch — the editor's page redrawn at every level of the
+   quest. The rope, the sequence, the folds and the search below are the
+   functions of the quest, written again in JavaScript, so that every number
+   shown is computed and not typed in. Numbers were compared with the real
+   editor (edit.exe --ed) on samples/notes.txt on 2026-09-30. */
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const TEXT = "Notes for session 5\n\nA rope is a tree. Its leaves are the characters\nof the document, read from left to right.\n\nfun x -> x + 1\nlet add n = fun x -> x + n\nlet add3 = add 3\n\nTo find a newline we do not have to visit\nevery leaf: we can stop at the first one.\n\nfunctions are values; a function can be handed over\nfunny, but true\n";
+
+  // ---- the rope, as in rope.ml ----
+  const Leaf = x => ({ leaf: x }), Cat = (l, r) => ({ l, r });
+  const isLeaf = t => 'leaf' in t;
+  function ofString(s) {
+    const a = Array.from(s);
+    return (function b(lo, hi) { if (hi - lo === 1) return Leaf(a[lo]); const m = (lo + hi) >> 1; const l = b(lo, m); const r = b(m, hi); return Cat(l, r); })(0, a.length);
+  }
+  const fold = (leaf, cat, t) => isLeaf(t) ? leaf(t.leaf) : cat(fold(leaf, cat, t.l), fold(leaf, cat, t.r));
+  const length = t => fold(() => 1, (a, b) => a + b, t);
+  const depth = t => fold(() => 0, (a, b) => 1 + Math.max(a, b), t);
+  const nodes = t => fold(() => 1, (a, b) => 1 + a + b, t);
+  function split(i, t) {
+    if (isLeaf(t)) throw new Error('split');
+    const n = length(t.l);
+    if (i === n) return [t.l, t.r];
+    if (i < n) { const [a, b] = split(i, t.l); return [a, Cat(b, t.r)]; }
+    const [a, b] = split(i - n, t.r); return [Cat(t.l, a), b];
+  }
+  function insert(i, x, t) {
+    if (i === 0) return Cat(Leaf(x), t);
+    if (i === length(t)) return Cat(t, Leaf(x));
+    const [l, rest] = split(i, t); return Cat(l, Cat(Leaf(x), rest));
+  }
+  // fold_until, and find_first from a position: how many leaves are visited
+  function findFrom(t, from, p) {   // the first leaf after `from` (inclusive) for which p holds; [position, visited]
+    let i = 0, visited = 0, found = -1;
+    (function go(t) {
+      if (found >= 0) return;
+      if (isLeaf(t)) { if (i >= from) { visited++; if (p(t.leaf)) found = i; } i++; return; }
+      const n = length(t.l);
+      if (i + n <= from) { i += n; } else go(t.l);
+      go(t.r);
+    })(t);
+    return [found, visited];
+  }
+  // the sequence of the leaves, and a counter of the cells asked
+  function toSeq(t) { return count => function go(stack) { return () => { if (!stack.length) return null; const [h, ...rest] = stack; if (isLeaf(h)) { count.n++; return { x: h.leaf, rest: go(rest) }; } return go([h.l, h.r, ...rest])(); }; }([t]); }
+  function drop(seq, k) { let s = seq; for (let i = 0; i < k; i++) { const c = s(); if (!c) break; s = c.rest; } return s; }
+  // match_k, as in next.ml; `back` counts the failure continuations that are called
+  function matchK(p, c, succ, fail, back) {
+    if (!p.length) return succ(c, fail);
+    const [it, ...rest] = p, node = c();
+    if (it === '?') return node && node.x !== '\n' ? matchK(rest, node.rest, succ, fail, back) : fail();
+    if (it === '*') return node && node.x !== '\n'
+      ? matchK(p, node.rest, succ, () => { back.n++; return matchK(rest, c, succ, fail, back); }, back)
+      : matchK(rest, c, succ, fail, back);
+    return node && node.x === it ? matchK(rest, node.rest, succ, fail, back) : fail();
+  }
+  function search(p, seq) {   // [position of the match, position after it]
+    const back = { n: 0 };
+    const from = (i, c) => matchK(p, c, (after, _) => [i, after], () => { const n = c(); return n ? from(i + 1, n.rest) : null; }, back);
+    return [from(0, seq), back];
+  }
+  function seqPos(seq) { let n = 0, s = seq; for (;;) { const c = s(); if (!c) return n; n++; s = c.rest; } }
+
+  // ---- the drawing of rope-view.js, at a smaller scale ----
+  function drawRope(el, tree, opts) {
+    const L = []; let x = 0;
+    (function go(t, d, parent) { const n = { d, parent, t }; L.push(n); if (isLeaf(t)) n.x = x++; else { n.l = go(t.l, d + 1, n); n.r = go(t.r, d + 1, n); n.x = (n.l.x + n.r.x) / 2; } return n; })(tree, 0, null);
+    const rows = Math.max(...L.map(n => n.d)) + 1, gx = 26, gy = 34, pad = 14;
+    const W = pad * 2 + (x - 1) * gx + 22, H = pad * 2 + (rows - 1) * gy + 22;
+    const px = n => pad + 11 + n.x * gx, py = n => pad + 11 + n.d * gy;
+    const lab = c => c === '\n' ? '\\n' : c === ' ' ? '␣' : c;
+    let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="the rope around the caret">';
+    L.forEach(n => { if (n.parent) s += '<line class="e' + (opts.shared && opts.shared.has(n.t) ? ' shared' : '') + '" x1="' + px(n.parent) + '" y1="' + py(n.parent) + '" x2="' + px(n) + '" y2="' + py(n) + '"/>'; });
+    L.forEach(n => {
+      const X = px(n), Y = py(n), t = n.t, cls = (opts.shared && opts.shared.has(t) ? ' shared' : '') + (opts.lit && opts.lit.has(t) ? ' lit' : '') + (opts.caret === t ? ' caret' : '');
+      s += isLeaf(t) ? '<g class="' + cls + '"><rect x="' + (X - 10) + '" y="' + (Y - 11) + '" width="20" height="22" rx="3"/><text x="' + X + '" y="' + (Y + 4) + '">' + esc(lab(t.leaf)) + '</text></g>' : '<g class="' + cls + '"><circle cx="' + X + '" cy="' + Y + '" r="5"/></g>';
+    });
+    el.innerHTML = s + '</svg>';
+  }
+  // the subtree of at most 24 leaves around the caret, as the editor draws it
+  function around(t, caret) {
+    let i = 0, above = 0;
+    while (!isLeaf(t) && length(t) > 24) { const n = length(t.l); if (caret < i + n) t = t.l; else { i += n; t = t.r; } above++; }
+    return { t, first: i, above };
+  }
+  const leafAt = (t, k) => { let i = 0, out = null; (function go(t) { if (out) return; if (isLeaf(t)) { if (i === k) out = t; i++; } else { go(t.l); go(t.r); } })(t); return out; };
+  const leavesBetween = (t, a, b) => { const s = new Set(); let i = 0; (function go(t) { if (isLeaf(t)) { if (i >= a && i < b) s.add(t); i++; } else { go(t.l); go(t.r); } })(t); return s; };
+
+  // ---- the session, replayed: what each level lets the editor do ----
+  const LEVELS = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'C4'];
+  const v0 = ofString(TEXT);
+  const v1 = insert(0, 'a', v0), v2 = insert(1, 'b', v1), v3 = insert(2, '\n', v2);   // type ab, Enter, then Backspace = undo to v2
+  const versions = [v0, v1, v2, v3];
+  const doc = v2, text = 'ab' + TEXT;
+  const lineStart = k => { let p = 0; for (let i = 0; i < k; i++) p = text.indexOf('\n', p) + 1; return p; };
+  const endOfLine1 = findFrom(doc, 2, c => c === '\n');                       // End from caret 2
+  const line11 = lineStart(10);                                                // "every leaf: ..." after ab
+  const e1 = findFrom(doc, line11 + 1, c => c === 'e'), e2 = findFrom(doc, e1[0] + 1, c => c === 'e'), e3 = findFrom(doc, e2[0] + 1, c => c === 'e');
+  const cells = { n: 0 }, after = drop(toSeq(doc)(cells), e3[0] + 1);   // the sequence after the caret
+  cells.n = 0;                                                             // the editor counts from there
+  const [match, back] = search(['f', '*', 'n'], after);
+  const asked = cells.n;
+  const matchAt = e3[0] + 1 + match[0], matchEnd = length(doc) - seqPos(match[1]);
+  const grepAsked = 11, linesInDoc = 14;   // grep on the lines, from the first: "leaf" is on line 11
+
+  const STEPS = [
+    { level: null, text: 'nothing yet', cap: '<b>Nothing is written yet.</b> The file is open and the screen cannot show it: every key and every panel waits for a level.' },
+    { level: 'A0', doc: v0, caret: 0, cap: '<b>A0, <code>fold</code>.</b> The file appears, with its length and its depth, and the rope around the caret is drawn. To show 14 lines, the whole document was flattened into a list: the status line counts the leaves.' },
+    { level: 'A1', doc: v2, caret: 2, cap: '<b>A1, <code>insert</code>.</b> We type <code>ab</code>. Each key makes a new leaf and copies the path above it; the rest of the rope is the old one. Watch the depth.' },
+    { level: 'A2', doc: v2, caret: 2, vers: [0, 1], at: 2, cap: '<b>A2, <code>undo</code>.</b> Every version is a root, one dot each; we typed Enter and took it back. Two versions picked: the panel counts the nodes they share.' },
+    { level: 'A3', doc: v2, caret: endOfLine1[0], lit: [2, endOfLine1[0] + 1], visited: endOfLine1[1], cap: '<b>A3, <code>fold_until</code>.</b> End goes to the end of the line: ' + endOfLine1[1] + ' leaves visited, lit in the drawing, of the ' + (length(v2) - endOfLine1[0]) + ' after the caret. <code>iter</code> would have called our function on every one.' },
+    { level: 'A4', doc: v2, caret: endOfLine1[0], pulled: true, cap: '<b>A4, <code>to_seq</code>.</b> The screen is drawn from a sequence: the leaves are <em>pulled</em> one at a time, not flattened. On <code>long.txt</code> the number falls from twelve thousand lines to the twenty-four on the screen.' },
+    { level: 'A5', doc: v2, caret: 0, pulled: true, modified: true, asked: 2, cap: '<b>A5, <code>same</code>.</b> The mark <em>modified</em>, and the jump to the first change since saving: two sequences read in step, and the first one that differs is at position 0, after two leaves asked.' },
+    { level: 'B1', doc: v2, caret: 0, pulled: true, modified: true, stream: true, cap: '<b>B1, <code>map</code> and <code>filter</code>.</b> The panel Stream asks the even numbers for four: <code>filter</code> on <code>nats</code> produced eight cells to answer, and not one more.' },
+    { level: 'B2', doc: v2, caret: 0, pulled: true, modified: true, stream: true, numbered: true, cap: '<b>B2, <code>lines</code>.</b> The line numbers. A line is a value of a sequence, read when the screen asks for it: 14 lines pulled here, 24 of twelve thousand on <code>long.txt</code>.' },
+    { level: 'B3', doc: v2, caret: line11, pulled: true, modified: true, stream: true, numbered: true, grep: true, sel: [line11, text.indexOf('\n', line11)], cap: '<b>B3, <code>grep</code>.</b> The next line that contains <code>leaf</code>: line 11. <code>grep</code> asked the sequence of lines for ' + grepAsked + ' of the ' + linesInDoc + ', and the lines after the match were never read.' },
+    { level: 'C1', doc: v2, caret: line11, pulled: true, modified: true, stream: true, numbered: true, trace: 2, cap: '<b>C1, <code>iter_k</code>.</b> The panel Trace hands the rope a function that receives a leaf and <code>k</code>, and returns <code>k</code> without calling it: the traversal stops after one leaf, and Call k goes on with it.' },
+    { level: 'C2', doc: v2, caret: line11, pulled: true, modified: true, stream: true, numbered: true, trace: 2, cps: true, cap: '<b>C2, <code>to_seq</code> in one line.</b> The screen is drawn from the sequence of <code>next.ml</code>, made from <code>iter_k</code>: same screen, same mark, same jump. A sequence is known by its type only.' },
+    { level: 'C3', doc: v2, caret: e3[0], pulled: true, modified: true, stream: true, numbered: true, trace: 2, cps: true, find: [e1, e2, e3], cap: '<b>C3, <code>find</code> three ways.</b> The next <code>e</code>, with <code>raise</code>, with <code>fold_until</code>, with <code>k</code> and <code>h</code>: ' + e1[1] + ', ' + e2[1] + ' and ' + e3[1] + ' leaves visited, each from where the last one stopped. Three ways to leave a traversal, the same leaves.' },
+    { level: 'C4', doc: v2, caret: matchAt, pulled: true, modified: true, stream: true, numbered: true, trace: 2, cps: true, pattern: true, sel: [matchAt, matchEnd], cap: '<b>C4, <code>match_k</code>.</b> The pattern <code>f*n</code>: the star took the whole line, then gave back one character at a time, ' + back.n + ' times, until an <code>n</code> followed. ' + asked + ' cells asked.' },
+  ];
+
+  const KEYS = [['a character, <kbd>Enter</kbd>, <kbd>Backspace</kbd>', 'type and erase', 'A1'], ['<kbd>Ctrl</kbd> <kbd>Z</kbd>, <kbd>Ctrl</kbd> <kbd>Y</kbd>', 'undo, redo', 'A2'], ['<kbd>End</kbd>', 'to the end of the line', 'A3'], ['the arrows, the wheel, a click', 'move the caret, scroll', null]];
+
+  function render(k) {
+    const st = STEPS[k], done = st.level ? LEVELS.indexOf(st.level) : -1;
+    const locked = l => LEVELS.indexOf(l) > done;
+    $('ed-chips').innerHTML = LEVELS.map((l, i) => '<button type="button" data-step="' + (i + 1) + '" class="' + (i <= done ? 'pass' : '') + (i === done ? ' new' : '') + '" aria-pressed="' + (i === done) + '" title="the editor with the levels up to ' + l + '">' + l + ' ' + (i <= done ? 'pass' : 'todo') + '</button>').join('');
+    $('ed-mod').textContent = st.modified ? 'modified' : '';
+    $('ed-step').textContent = st.level ? 'level ' + st.level : 'nothing yet';
+    $('ed-cap').innerHTML = st.cap;
+
+    // the text
+    if (!st.doc) {
+      $('ed-pane').innerHTML = '<div class="empty">The file is open, and nothing can be shown yet: the screen needs <code>fold</code>, <code>length</code> and <code>to_list</code>. Level A0, in <code>rope.ml</code>.</div>';
+      $('ed-status').innerHTML = ''; $('ed-msg').textContent = '';
+    } else {
+      const s = st.doc === v0 ? TEXT : text, sel = st.sel || [-1, -1], lit = st.lit || [-1, -1];
+      let html = '', pos = 0;
+      s.split('\n').slice(0, -1).forEach((row, i) => {
+        html += '<div>' + (st.numbered ? '<span class="num">' + (i + 1) + '</span>' : '<span class="nonum"></span>');
+        for (let j = 0; j <= row.length; j++) {
+          const p = pos + j;
+          if (p === st.caret) html += '<span class="caret"></span>';
+          if (j < row.length) html += (p >= sel[0] && p < sel[1]) ? '<mark>' + esc(row[j]) + '</mark>' : (p >= lit[0] && p < lit[1]) ? '<span class="lit">' + esc(row[j]) + '</span>' : esc(row[j]);
+        }
+        html += '</div>'; pos += row.length + 1;
+      });
+      $('ed-pane').innerHTML = html;
+      const n = length(st.doc), bits = ['length <b>' + n + '</b>', 'depth <b>' + depth(st.doc) + '</b>', 'lines <b>' + linesInDoc + '</b>', 'caret <b>' + st.caret + '</b>'];
+      if (done >= 2) bits.push('versions <b>' + versions.length + '</b>');
+      const cost = [(st.pulled ? 'leaves pulled' : 'leaves flattened') + ' <b>' + n + '</b>'];
+      if (st.numbered) cost.push('lines pulled <b>' + linesInDoc + '</b>');
+      if (st.visited) cost.push('leaves visited <b>' + st.visited + '</b>', 'leaves after the caret <b>' + (n - st.caret) + '</b>');
+      if (st.asked) cost.push('leaves asked <b>' + st.asked + '</b>', 'leaves in the two versions <b>' + (length(v0) + n) + '</b>');
+      if (st.grep) cost.push('lines asked by grep <b>' + grepAsked + '</b>', 'lines in the document <b>' + linesInDoc + '</b>');
+      if (st.find) cost.push('leaves visited <b>' + st.find[2][1] + '</b>', 'leaves after the caret <b>' + (n - st.caret - 1) + '</b>');
+      if (st.pattern) cost.push('went back <b>' + back.n + '</b>', 'cells asked <b>' + asked + '</b>');
+      $('ed-status').innerHTML = bits.map(b => '<span>' + b + '</span>').join('') + cost.map(b => '<span class="cost">' + b + '</span>').join('');
+      $('ed-msg').textContent = st.visited ? 'End, with find_first. iter would call our function on every leaf after the caret.' : st.asked ? 'the first change since saving' : st.grep && !st.find && !st.trace ? 'line 11 contains it' : st.pattern ? 'the pattern matches here' : st.find ? 'found, with k and h' : st.cps ? 'the screen is drawn from the sequence of next.ml' : '';
+    }
+
+    $('ed-keys').innerHTML = KEYS.map(([k, what, l]) => { const off = l && locked(l); return '<tr class="' + (off ? 'locked' : '') + '"><td>' + k + '</td><td>' + what + '</td><td>' + (off ? '<span class="lock">level ' + l + '</span>' : '') + '</td></tr>'; }).join('');
+    document.querySelectorAll('#ed .ed-card[data-level]').forEach(card => {
+      const l = card.dataset.level, off = locked(l);
+      card.classList.toggle('locked', off); card.classList.toggle('new', l === st.level);
+      const h = card.querySelector('h4'); let tag = h.querySelector('.lock');
+      if (off && !tag) { tag = document.createElement('span'); tag.className = 'lock'; tag.textContent = 'level ' + l; h.appendChild(tag); }
+      if (!off && tag) tag.remove();
+    });
+
+    // the rope around the caret
+    if (st.doc) {
+      const a = around(st.doc, st.caret), opts = { caret: leafAt(st.doc, st.caret) };
+      if (st.lit) opts.lit = leavesBetween(st.doc, st.lit[0], st.lit[1]);
+      if (st.vers) { const s = new Set(); (function go(t) { s.add(t); if (!isLeaf(t)) { go(t.l); go(t.r); } })(versions[st.vers[0]]); opts.shared = s; }
+      drawRope($('ed-rope'), a.t, opts);
+      $('ed-ropeinfo').textContent = 'A subtree of ' + length(a.t) + ' leaves, ' + a.above + ' levels under the root; the document has ' + length(st.doc) + '.';
+    } else { $('ed-rope').innerHTML = ''; $('ed-ropeinfo').textContent = ''; }
+
+    // the panels
+    $('ed-dots').innerHTML = done >= 2 ? versions.map((_, i) => '<span class="' + (i === (st.at != null ? st.at : 2) ? 'at ' : '') + (st.vers && st.vers.includes(i) ? 'picked' : '') + '">' + i + '</span>').join('') : '';
+    $('ed-versions').textContent = st.vers ? 'version 0: ' + nodes(versions[0]) + ' nodes\nversion 1: ' + nodes(versions[1]) + ' nodes\nnodes of version 1 that version 0 has too: ' + sharedCount(versions[0], versions[1]) : '';
+    $('ed-seq-stack').className = 'radio' + (done >= 4 && !st.cps ? ' on' : ''); $('ed-seq-cps').className = 'radio' + (st.cps ? ' on' : '');
+    $('ed-stream').textContent = st.stream ? 'evens: 2 4 6 8\ncells produced: 8' : '';
+    $('ed-ltext').textContent = done >= 8 ? 'leaf' : 'text';
+    $('ed-ctext').innerHTML = done >= 11 ? 'e' : '&nbsp;'; $('ed-way').textContent = done >= 11 ? 'k and h' : 'iter and raise Found';
+    $('ed-trace').textContent = st.trace ? 'iter_k is not called yet: what we hold is a function\nour function received the leaf e and k; it did not call k' : '';
+  }
+  function sharedCount(a, b) { const s = new Set(); (function go(t) { s.add(t); if (!isLeaf(t)) { go(t.l); go(t.r); } })(a); return (function c(t) { return (s.has(t) ? 1 : 0) + (isLeaf(t) ? 0 : c(t.l) + c(t.r)); })(b); }
+
+  const slider = $('ed-slider');
+  const go = k => { slider.value = k; render(k); };
+  slider.addEventListener('input', () => render(Number(slider.value)));
+  // a level in the strip: the editor with the levels up to it; the current one again: one level back
+  $('ed-chips').addEventListener('click', e => {
+    const c = e.target.closest('button[data-step]'); if (!c) return;
+    const k = Number(c.dataset.step);
+    go(k === Number(slider.value) ? k - 1 : k);
+  });
+  render(0);
+  window.__ed = { back: back.n, cells: asked, matchAt, matchEnd, endOfLine1, e1, e2, e3, line11, nodes0: nodes(v0), nodes1: nodes(v1), shared01: sharedCount(v0, v1), depth0: depth(v0), depth2: depth(v2) };
+})();
+</script>
+<script>/* pp26:labrail-spy — size the rail's top block to the masthead,
+   and mark the section the reader is in */
+(function(){var m=document.querySelector("header.masthead");
+if(m)document.documentElement.style.setProperty("--masthead-h",m.offsetHeight+"px");
+var L=[].slice.call(document.querySelectorAll(".lr-toc a"));if(!L.length)return;
+var S=L.map(function(a){return document.getElementById(a.hash.slice(1))});
+function up(){var c=-1;for(var i=0;i<S.length;i++){if(S[i]&&S[i].getBoundingClientRect().top<=140)c=i}
+if(c<0)c=0;for(var j=0;j<L.length;j++)L[j].classList.toggle("on",j===c)}
+addEventListener("scroll",up,{passive:true});
+addEventListener("resize",function(){if(m)document.documentElement.style.setProperty("--masthead-h",m.offsetHeight+"px");up()});
+up()})();
+</script>
+</body>
+</html>

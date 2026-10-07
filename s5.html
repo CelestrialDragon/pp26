@@ -2,10 +2,10 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>S5 Higher-Order Functions - PP26</title>
+<title>S5 Functions as Values: Iterators and Streams - PP26</title>
 <meta name="description" content="This course examines key design decisions and major differences between programming languages, focusing on characteristics such as state, control flow, process communication, data ">
 <meta name="theme-color" content="#211a52">
-<meta property="og:title" content="S5 Higher-Order Functions - PP26">
+<meta property="og:title" content="S5 Functions as Values: Iterators and Streams - PP26">
 <meta property="og:description" content="This course examines key design decisions and major differences between programming languages, focusing on characteristics such as state, control flow, process communication, data ">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://homes.cs.aau.dk/~lego/pp26/">
@@ -23,9 +23,9 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
     <b>Programming<br>Paradigms</b>
   </a>
   <p class="brand-sub">SW7 &middot; Autumn 2026 &middot; AAU Copenhagen</p>
-  <nav aria-label="Course"><ul><li><a href="index.html">Overview</a></li><li><a href="index.html#sessions">Schedule</a></li><li><a href="index.html#exam">Exam format</a></li><li><a href="index.html#materials">Materials</a></li><li><a href="https://www.moodle.aau.dk/course/view.php?id=60967">Moodle ↗</a></li><li><a href="https://github.com/leon-gondelman/pp26">Repository ↗</a></li></ul></nav>
+  <nav aria-label="Course"><ul><li><a href="index.html">Overview</a></li><li><a href="index.html#sessions">Schedule</a></li><li><a href="exam.html">Exam format</a></li><li><a href="index.html#materials">Materials</a></li><li><a href="https://www.moodle.aau.dk/course/view.php?id=60967">Moodle ↗</a></li><li><a href="https://github.com/leon-gondelman/pp26">Repository ↗</a></li></ul></nav>
   <p class="railhead">Sessions</p>
-  <nav aria-label="Sessions"><ol class="railsessions"><li><a href="s1.html"><span class="n">01</span><span>Intro</span></a></li><li><a href="s2.html"><span class="n">02</span><span>Persistent Data Structures</span></a></li><li><a href="s3.html"><span class="n">03</span><span>Algebraic Data Types and Objects</span></a></li><li><a href="s4.html"><span class="n">04</span><span>Functional Programming</span></a></li><li><a href="s5.html" aria-current='page'><span class="n">05</span><span>Higher-Order Functions</span></a></li><li><a href="s6.html"><span class="n">06</span><span>Asynchronous Programming</span></a></li><li><a href="s7.html"><span class="n">07</span><span>Multi-Threading</span></a></li><li><a href="s8.html"><span class="n">08</span><span>Message Passing</span></a></li><li><a href="s9.html"><span class="n">09</span><span>Static Type Systems</span></a></li><li><a href="s10.html"><span class="n">10</span><span>Polymorphism</span></a></li><li><a href="s11.html"><span class="n">11</span><span>Data Abstraction</span></a></li><li><a href="s12.html"><span class="n">12</span><span>Declarative Programming and Conclusion</span></a></li></ol></nav>
+  <nav aria-label="Sessions"><ol class="railsessions"><li><a href="s1.html"><span class="n">01</span><span>Intro</span></a></li><li><a href="s2.html"><span class="n">02</span><span>Persistent and Ephemeral Data Structures</span></a></li><li><a href="s3.html"><span class="n">03</span><span>Algebraic Data Types and Objects</span></a></li><li><a href="s4.html"><span class="n">04</span><span>Functional Programming and Control</span></a></li><li><a href="s5.html" aria-current='page'><span class="n">05</span><span>Functions as Values: Iterators and Streams</span></a></li><li><a href="s6.html"><span class="n">06</span><span>Asynchronous Programming</span></a></li><li><a href="s7.html"><span class="n">07</span><span>Multi-Threading</span></a></li><li><a href="s8.html"><span class="n">08</span><span>Message Passing</span></a></li><li><a href="s9.html"><span class="n">09</span><span>Failure and Recovery</span></a></li><li><a href="s10.html"><span class="n">10</span><span>Static Type Systems</span></a></li><li><a href="s11.html"><span class="n">11</span><span>Polymorphism</span></a></li><li><a href="s12.html"><span class="n">12</span><span>Data Abstraction</span></a></li><li><a href="s13.html"><span class="n">13</span><span>Declarative Programming and Conclusion</span></a></li></ol></nav>
   <div class="railfoot">
     <a class="aaumark" href="https://www.en.aau.dk/">
       <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aalborg University" focusable="false"><path d="M56.913 45.79c-1.532-.698-3.072-.989-5.688-2.844-6.654-4.72-9.649-10.186-5.388-21.751 2.459-6.671 3.464-11.579 3.319-18.053-.082-.064-.406-.277-.483-.341-1.326 8.045-3.543 12.011-8.535 20.115-11.296 18.345-.675 29.574 4.344 33.605 4.99-2.878 9.253-7.061 12.431-12.222a29.9 29.9 0 0 1-.0-.0Z"/><path d="M44.807 3.108a44 44 0 0 0-.586-.312c-2.86 7.061-6.717 10.696-13.34 16.028-14.096 11.348-12.242 24.428-6.037 34.673a29.9 29.9 0 0 0 9.219.219c-5.916-9.028-8.436-19.409 1.243-31.63 5.75-7.262 8.16-11.708 9.501-18.978Z"/><path d="M42.83 2.093A30 30 0 0 0 30.001 0C13.432 0 0 13.432 0 30c0 7.61 2.834 14.558 7.503 19.845.363-14.55 4.184-21.62 17.203-28.462 8.876-4.665 14.2-8.256 18.124-19.29Z"/></svg><span>Aalborg University Copenhagen</span>
@@ -45,15 +45,293 @@ if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}})
   <div class="inner">
 
 <p class="crumb"><a href="index.html">&larr; all sessions</a></p>
-<section class="hero">
+<section class="hero with-art">
+  <div class="text">
   <p class="dim">Session 5</p>
-  <h1>Higher-Order Functions</h1>
-  <p class="lead">Not yet. This session&rsquo;s outline may still change.</p>
+  <h1>Functions as Values: Iterators and Streams</h1>
+  <p class="lead">Iterators, thunks and streams: two uses of a function passed as a value.</p>
+  </div>
+  <figure class="art"><img src="art/steps.jpg" width="640" height="640" alt=""></figure>
 </section>
 
 <section>
   <h2>Materials</h2>
-  <ul class="materials"><li class="dim">Published when the session runs.</li></ul>
+  <ul class="materials"><li class="group"><span class="glabel">Lecture</span><ul><li class="blockhead"><span class="blk">Block 1</span> Iterators: who drives the traversal?</li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s5-functions-block-1.html">Slides (opens in the browser; → and ← to move, T lists the parts)</a></span></li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s5-functions-block-1.pdf">Slides as PDF (one page per slide; the demos and animations are on the web version)</a></span></li><li class="blockhead"><span class="blk">Block 2</span> Thunks and streams: when is a value computed?</li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s5-functions-block-2.html">Slides (opens in the browser; → and ← to move, T lists the parts)</a></span></li><li class="m-slides c-lecture"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/slides/s5-functions-block-2.pdf">Slides as PDF (one page per slide; the demos and animations are on the web version)</a></span></li><li class="blocknote">The two decks and their PDFs are a first version, published on the day of the lecture: their content might change.</li></ul></li><li class="group"><span class="glabel">Warm-up</span><ul><li class="m-paper c-warmup"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/handouts/s5-warmup.pdf">Warm-up — on paper, then at the keyboard: lists, then Pascal&#x27;s triangle as a sequence</a></span></li></ul></li><li class="group"><span class="glabel">Quest</span><ul><li class="m-lab c-quest"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/labs/lab5-rope/index.html">Quest — making a mini text editor</a></span></li><li class="m-lab c-quest"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/labs/lab5-rope/README.md">Lab README — what to do, level by level</a></span></li><li class="m-code c-quest"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/tree/main/labs/lab5-rope">The lab folder — rope.ml, stream.ml, next.ml, the editor</a></span></li></ul></li><li class="group"><span class="glabel">Solutions</span><ul><li class="m-solution c-solutions"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/solutions/s5/index.html">Quest — every level explained, as a page</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s5/ocaml/rope.ml">rope.ml — part A, every hole filled, commented</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s5/ocaml/stream.ml">stream.ml — part B, every hole filled</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s5/ocaml/next.ml">next.ml — part C, every hole filled</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s5/ocaml/checks.ml">checks.ml — the 55 checks</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/solutions/s5/s5-warmup-solutions.pdf">Warm-up — the sheet, worked, with its homework</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s5/ocaml/warmup.ml">warmup.ml — the warm-up&#x27;s exercises at the keyboard, solved</a></span></li><li class="m-solution c-solutions"><span class="mi"><a href="https://github.com/leon-gondelman/pp26/blob/main/solutions/s5/ocaml/queue.ml">queue.ml — the homework: lab 2&#x27;s queue, with its reversal kept</a></span></li></ul></li><li class="group"><span class="glabel">Homework</span><ul><li class="m-reading c-homework"><span class="mi"><a href="https://cs3110.github.io/textbook/chapters/ds/sequence.html">CS3110, chapter 9 — section 9.4, sequences</a></span></li><li class="m-homework c-homework"><span class="mi"><a href="https://leon-gondelman.github.io/pp26/labs/lab5-rope/index.html#homework">What to finish at home — on the lab page</a></span></li></ul></li></ul>
+</section>
+<section class="story">
+  <h2>This session</h2>
+  <p>Session 5 is about functions passed as values, and how a program uses them to control,
+     step by step, a traversal of its data and its own computation:</p>
+  <ul>
+    <li>two styles of iteration, internal and external,</li>
+    <li>delayed evaluation: thunks, sequences computed on demand, memoisation.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The lecture, in two blocks</h2>
+  <table class="parts">
+    <tbody>
+      <tr><td class="p">1</td><td><strong>Iterators: who drives the traversal?</strong>
+          Closures and what they capture; <code>map</code>, <code>filter</code> and <code>length</code>
+          written with a fold; internal iteration (the list calls our function) and how to stop it
+          before the last element; external iteration (we ask for the next element); an iterator
+          written by hand in Java and in OCaml; a generator in JavaScript, and the object that the
+          compiler makes of it.</td></tr>
+      <tr><td class="p">2</td><td><strong>Thunks and streams: when is a value computed?</strong>
+          A thunk is a function that holds a computation not yet run. With thunks we choose when a
+          value is computed; with sequences (streams), how far a list is computed, and it can be
+          without end; with memoisation, that a value is computed at most once. Each time we make
+          the choice ourselves in OCaml, then look at Haskell, where the language makes it. An
+          appendix to read at home is on memoising a function.</td></tr>
+    </tbody>
+  </table>
+  <p class="p">A third block, on continuations, was announced for this session and was not given. What it was to give is the appendix of session 6&rsquo;s second block, as reading; Part C of the quest is optional and rests on it.</p>
+  <p class="p">The examples of the lecture are on lists and sequences. In the quest we write a mini
+     text editor on a rope, the tree structure in which text editors store a document.</p>
+</section>
+
+<section>
+  <h2>The questions of the session</h2>
+  <p>Each part of the lecture asks one question. The two conclusions answer them.</p>
+  <h3>Block 1: a function carries out one step of a traversal. Who calls it?</h3>
+  <table class="langs qa">
+    <thead><tr><th>The question</th><th>The answer</th></tr></thead>
+    <tbody>
+      <tr><td>What does a function value carry?</td>
+          <td>Its code and its environment: a closure.</td></tr>
+      <tr><td>How do we visit every element of a list?</td>
+          <td>We pass a function to a fold: internal iteration.</td></tr>
+      <tr><td>Can our function stop the traversal?</td>
+          <td>By its answer, only with <code>fold_until</code>: <code>Continue</code> or <code>Stop</code>.</td></tr>
+      <tr><td>How can the consumer choose the next step?</td>
+          <td>It calls <code>next</code>: external iteration.</td></tr>
+      <tr><td>How can the producer remember where it stopped?</td>
+          <td>With <code>yield</code>: a generator, which the language suspends.</td></tr>
+    </tbody>
+  </table>
+  <h3>Block 2: a function holds a computation not yet run. When do we run it?</h3>
+  <table class="langs qa">
+    <thead><tr><th>The question</th><th>The program decides, in OCaml</th><th>The language decides, in Haskell</th></tr></thead>
+    <tbody>
+      <tr><td>When is a value computed?</td>
+          <td>When we call the thunk that holds it.</td><td>When it is used.</td></tr>
+      <tr><td>How far is a sequence computed?</td>
+          <td>As far as we ask: a sequence.</td><td>Every list is a sequence.</td></tr>
+      <tr><td>How many times?</td>
+          <td>Once, if we keep the result: <code>lazy</code>.</td><td>Once: every value is lazy, by default.</td></tr>
+    </tbody>
+  </table>
+  <p>In block 2 the function has type <code>unit -&gt; 'a</code>: we call it to get a value. In
+     session 6 a function holds the rest of the computation, <code>'a -&gt; 'r</code>: we call it to
+     give a value.</p>
+</section>
+
+<section>
+  <h2>The types of the session</h2>
+  <p>Session 3 introduced algebraic data types on the melody: a closed list of shapes, each value
+     built in exactly one way, taken apart by <code>match</code>, with the compiler telling us when
+     a case is missing. In session 5 we wrote more of them, each a few lines long. They add three things
+     to the melody:</p>
+  <ul>
+    <li>a parameter, <code>'a</code>: one type for a rope of characters, a sequence of lines, a history of ropes;</li>
+    <li>constructors that carry a function: data and code in one value, which is this session&rsquo;s subject;</li>
+    <li>a type that says when a value is computed.</li>
+  </ul>
+
+  <h3>An answer that is a choice: <code>'b go</code> (block 1, lab A3)</h3>
+<pre class="code"><span class="k">type</span> 'b go = <span class="c">Continue</span> <span class="k">of</span> 'b | <span class="c">Stop</span> <span class="k">of</span> 'b
+
+<span class="k">let rec</span> fold_until f acc = <span class="k">function</span>
+  | [] -&gt; acc
+  | x :: xs -&gt;
+      <span class="k">match</span> f acc x <span class="k">with</span>
+      | <span class="c">Stop</span> a -&gt; a
+      | <span class="c">Continue</span> a -&gt; fold_until f a xs</pre>
+  <p>The function we hand to <code>fold_until</code> answers with the accumulator in both cases;
+     the constructor says what the fold does next. After <code>Stop</code>, the rest of the list is
+     not visited. On the rope, in the lab, <code>fold_until</code> itself returns a <code>'b go</code>,
+     so that the left subtree can tell the right one that it stopped.</p>
+
+  <h3>One list, three types (block 2)</h3>
+<pre class="code"><span class="k">type</span> 'a list = [] | (::) <span class="k">of</span> 'a * 'a list
+
+<span class="k">type</span> 'a node = <span class="c">Nil</span> | <span class="c">Cons</span> <span class="k">of</span> 'a * 'a seq
+<span class="k">and</span>  'a seq = unit -&gt; 'a node            <span class="cm">(* a sequence: the rest is a thunk *)</span>
+
+<span class="k">type</span> 'a node = <span class="c">Nil</span> | <span class="c">Cons</span> <span class="k">of</span> 'a * 'a seq
+<span class="k">and</span>  'a seq = 'a node Lazy.t             <span class="cm">(* the rest is a lazy value *)</span></pre>
+  <table class="langs qa">
+    <thead><tr><th>The rest has type</th><th>It is</th><th>It is computed</th></tr></thead>
+    <tbody>
+      <tr><td><code>'a list</code></td><td>a value</td><td>before we read the first element</td></tr>
+      <tr><td><code>unit -&gt; 'a node</code></td><td>a thunk</td><td>each time we call it</td></tr>
+      <tr><td><code>'a node Lazy.t</code></td><td>a lazy value</td><td>the first time we force it, then kept</td></tr>
+    </tbody>
+  </table>
+  <p>The shape is the same in the three: an empty case, and a case with one element and the rest.
+     Only the type of the rest changes, and with it when the rest is computed. To compute the first
+     25 Fibonacci numbers, <code>fibs</code> makes 196&nbsp;392 additions when the rest is a thunk,
+     and 23 when it is a lazy value. The second declaration is recursive through a function type:
+     <code>node</code> and <code>seq</code> are defined together, with <code>and</code>.</p>
+
+  <h3>A lazy value, made by hand: <code>'a state</code> (block 2)</h3>
+<pre class="code"><span class="k">type</span> 'a state =
+  | <span class="c">Delayed</span> <span class="k">of</span> (unit -&gt; 'a)
+  | <span class="c">Value</span> <span class="k">of</span> 'a
+
+<span class="k">let</span> delay f = ref (<span class="c">Delayed</span> f)
+
+<span class="k">let</span> force s = <span class="k">match</span> !s <span class="k">with</span>
+  | <span class="c">Value</span> v -&gt; v
+  | <span class="c">Delayed</span> f -&gt;
+      <span class="k">let</span> v = f () <span class="k">in</span>
+      s := <span class="c">Value</span> v;
+      v</pre>
+  <p>The two constructors are the two moments of a lazy value: before it is computed it holds a
+     thunk, afterwards the value. <code>force</code> replaces the first by the second in the
+     reference, so the thunk runs at most once. OCaml&rsquo;s <code>lazy</code> does the same
+     inside the language.</p>
+
+  <h3>The lab: <code>'a rope</code> and <code>'a history</code></h3>
+<pre class="code"><span class="k">type</span> 'a rope =
+  | <span class="c">Leaf</span> <span class="k">of</span> 'a
+  | <span class="c">Cat</span> <span class="k">of</span> 'a rope * 'a rope
+
+<span class="k">type</span> 'a history = {
+  past : 'a list;        <span class="cm">(* the versions before the present one, the latest first *)</span>
+  present : 'a;
+  future : 'a list;      <span class="cm">(* the versions undone, the next one to redo first *)</span>
+}</pre>
+  <p>A rope is a leaf, or two ropes put one after the other. The type has no constructor for an
+     empty rope, so every rope has at least one leaf, and no function on ropes has an empty case to
+     handle. A history is a record: a product, which holds its three fields at once, where a sum
+     holds one constructor out of several. A version of the document is the root of a rope, so
+     <code>undo</code> and <code>redo</code> move roots from one list to the other and copy no
+     text.</p>
+
+  <h3>A value that may be missing: <code>'a option</code></h3>
+  <p>In the lab, <code>find_first</code> returns <code>None</code> when no leaf satisfies the
+     predicate. In the appendix, <code>memo</code> asks its table with
+     <code>Hashtbl.find_opt</code> and matches on <code>Some y</code> and <code>None</code>. The
+     type makes the caller say what happens when there is no value.</p>
+
+  <p>We wrote the types; the compiler found the types of the functions. How it finds them, and
+     what a type with a parameter means, is session 11.</p>
+</section>
+
+<section>
+  <h2>The lab: warm-up, then the editor</h2>
+  <table class="parts">
+    <tbody>
+      <tr><td class="p">W</td><td><strong>Warm-up.</strong> Lists on paper, then Pascal&rsquo;s triangle
+          as a sequence at the keyboard. Its last part, lab 2&rsquo;s queue with a lazy front, is the
+          homework.</td></tr>
+      <tr><td class="p">0</td><td><strong>The rope, on paper and in the toplevel.</strong> Drawing ropes,
+          counting their nodes; <code>count_notes</code> on lab 3&rsquo;s melody, read as a fold.</td></tr>
+      <tr class="watch"><td class="p">A</td><td><strong>One step of a traversal</strong> (<code>rope.ml</code>).
+          <code>fold</code>; <code>insert</code> and <code>delete</code>; undo and redo; <code>fold_until</code>;
+          the rope as a sequence, and <code>same</code>, which compares two sequences element by element.</td></tr>
+      <tr><td class="p">B</td><td><strong>A computation not yet run</strong> (<code>stream.ml</code>).
+          <code>take</code>, <code>map</code>, <code>filter</code>, <code>take_while</code> on sequences;
+          the lines of a document; <code>grep</code>.</td></tr>
+      <tr><td class="p">C</td><td><strong>The rest of the computation</strong> (<code>next.ml</code>).
+          Goes with session 6, on continuations: we do it after that lecture.</td></tr>
+    </tbody>
+  </table>
+  <p class="p">Nothing is handed in; the checks, <code>dune exec ./main.exe</code>, say which levels remain.</p>
+</section>
+
+<section>
+  <h2>Homework</h2>
+  <ul class="refs">
+    <li class="must"><strong>Reading.</strong>
+        <a href="https://cs3110.github.io/textbook/chapters/ds/sequence.html">CS3110, section 9.4</a>,
+        sequences, with 9.4.4 on laziness: the lab&rsquo;s <code>'a seq</code>, and the library&rsquo;s
+        <code>Seq</code>. Leroy, <em>Control structures in programming languages</em> (2026),
+        <a href="https://xavierleroy.org/control-structures/book/main007.html">chapter 4</a>, sections 4.1 and 4.2: iterators and generators, block&nbsp;1 in
+        more languages. Its chapters 6 and 7, on continuations, go with session 6.</li>
+    <li><strong>Finish the lab</strong>, parts 0, A and B, in order; the stretches are on the lab page.</li>
+    <li><strong>The warm-up&rsquo;s last part.</strong> Lab 2&rsquo;s queue, whose front is a lazy
+        value: question E on the sheet, exercise 11 in <code>warmup/queue.ml</code>. A check counts
+        the reversals when one version is popped twice.</li>
+    <li><strong>The appendix of block 2.</strong> Memoising a function: <code>memo</code>,
+        <code>memo_rec</code>, and the two exercises on its last slide.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Languages this session</h2>
+  <table class="langs">
+    <thead><tr><th>Language</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>OCaml</td><td><span class="tag read">read</span> in both blocks,
+          <span class="tag write">write</span> in the lab &mdash; the first types with a parameter
+          that we write ourselves</td></tr>
+      <tr><td>Java</td><td><span class="tag read">read</span> two traversals of a list, an
+          iterator written by hand</td></tr>
+      <tr><td>JavaScript</td><td><span class="tag read">read</span> closures made in a loop,
+          a generator and the object the compiler makes of it</td></tr>
+      <tr><td>Haskell</td><td><span class="tag read">read</span> lists without end: the natural
+          numbers, the primes, the Fibonacci numbers</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Further reading</h2>
+  <p>None of this is required.</p>
+  <h3>Block 1</h3>
+  <ul class="refs">
+    <li><strong>CS3110, chapter 4</strong> &mdash;
+        <a href="https://cs3110.github.io/textbook/chapters/hop/fold.html">section 4.4, fold</a>, and
+        <a href="https://cs3110.github.io/textbook/chapters/hop/currying.html">section 4.7, currying</a>.
+        <code>map</code>, <code>filter</code> and the two folds, in the OCaml of the lab.</li>
+    <li><strong>Peter Landin, &ldquo;The mechanical evaluation of expressions&rdquo;</strong> &mdash;
+        <a href="https://doi.org/10.1093/comjnl/6.4.308">The Computer Journal, 1964</a>. Where the
+        closure gets its name: a function together with the environment that closes it.</li>
+    <li><strong>MDN, &ldquo;Iterators and generators&rdquo;</strong> &mdash;
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_generators">the guide</a>.
+        The protocol behind <code>next</code> and <code>for&hellip;of</code>, and <code>function*</code>.</li>
+  </ul>
+  <h3>Block 2</h3>
+  <ul class="refs">
+    <li><strong>John Hughes, &ldquo;Why functional programming matters&rdquo;</strong> &mdash;
+        <a href="https://www.cse.chalmers.se/~rjmh/Papers/whyfp.pdf">1989 (PDF)</a>. Lazy evaluation
+        as a way to glue programs together: one part produces a list without end, another decides
+        how much of it to read.</li>
+    <li><strong>Abelson and Sussman, <em>Structure and Interpretation of Computer Programs</em></strong> &mdash;
+        <a href="https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/full-text/book/book-Z-H-24.html">section 3.5, streams</a>.
+        <code>delay</code> and <code>force</code> in Scheme, and the same memoisation as our
+        <code>'a state</code>.</li>
+    <li><strong>Melissa O&rsquo;Neill, &ldquo;The genuine sieve of Eratosthenes&rdquo;</strong> &mdash;
+        <a href="https://www.cs.hmc.edu/~oneill/papers/Sieve-JFP.pdf">Journal of Functional Programming, 2009 (PDF)</a>.
+        The two lines of Haskell on the slides test each number against every smaller prime;
+        Eratosthenes crosses out multiples. The paper measures the difference and writes the real
+        sieve on a list without end.</li>
+    <li><strong>CS3110, <a href="https://cs3110.github.io/textbook/chapters/ds/memoization.html">section 9.5, memoization</a></strong>.
+        The appendix of block 2, with a table, in OCaml.</li>
+    <li><strong>Chris Okasaki, <em>Purely Functional Data Structures</em></strong> (1998), chapters
+        4 and 6. Streams with lazy values, and the banker&rsquo;s queue: lab 2&rsquo;s queue, paid
+        once with <code>lazy</code>. The book is not free; the
+        <a href="https://www.cs.cmu.edu/~rwh/students/okasaki.pdf">thesis it grew from (CMU, 1996, PDF)</a> is, and has the same material in its
+        chapters 2 and 3.</li>
+  </ul>
+  <h3>The lab and the types</h3>
+  <ul class="refs">
+    <li><strong>Boehm, Atkinson and Plass, &ldquo;Ropes: an alternative to strings&rdquo;</strong> &mdash;
+        <a href="https://www.cs.tufts.edu/comp/150FP/archive/hans-boehm/ropes.pdf">Software: Practice and Experience, 1995 (PDF)</a>.
+        The rope of the lab: text as a tree of concatenations, so that an edit does not copy the
+        text.</li>
+    <li><strong>CS3110, <a href="https://cs3110.github.io/textbook/chapters/data/algebraic_data_types.html">section 3.9, algebraic data types</a></strong>,
+        and <strong>Real World OCaml, <a href="https://dev.realworldocaml.org/variants.html">chapter on variants</a></strong>.
+        Types with a parameter, recursive types, and what the compiler checks in a
+        <code>match</code>.</li>
+    <li><strong>The OCaml library</strong> &mdash;
+        <a href="https://ocaml.org/manual/latest/api/Seq.html"><code>Seq</code></a> and
+        <a href="https://ocaml.org/manual/latest/api/Lazy.html"><code>Lazy</code></a>. The types of
+        block 2, as the language ships them.</li>
+  </ul>
 </section>
 
   </div>
